@@ -33,8 +33,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     @Override
     public void onBindViewHolder(ContactAdapter.ContactViewHolder holder, int position) {
         Contact contact = mContactList.get(position);
-        holder.mContactNameItem.setText(contact.getmName());
-        holder.mContactOrganizationItem.setText(contact.getmOrganization());
+        holder.mContactNameItem.setText(contact.getName());
+        holder.mContactOrganizationItem.setText(contact.getOrganization());
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
             int position = getAdapterPosition();
             Contact contact = this.mContacts.get(position);
             Intent intent = new Intent(mContext, ContactDetailActivity.class);
-            intent.putExtra("name", contact.getmName());
+            intent.putExtra("name", contact.getName());
             mContext.startActivity(intent);
         }
     }

@@ -21,7 +21,8 @@
         </activity>
 
         <activity android:name=".ContactListActivity"
-            android:label="Contacts" />
+            android:label="Contacts"
+            />
 
         <activity android:name=".ContactAddActivity"
             android:label="Add a Contact"
@@ -29,6 +30,7 @@
 
         <activity android:name=".ContactDetailActivity"
             android:label="Contacts" />
+
 
     </application>
 

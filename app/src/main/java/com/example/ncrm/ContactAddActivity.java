@@ -91,8 +91,8 @@ public class ContactAddActivity extends AppCompatActivity {
                 mFirebaseDatabase = FirebaseDatabase.getInstance();
                 mFirebaseAuth = FirebaseAuth.getInstance();
 
-                mContactsDatabaseReference = mFirebaseDatabase.getReference("contacts");
                 String user = mFirebaseAuth.getCurrentUser().getUid();
+                mContactsDatabaseReference = mFirebaseDatabase.getReference().child("contacts").child(user);
                 Contact contact = new Contact(name, organization, streetAddress, city, country, phoneNumber, mobileNumber,
                         email, website, facebookId, twitterId, linkedInId, user);
                 mContactsDatabaseReference.push().setValue(contact);

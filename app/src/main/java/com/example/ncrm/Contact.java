@@ -5,141 +5,141 @@ package com.example.ncrm;
  */
 
 public class Contact {
-    private String mName;
-    private String mOrganization;
-    private String mStreetAddress;
-    private String mCity;
-    private String mCountry;
-    private String mPhoneNumber;
-    private String mMobileNumber;
-    private String mEmail;
-    private String mWebsite;
-    private String mFacebookId;
-    private String mTwitterId;
-    private String mLinkedInId;
-    private String mUser;
+    private String name;
+    private String organization;
+    private String streetAddress;
+    private String city;
+    private String country;
+    private String phoneNumber;
+    private String mobileNumber;
+    private String email;
+    private String website;
+    private String facebookId;
+    private String twitterId;
+    private String linkedInId;
+    private String userId;
 
     public Contact(String name, String organization, String streetAddress, String city, String country,
                    String phoneNumber, String mobileNumber, String email, String website,
-                   String facebookId, String twitterId, String linkedInId, String user) {
-        mName = name;
-        mOrganization = organization;
-        mStreetAddress = streetAddress;
-        mCity = city;
-        mCountry = country;
-        mPhoneNumber = phoneNumber;
-        mMobileNumber = mobileNumber;
-        mEmail = email;
-        mWebsite = website;
-        mFacebookId = facebookId;
-        mTwitterId = twitterId;
-        mLinkedInId = linkedInId;
-        mUser = user;
+                   String facebookId, String twitterId, String linkedInId, String userId) {
+        this.name = name;
+        this.organization = organization;
+        this.streetAddress = streetAddress;
+        this.city = city;
+        this.country = country;
+        this.phoneNumber = phoneNumber;
+        this.mobileNumber = mobileNumber;
+        this.email = email;
+        this.website = website;
+        this.facebookId = facebookId;
+        this.twitterId = twitterId;
+        this.linkedInId = linkedInId;
+        this.userId = userId;
     }
 
     public Contact() { }
 
-    public void setmName(String mName) {
-        this.mName = mName;
+    public String getName() {
+        return name;
     }
 
-    public void setmOrganization(String mOrganization) {
-        this.mOrganization = mOrganization;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setmStreetAddress(String mStreetAddress) {
-        this.mStreetAddress = mStreetAddress;
+    public String getOrganization() {
+        return organization;
     }
 
-    public void setmCity(String mCity) {
-        this.mCity = mCity;
+    public void setOrganization(String organization) {
+        this.organization = organization;
     }
 
-    public void setmCountry(String mCountry) {
-        this.mCountry = mCountry;
+    public String getStreetAddress() {
+        return streetAddress;
     }
 
-    public void setmPhoneNumber(String mPhoneNumber) {
-        this.mPhoneNumber = mPhoneNumber;
+    public void setStreetAddress(String streetAddress) {
+        this.streetAddress = streetAddress;
     }
 
-    public void setmMobileNumber(String mMobileNumber) {
-        this.mMobileNumber = mMobileNumber;
+    public String getCity() {
+        return city;
     }
 
-    public void setmEmail(String mEmail) {
-        this.mEmail = mEmail;
+    public void setCity(String city) {
+        this.city = city;
     }
 
-    public void setmWebsite(String mWebsite) {
-        this.mWebsite = mWebsite;
+    public String getCountry() {
+        return country;
     }
 
-    public void setmFacebookId(String mFacebookId) {
-        this.mFacebookId = mFacebookId;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
-    public void setmTwitterId(String mTwitterId) {
-        this.mTwitterId = mTwitterId;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setmLinkedInId(String mLinkedInId) {
-        this.mLinkedInId = mLinkedInId;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public void setmUser(String mUser) {
-        this.mUser = mUser;
+    public String getMobileNumber() {
+        return mobileNumber;
     }
 
-    public String getmName() {
-        return mName;
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
     }
 
-    public String getmOrganization() {
-        return mOrganization;
+    public String getEmail() {
+        return email;
     }
 
-    public String getmStreetAddress() {
-        return mStreetAddress;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getmCity() {
-        return mCity;
+    public String getWebsite() {
+        return website;
     }
 
-    public String getmCountry() {
-        return mCountry;
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
-    public String getmPhoneNumber() {
-        return mPhoneNumber;
+    public String getFacebookId() {
+        return facebookId;
     }
 
-    public String getmMobileNumber() {
-        return mMobileNumber;
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
     }
 
-    public String getmEmail() {
-        return mEmail;
+    public String getTwitterId() {
+        return twitterId;
     }
 
-    public String getmWebsite() {
-        return mWebsite;
+    public void setTwitterId(String twitterId) {
+        this.twitterId = twitterId;
     }
 
-    public String getmFacebookId() {
-        return mFacebookId;
+    public String getLinkedInId() {
+        return linkedInId;
     }
 
-    public String getmTwitterId() {
-        return mTwitterId;
+    public void setLinkedInId(String linkedInId) {
+        this.linkedInId = linkedInId;
     }
 
-    public String getmLinkedInId() {
-        return mLinkedInId;
+    public String getUserId() {
+        return userId;
     }
 
-    public String getmUser() {
-        return mUser;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

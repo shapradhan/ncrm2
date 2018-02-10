@@ -12,6 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.firebase.ui.auth.data.model.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,6 +36,7 @@ public class ContactListActivity extends AppCompatActivity {
     FirebaseDatabase mFirebaseDatabase;
     DatabaseReference mContactsDatabaseReference;
     ChildEventListener mChildEventListener;
+    FirebaseAuth mFirebaseAuth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,7 +69,9 @@ public class ContactListActivity extends AppCompatActivity {
 
 
     private void getDataFromFirebase() {
-        mContactsDatabaseReference = mFirebaseDatabase.getReference().child("contacts");
+        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mFirebaseAuth.getCurrentUser();
+        mContactsDatabaseReference = mFirebaseDatabase.getReference().child("contacts").child(user.getUid());
         attachDatabaseReadListener();
     }
 
