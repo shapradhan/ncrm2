@@ -37,6 +37,8 @@ public class Contact {
         mUser = user;
     }
 
+    public Contact() { }
+
     public void setmName(String mName) {
         this.mName = mName;
     }
