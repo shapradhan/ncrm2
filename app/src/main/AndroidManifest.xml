@@ -19,6 +19,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ContactListActivity"
+            android:label="Contacts" />
+
+        <activity android:name=".ContactAddActivity"
+            android:label="Add a Contact"
+            android:windowSoftInputMode="stateHidden"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
