@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -24,7 +25,7 @@ public class ContactAddActivity extends AppCompatActivity {
     private EditText mOrganizationEditText;
     private EditText mStreetAddressEditText;
     private EditText mCityEditText;
-    private AutoCompleteTextView mCountryEditText;
+    private Spinner mCountrySpinner;
     private EditText mPhoneNumberEditText;
     private EditText mMobileNumberEditText;
     private EditText mEmailEditText;
@@ -37,21 +38,7 @@ public class ContactAddActivity extends AppCompatActivity {
     private DatabaseReference mContactsDatabaseReference;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-
-//    private String name = "";
-//    private String organization = "";
-//    private String streetAddress = "";
-//    private String city = "";
-//    private String country = "";
-//    private String phoneNumber = "";
-//    private String mobileNumber = "";
-//    private String email = "";
-//    private String facebookId = "";
-//    private String twitterId = "";
-//    private String linkedInId = "";
-
-
-
+    
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +53,7 @@ public class ContactAddActivity extends AppCompatActivity {
                 mOrganizationEditText = (EditText) findViewById(R.id.contactOrganizationEditText);
                 mStreetAddressEditText = (EditText) findViewById(R.id.contactAddressStreetEditText);
                 mCityEditText = (EditText) findViewById(R.id.contactAddressCityEditText);
-                mCountryEditText = (AutoCompleteTextView) findViewById(R.id.contactAddressCountryEditText);
+                mCountrySpinner = (Spinner) findViewById(R.id.contactAddressCountrySpinner);
                 mPhoneNumberEditText = (EditText) findViewById(R.id.contactPhoneNumberEditText);
                 mMobileNumberEditText = (EditText) findViewById(R.id.contactMobileNumberEditText);
                 mEmailEditText = (EditText) findViewById(R.id.contactEmailEditText);
@@ -92,7 +79,7 @@ public class ContactAddActivity extends AppCompatActivity {
                 organization = mOrganizationEditText.getText().toString();
                 streetAddress = mStreetAddressEditText.getText().toString();
                 city = mCityEditText.getText().toString();
-                country = mCountryEditText.getText().toString();
+                country = mCountrySpinner.getSelectedItem().toString();
                 phoneNumber = mPhoneNumberEditText.getText().toString();
                 mobileNumber = mMobileNumberEditText.getText().toString();
                 email = mEmailEditText.getText().toString();

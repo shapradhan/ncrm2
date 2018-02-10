@@ -25,4 +25,8 @@
     <string name="country">Country</string>
     <string name="add">Add</string>
     <string name="location">Location</string>
+    <string-array name="countries">
+        <item>Nepal</item>
+        <item>Sweden</item>
+    </string-array>
 </resources>

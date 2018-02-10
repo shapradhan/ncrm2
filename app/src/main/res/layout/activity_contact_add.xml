@@ -16,7 +16,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
                 <TextView
                     android:id="@+id/contactName"
@@ -37,7 +38,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
                 <TextView
                     android:id="@+id/contactOrganization"
@@ -58,7 +60,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
                 <TextView
                     android:id="@+id/locationTitle"
@@ -73,7 +76,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
                 <TextView
                     android:id="@+id/contactAddressStreet"
                     android:layout_width="100dp"
@@ -93,7 +97,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
                 <TextView
                     android:id="@+id/contactAddressCity"
@@ -114,7 +119,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
                 <TextView
                     android:id="@+id/contactAddressCountry"
@@ -123,18 +129,19 @@
                     android:layout_weight="1"
                     android:text="@string/country" />
 
-                <AutoCompleteTextView
-                    android:id="@+id/contactAddressCountryEditText"
+                <Spinner
+                    android:id="@+id/contactAddressCountrySpinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="textPersonName" />
+                    android:entries="@array/countries"
+                    android:focusable="false"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
                 <TextView
                     android:id="@+id/contactsTitle"
@@ -149,7 +156,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
                 <TextView
                     android:id="@+id/contactPhoneNumber"
@@ -170,7 +178,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
                 <TextView
                     android:id="@+id/contactMobileNumber"
@@ -191,7 +200,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
                 <TextView
                     android:id="@+id/contactEmail"
@@ -212,7 +222,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
                 <TextView
                     android:id="@+id/contactWebsite"
@@ -232,7 +243,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
                 <TextView
                     android:id="@+id/socialNetworkTitle"
@@ -247,7 +259,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
                 <TextView
                     android:id="@+id/contactFacebook"
@@ -268,7 +281,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
                 <TextView
                     android:id="@+id/contactTwitter"
@@ -289,7 +303,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
 
                 <TextView
                     android:id="@+id/contactLinkedIn"
