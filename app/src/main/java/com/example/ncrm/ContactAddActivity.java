@@ -38,7 +38,7 @@ public class ContactAddActivity extends AppCompatActivity {
     private DatabaseReference mContactsDatabaseReference;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

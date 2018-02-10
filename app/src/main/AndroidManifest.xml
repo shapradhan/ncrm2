@@ -26,6 +26,10 @@
         <activity android:name=".ContactAddActivity"
             android:label="Add a Contact"
             android:windowSoftInputMode="stateHidden"/>
+
+        <activity android:name=".ContactDetailActivity"
+            android:label="Contacts" />
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>

@@ -1,11 +1,14 @@
 package com.example.ncrm;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,23 +16,25 @@ import java.util.List;
  */
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder> {
-    List<Contact> mContactList;
+    ArrayList<Contact> mContactList = new ArrayList<>();
+    Context mContext;
 
-    public ContactAdapter(List<Contact> contactList) {
+    public ContactAdapter(ArrayList<Contact> contactList, Context context) {
         mContactList = contactList;
+        mContext = context;
     }
 
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_item_view, parent, false);
-        return new ContactViewHolder(view);
+        return new ContactViewHolder(view, mContext, mContactList);
     }
 
     @Override
     public void onBindViewHolder(ContactAdapter.ContactViewHolder holder, int position) {
         Contact contact = mContactList.get(position);
-        holder.contactNameItem.setText(contact.getmName());
-        holder.contactOrganizationItem.setText(contact.getmOrganization());
+        holder.mContactNameItem.setText(contact.getmName());
+        holder.mContactOrganizationItem.setText(contact.getmOrganization());
     }
 
     @Override
@@ -37,15 +42,28 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         return mContactList.size();
     }
 
-    public class ContactViewHolder extends RecyclerView.ViewHolder {
-        TextView contactNameItem;
-        TextView contactOrganizationItem;
+    public class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView mContactNameItem;
+        TextView mContactOrganizationItem;
+        ArrayList<Contact> mContacts = new ArrayList<>();
+        Context mContext;
 
-        public ContactViewHolder(View itemView) {
+        public ContactViewHolder(View itemView, Context context, ArrayList<Contact> contacts) {
             super(itemView);
+            mContacts = contacts;
+            mContext = context;
+            itemView.setOnClickListener(this);
+            mContactNameItem = (TextView) itemView.findViewById(R.id.contactNameItem);
+            mContactOrganizationItem = (TextView) itemView.findViewById(R.id.contactOrganizationItem);
+        }
 
-            contactNameItem = (TextView) itemView.findViewById(R.id.contactNameItem);
-            contactOrganizationItem = (TextView) itemView.findViewById(R.id.contactOrganizationItem);
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            Contact contact = this.mContacts.get(position);
+            Intent intent = new Intent(mContext, ContactDetailActivity.class);
+            intent.putExtra("name", contact.getmName());
+            mContext.startActivity(intent);
         }
     }
 }

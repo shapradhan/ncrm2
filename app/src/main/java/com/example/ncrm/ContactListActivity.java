@@ -9,6 +9,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.firebase.database.ChildEventListener;
@@ -28,7 +29,7 @@ public class ContactListActivity extends AppCompatActivity {
     FloatingActionButton mCreateContactFAB;
     RecyclerView mContactListRecyclerView;
     ContactAdapter mContactAdapter;
-    List<Contact> mContactList;
+    ArrayList<Contact> mContactList;
     FirebaseDatabase mFirebaseDatabase;
     DatabaseReference mContactsDatabaseReference;
     ChildEventListener mChildEventListener;
@@ -46,7 +47,7 @@ public class ContactListActivity extends AppCompatActivity {
         mContactListRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayoutManager.VERTICAL));
 
         mContactList = new ArrayList<>();
-        mContactAdapter = new ContactAdapter(mContactList);
+        mContactAdapter = new ContactAdapter(mContactList, this);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         getDataFromFirebase();
@@ -60,6 +61,8 @@ public class ContactListActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     private void getDataFromFirebase() {
         mContactsDatabaseReference = mFirebaseDatabase.getReference().child("contacts");
