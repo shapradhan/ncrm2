@@ -1,10 +1,13 @@
 package com.example.ncrm;
 
+import com.google.firebase.database.Exclude;
+
 /**
  * Created by shameer on 2018-02-10.
  */
 
 public class Contact {
+
     private String name;
     private String organization;
     private String streetAddress;
@@ -18,10 +21,13 @@ public class Contact {
     private String twitterId;
     private String linkedInId;
     private String userId;
+    @Exclude
+    private String id;
 
     public Contact(String name, String organization, String streetAddress, String city, String country,
                    String phoneNumber, String mobileNumber, String email, String website,
                    String facebookId, String twitterId, String linkedInId, String userId) {
+//        this.id = id;
         this.name = name;
         this.organization = organization;
         this.streetAddress = streetAddress;
@@ -38,6 +44,14 @@ public class Contact {
     }
 
     public Contact() { }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

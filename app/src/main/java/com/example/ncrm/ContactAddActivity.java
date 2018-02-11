@@ -93,9 +93,13 @@ public class ContactAddActivity extends AppCompatActivity {
 
                 String user = mFirebaseAuth.getCurrentUser().getUid();
                 mContactsDatabaseReference = mFirebaseDatabase.getReference().child("contacts").child(user);
+//                String id = mContactsDatabaseReference.push().getKey();
+//                System.out.println("FFFFFF " + id);
                 Contact contact = new Contact(name, organization, streetAddress, city, country, phoneNumber, mobileNumber,
                         email, website, facebookId, twitterId, linkedInId, user);
                 mContactsDatabaseReference.push().setValue(contact);
+//                String id = mContactsDatabaseReference.push().getKey();
+//                System.out.println("KEYJEY " + id);
                 cleanUpEditText(mNameEditText, mOrganizationEditText, mStreetAddressEditText, mCityEditText,
                         mPhoneNumberEditText, mMobileNumberEditText, mEmailEditText, mFacebookIdEditText,
                         mTwitterEditText, mLinkedInEditText);

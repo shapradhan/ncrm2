@@ -82,6 +82,8 @@ public class ContactListActivity extends AppCompatActivity {
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Contact contact = new Contact();
                     contact = dataSnapshot.getValue(Contact.class);
+                    String id = dataSnapshot.getKey();
+                    contact.setId(id);
                     mContactList.add(contact);
                     mContactListRecyclerView.setAdapter(mContactAdapter);
                 }

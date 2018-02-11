@@ -62,7 +62,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
             int position = getAdapterPosition();
             Contact contact = this.mContacts.get(position);
             Intent intent = new Intent(mContext, ContactDetailActivity.class);
+            System.out.println("ID DDD " + contact.getId());
+
             intent.putExtra("name", contact.getName());
+            intent.putExtra("id", contact.getId());
+            intent.putExtra("uid", contact.getUserId());
             mContext.startActivity(intent);
         }
     }
