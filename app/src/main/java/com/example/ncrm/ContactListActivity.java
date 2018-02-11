@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.firebase.ui.auth.data.model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,7 +29,7 @@ import java.util.List;
  * Created by shameer on 2018-02-10.
  */
 
-public class ContactListActivity extends AppCompatActivity {
+public class ContactListActivity extends MainActivity {
     FloatingActionButton mCreateContactFAB;
     RecyclerView mContactListRecyclerView;
     ContactAdapter mContactAdapter;
@@ -41,7 +42,9 @@ public class ContactListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contact_list);
+        //setContentView(R.layout.activity_contact_list);
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.content_frame);
+        getLayoutInflater().inflate(R.layout.activity_contact_list, frameLayout);
 
         mContactListRecyclerView = (RecyclerView) findViewById(R.id.contactListRecyclerView);
         mContactListRecyclerView.setHasFixedSize(true);

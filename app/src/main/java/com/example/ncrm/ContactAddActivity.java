@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Spinner;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,7 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
  * Created by shameer on 2018-02-10.
  */
 
-public class ContactAddActivity extends AppCompatActivity {
+public class ContactAddActivity extends MainActivity {
 
     private Button mAddContactBtn;
     private EditText mNameEditText;
@@ -42,8 +43,10 @@ public class ContactAddActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contact_add);
+//        setContentView(R.layout.activity_contact_add);
 
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.content_frame);
+        getLayoutInflater().inflate(R.layout.activity_contact_add, frameLayout);
 
         mAddContactBtn = (Button) findViewById(R.id.addContactBtn);
         mAddContactBtn.setOnClickListener(new View.OnClickListener() {

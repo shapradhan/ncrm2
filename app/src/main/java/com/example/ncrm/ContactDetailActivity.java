@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,7 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
  * Created by shameer on 2018-02-10.
  */
 
-public class ContactDetailActivity extends AppCompatActivity {
+public class ContactDetailActivity extends MainActivity {
     TextView mContactItemName;
     Button mUpdateNameButton;
     FirebaseAuth firebaseAuth;
@@ -27,7 +28,10 @@ public class ContactDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contact_detail);
+//        setContentView(R.layout.activity_contact_detail);
+
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.content_frame);
+        getLayoutInflater().inflate(R.layout.activity_contact_detail, frameLayout);
 
         final Intent intent = getIntent();
 

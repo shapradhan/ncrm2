@@ -22,14 +22,16 @@
 
         <activity android:name=".ContactListActivity"
             android:label="Contacts"
-            />
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity android:name=".ContactAddActivity"
             android:label="Add a Contact"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity android:name=".ContactDetailActivity"
-            android:label="Contacts" />
+            android:label="Contacts"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
 
     </application>
