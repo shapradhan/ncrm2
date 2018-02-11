@@ -3,6 +3,7 @@ package com.example.ncrm;
 import android.*;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -95,6 +96,14 @@ public class ContactDetailActivity extends MainActivity {
             @Override
             public void onClick(View v) {
                 openWebsite(selectedContact.getWebsite());
+            }
+        });
+
+        ImageButton facebookBtn = (ImageButton) findViewById(R.id.facebookBtn);
+        facebookBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFacebook(selectedContact.getFacebookId());
             }
         });
     }
@@ -191,6 +200,27 @@ public class ContactDetailActivity extends MainActivity {
         }
         else {
             Toast.makeText(getApplicationContext(), "Website is not available.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openFacebook(String facebookId) {
+        if (facebookId != null && facebookId.length() != 0) {
+            String url = "https://www.facebook.com/" + facebookId;
+            Uri uri = Uri.parse(url);
+            try {
+                ApplicationInfo applicationInfo = getPackageManager().getApplicationInfo("com.facebook.katana", 0);
+                if (applicationInfo.enabled) {
+                    uri = Uri.parse("fb://facewebmodal/f?href=" + url);
+                }
+            }
+            catch (PackageManager.NameNotFoundException e) {
+                Toast.makeText(this, "Facebook is not installed", Toast.LENGTH_SHORT).show();
+            }
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Facebook ID is not available.", Toast.LENGTH_SHORT).show();
         }
     }
 }
