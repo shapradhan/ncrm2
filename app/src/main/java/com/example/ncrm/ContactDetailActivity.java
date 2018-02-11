@@ -89,6 +89,14 @@ public class ContactDetailActivity extends MainActivity {
                 sendEmail(selectedContact.getEmail());
             }
         });
+
+        ImageButton websiteBtn = (ImageButton) findViewById(R.id.websiteBtn);
+        websiteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openWebsite(selectedContact.getWebsite());
+            }
+        });
     }
 
     @Override
@@ -160,4 +168,29 @@ public class ContactDetailActivity extends MainActivity {
         }
     }
 
+    private void openWebsite(String websiteUrl) {
+        if (websiteUrl != null && websiteUrl.length() != 0) {
+            Uri uri;
+            if(websiteUrl.startsWith("http://") || websiteUrl.startsWith("https://")) {
+                uri = Uri.parse(websiteUrl);
+            }
+            else if (websiteUrl.startsWith("www.")) {
+                uri = Uri.parse("https://" + websiteUrl);
+            }
+            else {
+                uri = Uri.parse("https://www." + websiteUrl);
+            }
+
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+            catch (ActivityNotFoundException e) {
+                Toast.makeText(getApplicationContext(), "There are no web clients installed.", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Website is not available.", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
