@@ -1,6 +1,7 @@
 package com.example.ncrm;
 
 import android.*;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -80,6 +81,14 @@ public class ContactDetailActivity extends MainActivity {
                 sendSMS(selectedContact.getMobileNumber());
             }
         });
+
+        ImageButton emailBtn = (ImageButton) findViewById(R.id.emailBtn);
+        emailBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendEmail(selectedContact.getEmail());
+            }
+        });
     }
 
     @Override
@@ -129,6 +138,25 @@ public class ContactDetailActivity extends MainActivity {
         }
         else {
             Toast.makeText(getApplicationContext(), "Mobile number is not available.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void sendEmail(String email) {
+        if (email != null && email.length() != 0) {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setData(Uri.parse("mailto:"));
+            intent.setType("message/rfc822");
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
+            try {
+                startActivity(intent.createChooser(intent, "Send email"));
+                finish();
+            }
+            catch (ActivityNotFoundException e) {
+                Toast.makeText(getApplicationContext(), "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Email address is not available.", Toast.LENGTH_SHORT).show();
         }
     }
 
