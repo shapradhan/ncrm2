@@ -1,15 +1,22 @@
 package com.example.ncrm;
 
+import android.*;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -50,6 +57,21 @@ public class ContactDetailActivity extends MainActivity {
         mContactFullAddress = (TextView) findViewById(R.id.contactItemFullAddress);
         mContactFullAddress.setText(selectedContact.getStreetAddress() + ", " + selectedContact.getCity() + ", " + selectedContact.getCountry());
 
+        ImageButton phoneBtn = (ImageButton) findViewById(R.id.phoneBtn);
+        phoneBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initiateCall(selectedContact.getPhoneNumber(), "Phone");
+            }
+        });
+
+        ImageButton mobileBtn = (ImageButton) findViewById(R.id.mobileBtn);
+        mobileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initiateCall(selectedContact.getMobileNumber(), "Mobile");
+            }
+        });
     }
 
     @Override
@@ -74,6 +96,19 @@ public class ContactDetailActivity extends MainActivity {
         return true;
     }
 
+    private void initiateCall(String number, String typeOfCall) {
+        if (number != null && number.length() != 0) {
+            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number));
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CALL_PHONE}, 10);
+            } else {
+                startActivity(intent);
+            }
+        }
+        else {
+            Toast.makeText(getApplicationContext(), typeOfCall + " is not available.", Toast.LENGTH_SHORT).show();
+        }
+    }
 
 
 }
