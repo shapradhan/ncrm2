@@ -47,7 +47,33 @@ public class ContactUpdateActivity extends MainActivity {
         getLayoutInflater().inflate(R.layout.activity_contact_update, frameLayout);
 
         Intent intent = getIntent();
-         selectedContact = (Contact) intent.getSerializableExtra("contact");
+        selectedContact = (Contact) intent.getSerializableExtra("contact");
+
+        mNameEditText = findViewById(R.id.contactNameEditText);
+        mOrganizationEditText = (EditText) findViewById(R.id.contactOrganizationEditText);
+        mStreetAddressEditText = (EditText) findViewById(R.id.contactAddressStreetEditText);
+        mCityEditText = (EditText) findViewById(R.id.contactAddressCityEditText);
+        mCountrySpinner = (Spinner) findViewById(R.id.contactAddressCountrySpinner);
+        mPhoneNumberEditText = (EditText) findViewById(R.id.contactPhoneNumberEditText);
+        mMobileNumberEditText = (EditText) findViewById(R.id.contactMobileNumberEditText);
+        mEmailEditText = (EditText) findViewById(R.id.contactEmailEditText);
+        mWebsiteEditText = (EditText) findViewById(R.id.contactWebsiteEditText);
+        mFacebookIdEditText = (EditText) findViewById(R.id.contactFacebookEditText);
+        mTwitterEditText = (EditText) findViewById(R.id.contactTwitterEditText);
+        mLinkedInEditText = (EditText) findViewById(R.id.contactLinkedInEditText);
+
+        mNameEditText.setText(selectedContact.getName());
+        mOrganizationEditText.setText(selectedContact.getOrganization());
+        mStreetAddressEditText.setText(selectedContact.getStreetAddress());
+        mCityEditText.setText(selectedContact.getCity());
+        mCountrySpinner.setSelection(1);
+        mPhoneNumberEditText.setText(selectedContact.getPhoneNumber());
+        mMobileNumberEditText.setText(selectedContact.getMobileNumber());
+        mEmailEditText.setText(selectedContact.getEmail());
+        mWebsiteEditText.setText(selectedContact.getWebsite());
+        mFacebookIdEditText.setText(selectedContact.getFacebookId());
+        mTwitterEditText.setText(selectedContact.getTwitterId());
+        mLinkedInEditText.setText(selectedContact.getLinkedInId());
 
         mUpdateContactBtn = (Button) findViewById(R.id.updateContactBtn);
         mUpdateContactBtn.setOnClickListener(new View.OnClickListener() {
@@ -65,21 +91,6 @@ public class ContactUpdateActivity extends MainActivity {
     }
 
     private void updateContact() {
-
-            mNameEditText = findViewById(R.id.contactNameEditText);
-
-        mOrganizationEditText = (EditText) findViewById(R.id.contactOrganizationEditText);
-        mStreetAddressEditText = (EditText) findViewById(R.id.contactAddressStreetEditText);
-        mCityEditText = (EditText) findViewById(R.id.contactAddressCityEditText);
-        mCountrySpinner = (Spinner) findViewById(R.id.contactAddressCountrySpinner);
-        mPhoneNumberEditText = (EditText) findViewById(R.id.contactPhoneNumberEditText);
-        mMobileNumberEditText = (EditText) findViewById(R.id.contactMobileNumberEditText);
-        mEmailEditText = (EditText) findViewById(R.id.contactEmailEditText);
-        mWebsiteEditText = (EditText) findViewById(R.id.contactWebsiteEditText);
-        mFacebookIdEditText = (EditText) findViewById(R.id.contactFacebookEditText);
-        mTwitterEditText = (EditText) findViewById(R.id.contactTwitterEditText);
-        mLinkedInEditText = (EditText) findViewById(R.id.contactLinkedInEditText);
-
         String name = "";
         String organization = "";
         String streetAddress = "";

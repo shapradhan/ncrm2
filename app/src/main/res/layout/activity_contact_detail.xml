@@ -1,22 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:padding="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/contactItemName"/>
+            android:id="@+id/contactItemName"
+            android:textSize="25dp"
+            android:textAllCaps="true"
+            android:textStyle="bold"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/contactItemOrganization"/>
+            android:id="@+id/contactItemOrganization"
+            android:textSize="20dp"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/contactItemFullAddress"
+                android:textSize="15dp"/>
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="25dp"
+                android:layout_height="30dp"
+                android:padding="5dp"
+                app:srcCompat="@drawable/ic_map" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center" >
+
+            <ImageButton
+                android:id="@+id/phoneBtn"
+                android:layout_width="25dp"
+                android:layout_height="30dp"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                app:srcCompat="@drawable/ic_phone"
+                android:background="@null"/>
+
+            <ImageButton
+                android:id="@+id/mobileBtn"
+                android:layout_width="25dp"
+                android:layout_height="30dp"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                app:srcCompat="@drawable/ic_mobile"
+                android:background="@null"/>
+
+            <ImageButton
+                android:id="@+id/smsBtn"
+                android:layout_width="25dp"
+                android:layout_height="30dp"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                app:srcCompat="@drawable/ic_sms"
+                android:background="@null"/>
+
+            <ImageButton
+                android:id="@+id/emailBtn"
+                android:layout_width="25dp"
+                android:layout_height="30dp"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                app:srcCompat="@drawable/ic_email"
+                android:background="@null"/>
+
+            <ImageButton
+                android:id="@+id/websiteBtn"
+                android:layout_width="25dp"
+                android:layout_height="30dp"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                app:srcCompat="@drawable/ic_website"
+                android:background="@null"/>
+
+            <ImageButton
+                android:id="@+id/facebookBtn"
+                android:layout_width="25dp"
+                android:layout_height="30dp"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                app:srcCompat="@drawable/ic_facebook"
+                android:background="@null"/>
+
+            <ImageButton
+                android:id="@+id/twitterBtn"
+                android:layout_width="25dp"
+                android:layout_height="30dp"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                app:srcCompat="@drawable/ic_twitter"
+                android:background="@null"/>
+
+            <ImageButton
+                android:id="@+id/linkedInBtn"
+                android:layout_width="25dp"
+                android:layout_height="30dp"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                app:srcCompat="@drawable/ic_linkedin"
+                android:background="@null"/>
+        </LinearLayout>
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

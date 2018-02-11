@@ -21,7 +21,9 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 
 public class ContactDetailActivity extends MainActivity {
-    TextView mContactItemName;
+    TextView mContactName;
+    TextView mContactOrganization;
+    TextView mContactFullAddress;
     Button mUpdateNameButton;
     FirebaseAuth firebaseAuth;
     FirebaseDatabase mFirebaseDatabase;
@@ -41,8 +43,12 @@ public class ContactDetailActivity extends MainActivity {
         selectedContact = (Contact) intent.getSerializableExtra("object");
 
 
-        mContactItemName = (TextView) findViewById(R.id.contactItemName);
-        mContactItemName.setText(intent.getStringExtra("name"));
+        mContactName = (TextView) findViewById(R.id.contactItemName);
+        mContactName.setText(selectedContact.getName());
+        mContactOrganization = (TextView) findViewById(R.id.contactItemOrganization);
+        mContactOrganization.setText(selectedContact.getOrganization());
+        mContactFullAddress = (TextView) findViewById(R.id.contactItemFullAddress);
+        mContactFullAddress.setText(selectedContact.getStreetAddress() + ", " + selectedContact.getCity() + ", " + selectedContact.getCountry());
 
     }
 
