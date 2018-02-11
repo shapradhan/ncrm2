@@ -18,11 +18,5 @@
             android:layout_height="match_parent"
             android:id="@+id/contactItemOrganization"/>
 
-        <Button
-            android:id="@+id/updateNameBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Update Name" />
-
     </LinearLayout>
 </RelativeLayout>

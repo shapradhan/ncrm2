@@ -92,14 +92,14 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_signout) {
-            AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    checkLoginStatus();
-                }
-            });
-        }
+//        if (id == R.id.action_signout) {
+//            AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Void> task) {
+//                    checkLoginStatus();
+//                }
+//            });
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -121,7 +121,14 @@ public class MainActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
                 break;
-
+            case  R.id.nav_signout:
+                AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        checkLoginStatus();
+                    }
+                });
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -29,4 +29,5 @@
         <item>Nepal</item>
         <item>Sweden</item>
     </string-array>
+    <string name="update">Update</string>
 </resources>

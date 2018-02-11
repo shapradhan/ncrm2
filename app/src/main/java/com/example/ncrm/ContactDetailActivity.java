@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -24,37 +26,48 @@ public class ContactDetailActivity extends MainActivity {
     FirebaseAuth firebaseAuth;
     FirebaseDatabase mFirebaseDatabase;
     DatabaseReference mContactsDatabaseReference;
+    Contact selectedContact;
 
+    Intent intent;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_contact_detail);
 
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         getLayoutInflater().inflate(R.layout.activity_contact_detail, frameLayout);
 
-        final Intent intent = getIntent();
+        intent = getIntent();
 
+        selectedContact = (Contact) intent.getSerializableExtra("object");
 
 
         mContactItemName = (TextView) findViewById(R.id.contactItemName);
         mContactItemName.setText(intent.getStringExtra("name"));
 
-        mUpdateNameButton = (Button) findViewById(R.id.updateNameBtn);
-        mUpdateNameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String id = intent.getStringExtra("id");
-                System.out.println("ID " + id);
-                firebaseAuth = FirebaseAuth.getInstance();
-                mFirebaseDatabase = FirebaseDatabase.getInstance();
-                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                Contact contact = new Contact("Mary", "", "", "", "Sweden", "", "", "", "", "", "", "", intent.getStringExtra("uid"));
-
-                mContactsDatabaseReference = mFirebaseDatabase.getReference("contacts");
-                mContactsDatabaseReference.child(firebaseUser.getUid()).child(id).setValue(contact);
-            }
-        });
-
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.findItem(R.id.action_update).setVisible(true);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_update:
+
+                Intent intent = new Intent(ContactDetailActivity.this, ContactUpdateActivity.class);
+
+                intent.putExtra("contact", selectedContact);
+                startActivity(intent);
+        }
+        return true;
+    }
+
+
+
 }

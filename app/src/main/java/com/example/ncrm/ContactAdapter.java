@@ -2,6 +2,7 @@ package com.example.ncrm;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,11 +63,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
             int position = getAdapterPosition();
             Contact contact = this.mContacts.get(position);
             Intent intent = new Intent(mContext, ContactDetailActivity.class);
-            System.out.println("ID DDD " + contact.getId());
-
-            intent.putExtra("name", contact.getName());
-            intent.putExtra("id", contact.getId());
-            intent.putExtra("uid", contact.getUserId());
+            intent.putExtra("object", contact);
             mContext.startActivity(intent);
         }
     }

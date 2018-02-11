@@ -33,6 +33,10 @@
             android:label="Contacts"
             android:theme="@style/AppTheme.NoActionBar"/>
 
+        <activity android:name=".ContactUpdateActivity"
+            android:label="Contacts"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
 
     </application>
 

@@ -2,11 +2,13 @@ package com.example.ncrm;
 
 import com.google.firebase.database.Exclude;
 
+import java.io.Serializable;
+
 /**
  * Created by shameer on 2018-02-10.
  */
 
-public class Contact {
+public class Contact implements Serializable {
 
     private String name;
     private String organization;
