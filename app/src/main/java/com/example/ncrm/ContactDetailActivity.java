@@ -72,6 +72,14 @@ public class ContactDetailActivity extends MainActivity {
                 initiateCall(selectedContact.getMobileNumber(), "Mobile");
             }
         });
+
+        ImageButton smsBtn = (ImageButton) findViewById(R.id.smsBtn);
+        smsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendSMS(selectedContact.getMobileNumber());
+            }
+        });
     }
 
     @Override
@@ -110,5 +118,18 @@ public class ContactDetailActivity extends MainActivity {
         }
     }
 
+    private void sendSMS(String mobileNumber) {
+
+        if (mobileNumber != null && mobileNumber.length() != 0) {
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.setType("vnd.android-dir/mms-sms");
+            intent.setData(Uri.parse("sms:" + mobileNumber));
+            startActivity(intent);
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Mobile number is not available.", Toast.LENGTH_SHORT).show();
+        }
+    }
 
 }
