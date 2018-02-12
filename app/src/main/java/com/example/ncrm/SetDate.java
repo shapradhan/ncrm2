@@ -40,7 +40,7 @@ class SetDate implements View.OnClickListener, DatePickerDialog.OnDateSetListene
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         String dateFormat = "EE, dd MMMM yyyy";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.getDefault());
         mCalendar.set(Calendar.YEAR, year);
         mCalendar.set(Calendar.MONTH, month);
         mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
