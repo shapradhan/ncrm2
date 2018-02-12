@@ -1,9 +1,16 @@
 package com.example.ncrm;
 
+import android.app.DatePickerDialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -13,6 +20,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by shameer on 2018-02-12.
@@ -27,6 +38,9 @@ public class MeetingAddActivity extends MainActivity {
 
     private AutoCompleteTextView meetingParticipantAutoCompleteTextView;
 
+    private final Calendar calendar = Calendar.getInstance();
+    private EditText meetingDateEditText;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +51,7 @@ public class MeetingAddActivity extends MainActivity {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mContactNameDatabaseReference = mFirebaseDatabase.getReference().child("contacts").child("name");
         mContactOrganizationDatabaseReference = mFirebaseDatabase.getReference().child("contacts").child("organization");
-        
+
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         final ArrayAdapter<String> names = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
@@ -64,5 +78,31 @@ public class MeetingAddActivity extends MainActivity {
         });
         meetingParticipantAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.addParticipantAutoCompleteTextView);
         meetingParticipantAutoCompleteTextView.setAdapter(names);
+
+
+
+        final EditText meetingDateEditText = (EditText) findViewById(R.id.meetingDateEditText);
+        final DatePickerDialog.OnDateSetListener meetingDate = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int day) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, day);
+
+                String dateFormat = "EE, dd MMMM yyyy";
+                SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
+
+                meetingDateEditText.setText(sdf.format(calendar.getTime()));
+            }
+        };
+
+        meetingDateEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(MeetingAddActivity.this, meetingDate, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
     }
 }
