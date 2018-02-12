@@ -106,6 +106,14 @@ public class ContactDetailActivity extends MainActivity {
                 openFacebook(selectedContact.getFacebookId());
             }
         });
+
+        ImageButton twitterBtn = (ImageButton) findViewById(R.id.twitterBtn);
+        twitterBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openTwitter(selectedContact.getTwitterId());
+            }
+        });
     }
 
     @Override
@@ -214,13 +222,33 @@ public class ContactDetailActivity extends MainActivity {
                 }
             }
             catch (PackageManager.NameNotFoundException e) {
-                Toast.makeText(this, "Facebook is not installed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Facebook is not installed.", Toast.LENGTH_SHORT).show();
             }
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         }
         else {
             Toast.makeText(getApplicationContext(), "Facebook ID is not available.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openTwitter(String twitterId) {
+        if (twitterId != null && twitterId.length() != 0) {
+            Intent intent = null;
+            try {
+                getApplicationContext().getPackageManager().getPackageInfo("com.twitter.android" ,0);
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=" + twitterId));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            }
+            catch (Exception e) {
+                String url = "https://twitter.com/" + twitterId;
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                Toast.makeText(this, "Twitter is not installed.", Toast.LENGTH_SHORT).show();
+            }
+            startActivity(intent);
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Twitter ID is not available.", Toast.LENGTH_SHORT).show();
         }
     }
 }
