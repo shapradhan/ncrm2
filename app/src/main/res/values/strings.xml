@@ -30,4 +30,13 @@
         <item>Sweden</item>
     </string-array>
     <string name="update">Update</string>
+    <string name="title">Title</string>
+    <string name="date">Date</string>
+    <string name="time">time</string>
+    <string name="venue">Venue</string>
+    <string name="at">At</string>
+    <string name="with">With</string>
+    <string name="participant">Participant</string>
+    <string name="agenda">Agenda</string>
+    <string name="meetings">Meetings</string>
 </resources>

@@ -37,6 +37,10 @@
             android:label="Contacts"
             android:theme="@style/AppTheme.NoActionBar"/>
 
+        <activity android:name=".MeetingAddActivity"
+            android:label="Add a Meeting"
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/AppTheme.NoActionBar" />
 
     </application>
 

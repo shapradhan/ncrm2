@@ -121,6 +121,18 @@ public class MainActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
                 break;
+
+            case R.id.nav_meetings:
+                try {
+                    Intent intent = new Intent(MainActivity.this, MeetingAddActivity.class);
+                    startActivity(intent);
+                    drawer.closeDrawers();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+
             case  R.id.nav_signout:
                 AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

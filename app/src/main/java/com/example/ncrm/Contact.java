@@ -47,6 +47,11 @@ public class Contact implements Serializable {
 
     public Contact() { }
 
+    public Contact(String name, String organization) {
+        this.name = name;
+        this.organization = organization;
+    }
+
     public String getId() {
         return id;
     }
