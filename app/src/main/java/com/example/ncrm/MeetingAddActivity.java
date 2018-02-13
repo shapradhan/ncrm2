@@ -167,8 +167,6 @@ public class MeetingAddActivity extends MainActivity {
 
                 HashMap<String, Boolean> participantInMeeting = new HashMap<>();
                 for (String participantName : participantsNames) {
-                    System.out.println("PN " + participantName);
-                    System.out.println("PID " + contactsId.get(participantName).toString());
                     participantInMeeting.put(contactsId.get(participantName).toString(), true);
                 }
 
@@ -191,17 +189,10 @@ public class MeetingAddActivity extends MainActivity {
                 meetingInContact.put(meetingId, true);
 
                 Set<String> keys = participantInMeeting.keySet();
-                String keyss = null;
-                for (String key : keys) {
-                    //keyss = participantInMeeting.value
-                    keyss = key;
-                }
-                System.out.println("KEYSS " + keyss);
-                for (String key : keys) {
 
-                    mContactDatabaseReference.child(keyss).child("meetings").child(meetingId).setValue(true);
+                for (String key : keys) {
+                    mContactDatabaseReference.child(key).child("meetings").child(meetingId).setValue(true);
                 }
-
             }
         });
     }
