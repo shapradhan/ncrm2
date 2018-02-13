@@ -10,9 +10,11 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,8 +26,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by shameer on 2018-02-12.
@@ -38,10 +46,27 @@ public class MeetingAddActivity extends MainActivity {
     private DatabaseReference mContactDatabaseReference;
     private FirebaseAuth mFirebaseAuth;
 
-    private AutoCompleteTextView meetingParticipantAutoCompleteTextView;
+
 
     private final Calendar calendar = Calendar.getInstance();
-    private EditText meetingDateEditText;
+
+    private EditText mMeetingTitleEditText;
+    private EditText mMeetingDateEditText;
+    private EditText mMeetingTimeEditText;
+    private EditText mMeetingVenueEditText;
+    private EditText mMeetingStreetAddressEditText;
+    private EditText mMeetingCityEditText;
+    private EditText mMeetingCountryEditText;
+    private AutoCompleteTextView mMeetingParticipantAutoCompleteTextView;
+    private EditText mMeetingAgendaEditText;
+
+    private ArrayList<String> participantsNames;
+    //private Map<String, String> contactsId = new HashMap<>();
+    private Dictionary contactsId = new Hashtable();
+
+    private Dictionary contactsIdDictionary = new Hashtable();
+    private Dictionary participantsIdDictionary = new Hashtable();
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,7 +94,11 @@ public class MeetingAddActivity extends MainActivity {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     String name = ds.child("name").getValue(String.class);
                     String organization = ds.child("organization").getValue(String.class);
-                    names.add(name + " - " + organization);
+                    String editTextLabel = name + " - " + organization;
+                    names.add(editTextLabel);
+                    System.out.println("sout " + ds.child("userId").getValue(String.class));
+                  contactsId.put(editTextLabel, ds.getKey());
+                    //contactsIdDictionary.put(editTextLabel, ds.child("userId").getValue(String.class));
                 }
             }
 
@@ -78,13 +107,102 @@ public class MeetingAddActivity extends MainActivity {
 
             }
         });
-        meetingParticipantAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.addParticipantAutoCompleteTextView);
-        meetingParticipantAutoCompleteTextView.setAdapter(names);
+        mMeetingParticipantAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.meetingParticipantAutoCompleteTextView);
+        mMeetingParticipantAutoCompleteTextView.setAdapter(names);
 
         EditText meetingDateEditText = (EditText) findViewById(R.id.meetingDateEditText);
         SetDate meetingDate = new SetDate(this, meetingDateEditText);
 
         EditText meetingTimeEditText = (EditText) findViewById(R.id.meetingTimeEditText);
         SetTime meetingTime = new SetTime(this, meetingTimeEditText);
+
+        final TextView participantTextView = (TextView) findViewById(R.id.participantName);
+
+        participantsNames = new ArrayList<>();
+        ImageButton addParticipantBtn = (ImageButton) findViewById(R.id.addParticipantBtn);
+        addParticipantBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                participantsNames.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
+                participantTextView.setText(mMeetingParticipantAutoCompleteTextView.getText().toString());
+            }
+        });
+
+
+        Button addMeetingBtn = (Button) findViewById(R.id.addMeetingBtn);
+        addMeetingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMeetingTitleEditText = (EditText) findViewById(R.id.meetingTitleEditText);
+                mMeetingDateEditText = (EditText) findViewById(R.id.meetingDateEditText);
+                mMeetingTimeEditText = (EditText) findViewById(R.id.meetingTimeEditText);
+                mMeetingVenueEditText = (EditText) findViewById(R.id.meetingVenueEditText);
+                mMeetingStreetAddressEditText = (EditText) findViewById(R.id.meetingStreetAddressEditText);
+                mMeetingCityEditText = (EditText) findViewById(R.id.meetingCityEditText);
+                mMeetingCountryEditText = (EditText) findViewById(R.id.meetingCountryEditText);
+                mMeetingAgendaEditText = (EditText) findViewById(R.id.meetingAgendaEditText);
+
+                String meetingTitle = "";
+                String meetingDate = "";
+                String meetingTime = "";
+                String meetingVenue = "";
+                String meetingStreetAddress = "";
+                String meetingCity = "";
+                String meetingCountry = "";
+                String meetingAgenda = "";
+
+                meetingTitle = mMeetingTitleEditText.getText().toString();
+                meetingDate = mMeetingDateEditText.getText().toString();
+                meetingTime = mMeetingTimeEditText.getText().toString();
+                meetingVenue = mMeetingVenueEditText.getText().toString();
+                meetingStreetAddress = mMeetingStreetAddressEditText.getText().toString();
+                meetingCity = mMeetingCityEditText.getText().toString();
+                meetingCountry = mMeetingCountryEditText.getText().toString();
+                meetingAgenda = mMeetingAgendaEditText.getText().toString();
+
+                mFirebaseDatabase = FirebaseDatabase.getInstance();
+                mFirebaseAuth = FirebaseAuth.getInstance();
+
+                String uid = mFirebaseAuth.getCurrentUser().getUid();
+
+                HashMap<String, Boolean> participantInMeeting = new HashMap<>();
+                for (String participantName : participantsNames) {
+                    System.out.println("PN " + participantName);
+                    System.out.println("PID " + contactsId.get(participantName).toString());
+                    participantInMeeting.put(contactsId.get(participantName).toString(), true);
+                }
+
+                DatabaseReference mMeetingsDatabaseReference = mFirebaseDatabase.getReference().child("meetings").child(uid);
+                Meeting meeting = new Meeting(
+                        meetingTitle,
+                        meetingVenue,
+                        meetingStreetAddress,
+                        meetingCity,
+                        meetingCountry,
+                        meetingDate,
+                        meetingTime,
+                        participantInMeeting);
+
+                DatabaseReference newMeetingReference = mMeetingsDatabaseReference.push();
+                String meetingId = newMeetingReference.getKey();
+                newMeetingReference.setValue(meeting);
+
+                HashMap<String, Boolean> meetingInContact = new HashMap<>();
+                meetingInContact.put(meetingId, true);
+
+                Set<String> keys = participantInMeeting.keySet();
+                String keyss = null;
+                for (String key : keys) {
+                    //keyss = participantInMeeting.value
+                    keyss = key;
+                }
+                System.out.println("KEYSS " + keyss);
+                for (String key : keys) {
+
+                    mContactDatabaseReference.child(keyss).child("meetings").child(meetingId).setValue(true);
+                }
+
+            }
+        });
     }
 }

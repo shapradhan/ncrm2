@@ -3,6 +3,7 @@ package com.example.ncrm;
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Created by shameer on 2018-02-10.
@@ -23,13 +24,14 @@ public class Contact implements Serializable {
     private String twitterId;
     private String linkedInId;
     private String userId;
+    private Map<String, Boolean> meeting;
+
     @Exclude
     private String id;
 
     public Contact(String name, String organization, String streetAddress, String city, String country,
                    String phoneNumber, String mobileNumber, String email, String website,
                    String facebookId, String twitterId, String linkedInId, String userId) {
-//        this.id = id;
         this.name = name;
         this.organization = organization;
         this.streetAddress = streetAddress;
@@ -162,5 +164,13 @@ public class Contact implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public Map<String, Boolean> getMeeting() {
+        return meeting;
+    }
+
+    public void setMeeting(Map<String, Boolean> meeting) {
+        this.meeting = meeting;
     }
 }

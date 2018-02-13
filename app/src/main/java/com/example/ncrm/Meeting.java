@@ -3,6 +3,7 @@ package com.example.ncrm;
 import com.google.firebase.database.Exclude;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by shameer on 2018-02-11.
@@ -14,14 +15,15 @@ public class Meeting {
     private String streetAddress;
     private String city;
     private String country;
-    private Date date;
+    private String date;
     private String time;
+    private Map<String, Boolean> participants;
 
 
     @Exclude
     private String id;
 
-    public Meeting(String title, String venue, String streetAddress, String city, String country, Date date, String time) {
+    public Meeting(String title, String venue, String streetAddress, String city, String country, String date, String time, Map<String, Boolean> participants) {
         this.title = title;
         this.venue = venue;
         this.streetAddress = streetAddress;
@@ -29,6 +31,7 @@ public class Meeting {
         this.country = country;
         this.date = date;
         this.time = time;
+        this.participants = participants;
     }
 
     public String getTitle() {
@@ -71,11 +74,11 @@ public class Meeting {
         this.country = country;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -93,5 +96,13 @@ public class Meeting {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Map<String, Boolean> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(Map<String, Boolean> participants) {
+        this.participants = participants;
     }
 }
