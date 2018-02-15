@@ -42,6 +42,11 @@
             android:windowSoftInputMode="stateHidden"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <activity android:name=".MeetingListActivity"
+            android:label="List a Meeting"
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>

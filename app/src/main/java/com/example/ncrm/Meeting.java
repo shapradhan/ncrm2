@@ -23,6 +23,10 @@ public class Meeting {
     @Exclude
     private String id;
 
+    public Meeting() {
+
+    }
+
     public Meeting(String title, String venue, String streetAddress, String city, String country, String date, String time, Map<String, Boolean> participants) {
         this.title = title;
         this.venue = venue;

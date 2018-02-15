@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.nav_meetings:
                 try {
-                    Intent intent = new Intent(MainActivity.this, MeetingAddActivity.class);
+                    Intent intent = new Intent(MainActivity.this, MeetingListActivity.class);
                     startActivity(intent);
                     drawer.closeDrawers();
                 }
