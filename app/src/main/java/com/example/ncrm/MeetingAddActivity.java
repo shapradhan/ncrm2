@@ -1,21 +1,18 @@
 package com.example.ncrm;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,14 +22,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -40,16 +34,14 @@ import java.util.Set;
  */
 
 public class MeetingAddActivity extends MainActivity {
+    private final Calendar calendar = Calendar.getInstance();
+    ArrayAdapter<String> participantListAdapter;
+    ListView participantListView;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mContactNameDatabaseReference;
     private DatabaseReference mContactOrganizationDatabaseReference;
     private DatabaseReference mContactDatabaseReference;
     private FirebaseAuth mFirebaseAuth;
-
-
-
-    private final Calendar calendar = Calendar.getInstance();
-
     private EditText mMeetingTitleEditText;
     private EditText mMeetingDateEditText;
     private EditText mMeetingTimeEditText;
@@ -59,14 +51,26 @@ public class MeetingAddActivity extends MainActivity {
     private EditText mMeetingCountryEditText;
     private AutoCompleteTextView mMeetingParticipantAutoCompleteTextView;
     private EditText mMeetingAgendaEditText;
-
-    private ArrayList<String> participantsNames;
-    //private Map<String, String> contactsId = new HashMap<>();
+    private ArrayList<String> participantsNames = new ArrayList<>();
     private Dictionary contactsId = new Hashtable();
 
-    private Dictionary contactsIdDictionary = new Hashtable();
-    private Dictionary participantsIdDictionary = new Hashtable();
+    public static void getListViewSize(ListView myListView) {
+        ListAdapter myListAdapter = myListView.getAdapter();
+        if (myListAdapter == null) {
+            return;
+        }
+        // Get total height
+        int totalHeight = 0;
+        for (int size = 0; size < myListAdapter.getCount(); size++) {
+            View listItem = myListAdapter.getView(size, null, myListView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
 
+        ViewGroup.LayoutParams params = myListView.getLayoutParams();
+        params.height = totalHeight + (myListView.getDividerHeight() * (myListAdapter.getCount() - 1));
+        myListView.setLayoutParams(params);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,9 +100,7 @@ public class MeetingAddActivity extends MainActivity {
                     String organization = ds.child("organization").getValue(String.class);
                     String editTextLabel = name + " - " + organization;
                     names.add(editTextLabel);
-                    System.out.println("sout " + ds.child("userId").getValue(String.class));
-                  contactsId.put(editTextLabel, ds.getKey());
-                    //contactsIdDictionary.put(editTextLabel, ds.child("userId").getValue(String.class));
+                    contactsId.put(editTextLabel, ds.getKey());
                 }
             }
 
@@ -116,18 +118,29 @@ public class MeetingAddActivity extends MainActivity {
         EditText meetingTimeEditText = (EditText) findViewById(R.id.meetingTimeEditText);
         SetTime meetingTime = new SetTime(this, meetingTimeEditText);
 
-        final TextView participantTextView = (TextView) findViewById(R.id.participantName);
-
-        participantsNames = new ArrayList<>();
+        participantListView = (ListView) findViewById(R.id.participantList);
         ImageButton addParticipantBtn = (ImageButton) findViewById(R.id.addParticipantBtn);
+        participantListAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, new ArrayList<String>());
+        participantListView.setAdapter(participantListAdapter);
+
         addParticipantBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                participantsNames.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
-                participantTextView.setText(mMeetingParticipantAutoCompleteTextView.getText().toString());
+                participantListAdapter.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
+                participantListAdapter.notifyDataSetChanged();
+
+                System.out.println("there");
+                getListViewSize(participantListView);
             }
         });
 
+        participantListView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                view.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
 
         Button addMeetingBtn = (Button) findViewById(R.id.addMeetingBtn);
         addMeetingBtn.setOnClickListener(new View.OnClickListener() {
