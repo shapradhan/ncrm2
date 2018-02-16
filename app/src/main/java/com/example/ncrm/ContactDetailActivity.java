@@ -1,6 +1,5 @@
 package com.example.ncrm;
 
-import android.*;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -51,6 +48,14 @@ public class ContactDetailActivity extends MainActivity {
 
         selectedContact = (Contact) intent.getSerializableExtra("object");
 
+        ImageButton mapBtn = (ImageButton) findViewById(R.id.mapBtn);
+        mapBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ContactDetailActivity.this, MapsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         mContactName = (TextView) findViewById(R.id.contactItemName);
         mContactName.setText(selectedContact.getName());
@@ -114,6 +119,8 @@ public class ContactDetailActivity extends MainActivity {
                 openTwitter(selectedContact.getTwitterId());
             }
         });
+
+
     }
 
     @Override
