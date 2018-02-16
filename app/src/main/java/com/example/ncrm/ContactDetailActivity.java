@@ -12,15 +12,10 @@ import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by shameer on 2018-02-10.
@@ -30,13 +25,10 @@ public class ContactDetailActivity extends MainActivity {
     TextView mContactName;
     TextView mContactOrganization;
     TextView mContactFullAddress;
-    Button mUpdateNameButton;
-    FirebaseAuth firebaseAuth;
-    FirebaseDatabase mFirebaseDatabase;
-    DatabaseReference mContactsDatabaseReference;
     Contact selectedContact;
 
     Intent intent;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +45,9 @@ public class ContactDetailActivity extends MainActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ContactDetailActivity.this, MapsActivity.class);
+                intent.putExtra("streetAddress", selectedContact.getStreetAddress());
+                intent.putExtra("city", selectedContact.getCity());
+                intent.putExtra("country", selectedContact.getCountry());
                 startActivity(intent);
             }
         });
@@ -119,8 +114,6 @@ public class ContactDetailActivity extends MainActivity {
                 openTwitter(selectedContact.getTwitterId());
             }
         });
-
-
     }
 
     @Override
@@ -153,8 +146,7 @@ public class ContactDetailActivity extends MainActivity {
             } else {
                 startActivity(intent);
             }
-        }
-        else {
+        } else {
             Toast.makeText(getApplicationContext(), typeOfCall + " is not available.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -167,8 +159,7 @@ public class ContactDetailActivity extends MainActivity {
             intent.setType("vnd.android-dir/mms-sms");
             intent.setData(Uri.parse("sms:" + mobileNumber));
             startActivity(intent);
-        }
-        else {
+        } else {
             Toast.makeText(getApplicationContext(), "Mobile number is not available.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -178,16 +169,14 @@ public class ContactDetailActivity extends MainActivity {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setData(Uri.parse("mailto:"));
             intent.setType("message/rfc822");
-            intent.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
             try {
                 startActivity(intent.createChooser(intent, "Send email"));
                 finish();
-            }
-            catch (ActivityNotFoundException e) {
+            } catch (ActivityNotFoundException e) {
                 Toast.makeText(getApplicationContext(), "There are no email clients installed.", Toast.LENGTH_SHORT).show();
             }
-        }
-        else {
+        } else {
             Toast.makeText(getApplicationContext(), "Email address is not available.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -195,25 +184,21 @@ public class ContactDetailActivity extends MainActivity {
     private void openWebsite(String websiteUrl) {
         if (websiteUrl != null && websiteUrl.length() != 0) {
             Uri uri;
-            if(websiteUrl.startsWith("http://") || websiteUrl.startsWith("https://")) {
+            if (websiteUrl.startsWith("http://") || websiteUrl.startsWith("https://")) {
                 uri = Uri.parse(websiteUrl);
-            }
-            else if (websiteUrl.startsWith("www.")) {
+            } else if (websiteUrl.startsWith("www.")) {
                 uri = Uri.parse("https://" + websiteUrl);
-            }
-            else {
+            } else {
                 uri = Uri.parse("https://www." + websiteUrl);
             }
 
             try {
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
-            }
-            catch (ActivityNotFoundException e) {
+            } catch (ActivityNotFoundException e) {
                 Toast.makeText(getApplicationContext(), "There are no web clients installed.", Toast.LENGTH_SHORT).show();
             }
-        }
-        else {
+        } else {
             Toast.makeText(getApplicationContext(), "Website is not available.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -227,14 +212,12 @@ public class ContactDetailActivity extends MainActivity {
                 if (applicationInfo.enabled) {
                     uri = Uri.parse("fb://facewebmodal/f?href=" + url);
                 }
-            }
-            catch (PackageManager.NameNotFoundException e) {
+            } catch (PackageManager.NameNotFoundException e) {
                 Toast.makeText(this, "Facebook is not installed.", Toast.LENGTH_SHORT).show();
             }
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
-        }
-        else {
+        } else {
             Toast.makeText(getApplicationContext(), "Facebook ID is not available.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -243,18 +226,16 @@ public class ContactDetailActivity extends MainActivity {
         if (twitterId != null && twitterId.length() != 0) {
             Intent intent = null;
             try {
-                getApplicationContext().getPackageManager().getPackageInfo("com.twitter.android" ,0);
+                getApplicationContext().getPackageManager().getPackageInfo("com.twitter.android", 0);
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=" + twitterId));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 String url = "https://twitter.com/" + twitterId;
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 Toast.makeText(this, "Twitter is not installed.", Toast.LENGTH_SHORT).show();
             }
             startActivity(intent);
-        }
-        else {
+        } else {
             Toast.makeText(getApplicationContext(), "Twitter ID is not available.", Toast.LENGTH_SHORT).show();
         }
     }
