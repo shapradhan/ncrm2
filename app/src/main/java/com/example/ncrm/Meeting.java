@@ -2,6 +2,7 @@ package com.example.ncrm;
 
 import com.google.firebase.database.Exclude;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
@@ -9,7 +10,7 @@ import java.util.Map;
  * Created by shameer on 2018-02-11.
  */
 
-public class Meeting {
+public class Meeting implements Serializable {
     private String title;
     private String venue;
     private String streetAddress;
@@ -18,7 +19,6 @@ public class Meeting {
     private String date;
     private String time;
     private Map<String, Boolean> participants;
-
 
     @Exclude
     private String id;

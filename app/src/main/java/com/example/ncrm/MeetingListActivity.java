@@ -66,8 +66,6 @@ public class MeetingListActivity extends MainActivity {
         });
     }
 
-
-
     private void getDataFromFirebase() {
         FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mFirebaseAuth.getCurrentUser();

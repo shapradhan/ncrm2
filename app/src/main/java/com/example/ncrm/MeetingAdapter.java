@@ -42,7 +42,7 @@ public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MeetingV
         return mMeetingList.size();
     }
 
-    public class MeetingViewHolder extends RecyclerView.ViewHolder {
+    public class MeetingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView mMeetingTitleItem;
         TextView mMeetingDateItem;
         TextView mMeetingTimeItem;
@@ -53,10 +53,19 @@ public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MeetingV
             super(itemView);
             mMeetings = meetings;
             mContext = context;
-
+            itemView.setOnClickListener(this);
             mMeetingTitleItem = (TextView) itemView.findViewById(R.id.meetingTitleItem);
             mMeetingDateItem = (TextView) itemView.findViewById(R.id.meetingDateItem);
             mMeetingTimeItem = (TextView) itemView.findViewById(R.id.meetingTimeItem);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            Meeting meeting = this.mMeetings.get(position);
+            Intent intent = new Intent(mContext, MeetingDetailActivity.class);
+            intent.putExtra("object", meeting);
+            mContext.startActivity(intent);
         }
     }
 }

@@ -36,44 +36,57 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ContactListActivity"
+        <activity
+            android:name=".ContactListActivity"
             android:label="Contacts"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".ContactAddActivity"
+        <activity
+            android:name=".ContactAddActivity"
             android:label="Add a Contact"
-            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".ContactDetailActivity"
+            android:label="Contacts"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".ContactDetailActivity"
+        <activity
+            android:name=".ContactUpdateActivity"
             android:label="Contacts"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".ContactUpdateActivity"
-            android:label="Contacts"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
-        <activity android:name=".MeetingAddActivity"
+        <activity
+            android:name=".MeetingAddActivity"
             android:label="Add a Meeting"
-            android:windowSoftInputMode="stateHidden"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
 
-        <activity android:name=".MeetingListActivity"
+        <activity
+            android:name=".MeetingListActivity"
             android:label="List a Meeting"
-            android:windowSoftInputMode="stateHidden"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
 
-        <activity android:name=".MapsActivity"
+        <activity
+            android:name=".MapsActivity"
             android:label="Map"
-            android:windowSoftInputMode="stateHidden"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".MeetingDetailActivity"
+            android:label="Meeting Details"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
 
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 </manifest>
