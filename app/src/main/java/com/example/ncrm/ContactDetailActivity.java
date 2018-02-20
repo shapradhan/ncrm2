@@ -22,12 +22,7 @@ import android.widget.Toast;
  */
 
 public class ContactDetailActivity extends MainActivity {
-    TextView mContactName;
-    TextView mContactOrganization;
-    TextView mContactFullAddress;
-    Contact selectedContact;
-
-    Intent intent;
+    Contact mSelectedContact;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,34 +31,35 @@ public class ContactDetailActivity extends MainActivity {
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         getLayoutInflater().inflate(R.layout.activity_contact_detail, frameLayout);
 
-        intent = getIntent();
-
-        selectedContact = (Contact) intent.getSerializableExtra("object");
+        Intent intent = getIntent();
+        mSelectedContact = (Contact) intent.getSerializableExtra("object");
 
         ImageButton mapBtn = (ImageButton) findViewById(R.id.mapBtn);
         mapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ContactDetailActivity.this, MapsActivity.class);
-                intent.putExtra("streetAddress", selectedContact.getStreetAddress());
-                intent.putExtra("city", selectedContact.getCity());
-                intent.putExtra("country", selectedContact.getCountry());
+                intent.putExtra("streetAddress", mSelectedContact.getStreetAddress());
+                intent.putExtra("city", mSelectedContact.getCity());
+                intent.putExtra("country", mSelectedContact.getCountry());
                 startActivity(intent);
             }
         });
 
-        mContactName = (TextView) findViewById(R.id.contactItemName);
-        mContactName.setText(selectedContact.getName());
-        mContactOrganization = (TextView) findViewById(R.id.contactItemOrganization);
-        mContactOrganization.setText(selectedContact.getOrganization());
-        mContactFullAddress = (TextView) findViewById(R.id.contactItemFullAddress);
-        mContactFullAddress.setText(selectedContact.getStreetAddress() + ", " + selectedContact.getCity() + ", " + selectedContact.getCountry());
+        TextView contactName = (TextView) findViewById(R.id.contactItemName);
+        contactName.setText(mSelectedContact.getName());
+
+        TextView contactOrganization = (TextView) findViewById(R.id.contactItemOrganization);
+        contactOrganization.setText(mSelectedContact.getOrganization());
+
+        TextView contactFullAddress = (TextView) findViewById(R.id.contactItemFullAddress);
+        contactFullAddress.setText(mSelectedContact.getStreetAddress() + ", " + mSelectedContact.getCity() + ", " + mSelectedContact.getCountry());
 
         ImageButton phoneBtn = (ImageButton) findViewById(R.id.phoneBtn);
         phoneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initiateCall(selectedContact.getPhoneNumber(), "Phone");
+                initiateCall(mSelectedContact.getPhoneNumber(), "Phone");
             }
         });
 
@@ -71,7 +67,7 @@ public class ContactDetailActivity extends MainActivity {
         mobileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initiateCall(selectedContact.getMobileNumber(), "Mobile");
+                initiateCall(mSelectedContact.getMobileNumber(), "Mobile");
             }
         });
 
@@ -79,7 +75,7 @@ public class ContactDetailActivity extends MainActivity {
         smsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendSMS(selectedContact.getMobileNumber());
+                sendSMS(mSelectedContact.getMobileNumber());
             }
         });
 
@@ -87,7 +83,7 @@ public class ContactDetailActivity extends MainActivity {
         emailBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendEmail(selectedContact.getEmail());
+                sendEmail(mSelectedContact.getEmail());
             }
         });
 
@@ -95,7 +91,7 @@ public class ContactDetailActivity extends MainActivity {
         websiteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openWebsite(selectedContact.getWebsite());
+                openWebsite(mSelectedContact.getWebsite());
             }
         });
 
@@ -103,7 +99,7 @@ public class ContactDetailActivity extends MainActivity {
         facebookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openFacebook(selectedContact.getFacebookId());
+                openFacebook(mSelectedContact.getFacebookId());
             }
         });
 
@@ -111,7 +107,7 @@ public class ContactDetailActivity extends MainActivity {
         twitterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openTwitter(selectedContact.getTwitterId());
+                openTwitter(mSelectedContact.getTwitterId());
             }
         });
     }
@@ -129,10 +125,8 @@ public class ContactDetailActivity extends MainActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_update:
-
                 Intent intent = new Intent(ContactDetailActivity.this, ContactUpdateActivity.class);
-
-                intent.putExtra("contact", selectedContact);
+                intent.putExtra("contact", mSelectedContact);
                 startActivity(intent);
         }
         return true;
@@ -152,7 +146,6 @@ public class ContactDetailActivity extends MainActivity {
     }
 
     private void sendSMS(String mobileNumber) {
-
         if (mobileNumber != null && mobileNumber.length() != 0) {
             Intent intent = new Intent(Intent.ACTION_SENDTO);
             intent.addCategory(Intent.CATEGORY_DEFAULT);

@@ -9,7 +9,6 @@ import android.widget.FrameLayout;
 import android.widget.Spinner;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -18,9 +17,8 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 
 public class ContactUpdateActivity extends MainActivity {
-
-    private Button mUpdateContactBtn;
     EditText mNameEditText;
+    Contact selectedContact;
     private EditText mOrganizationEditText;
     private EditText mStreetAddressEditText;
     private EditText mCityEditText;
@@ -32,13 +30,6 @@ public class ContactUpdateActivity extends MainActivity {
     private EditText mFacebookIdEditText;
     private EditText mTwitterEditText;
     private EditText mLinkedInEditText;
-
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mContactsDatabaseReference;
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
-
-    Contact selectedContact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +66,8 @@ public class ContactUpdateActivity extends MainActivity {
         mTwitterEditText.setText(selectedContact.getTwitterId());
         mLinkedInEditText.setText(selectedContact.getLinkedInId());
 
-        mUpdateContactBtn = (Button) findViewById(R.id.updateContactBtn);
-        mUpdateContactBtn.setOnClickListener(new View.OnClickListener() {
+        Button updateContactBtn = (Button) findViewById(R.id.updateContactBtn);
+        updateContactBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateContact();
@@ -90,49 +81,43 @@ public class ContactUpdateActivity extends MainActivity {
         }
     }
 
-    private void updateContact() {
-        String name = "";
-        String organization = "";
-        String streetAddress = "";
-        String city = "";
-        String country = "";
-        String phoneNumber = "";
-        String mobileNumber = "";
-        String email = "";
-        String website = "";
-        String facebookId = "";
-        String twitterId = "";
-        String linkedInId = "";
-
-        name = mNameEditText.getText().toString();
-        organization = mOrganizationEditText.getText().toString();
-        streetAddress = mStreetAddressEditText.getText().toString();
-        city = mCityEditText.getText().toString();
-        country = mCountrySpinner.getSelectedItem().toString();
-        phoneNumber = mPhoneNumberEditText.getText().toString();
-        mobileNumber = mMobileNumberEditText.getText().toString();
-        email = mEmailEditText.getText().toString();
-        website = mWebsiteEditText.getText().toString();
-        facebookId = mFacebookIdEditText.getText().toString();
-        twitterId = mTwitterEditText.getText().toString();
-        linkedInId = mLinkedInEditText.getText().toString();
-
-                mFirebaseDatabase = FirebaseDatabase.getInstance();
-                mFirebaseAuth = FirebaseAuth.getInstance();
-                FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                String uid = firebaseUser.getUid();
-        System.out.println("UIDDD " + uid);
-                String contactId = selectedContact.getId();
-        System.out.println(" IDDDDD" + contactId);
-                Contact updatedContact = new Contact(name, organization, streetAddress, city, country, phoneNumber, mobileNumber, email, website, facebookId, twitterId, linkedInId, contactId);
-                mContactsDatabaseReference = mFirebaseDatabase.getReference().child("contacts").child(uid).child(contactId);
-                mContactsDatabaseReference.setValue(updatedContact);
-
-
-                cleanUpEditText(mNameEditText, mOrganizationEditText, mStreetAddressEditText, mCityEditText,
-                        mPhoneNumberEditText, mMobileNumberEditText, mEmailEditText, mFacebookIdEditText,
-                        mTwitterEditText, mLinkedInEditText);
-                Intent intent = new Intent(ContactUpdateActivity.this, ContactListActivity.class);
-                startActivity(intent);
-            }
+    private String getStringFromEditText(EditText editText) {
+        String editTextString = editText.getText().toString();
+        if (editTextString != null && editTextString.length() > 0) {
+            return editTextString;
+        } else {
+            return "";
         }
+    }
+
+    private void updateContact() {
+        String name = getStringFromEditText(mNameEditText);
+        String organization = getStringFromEditText(mOrganizationEditText);
+        String streetAddress = getStringFromEditText(mStreetAddressEditText);
+        String city = getStringFromEditText(mCityEditText);
+        String country = mCountrySpinner.getSelectedItem().toString();
+        String phoneNumber = getStringFromEditText(mPhoneNumberEditText);
+        String mobileNumber = getStringFromEditText(mMobileNumberEditText);
+        String email = getStringFromEditText(mEmailEditText);
+        String website = getStringFromEditText(mWebsiteEditText);
+        String facebookId = getStringFromEditText(mFacebookIdEditText);
+        String twitterId = getStringFromEditText(mTwitterEditText);
+        String linkedInId = getStringFromEditText(mLinkedInEditText);
+
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String contactId = selectedContact.getId();
+
+        Contact updatedContact = new Contact(name, organization, streetAddress, city, country, phoneNumber, mobileNumber, email, website, facebookId, twitterId, linkedInId, contactId);
+        DatabaseReference contactsDatabaseReference = firebaseDatabase.getReference().child("contacts").child(uid).child(contactId);
+        contactsDatabaseReference.setValue(updatedContact);
+
+        cleanUpEditText(mNameEditText, mOrganizationEditText, mStreetAddressEditText, mCityEditText,
+                mPhoneNumberEditText, mMobileNumberEditText, mEmailEditText, mFacebookIdEditText,
+                mTwitterEditText, mLinkedInEditText);
+
+        Intent intent = new Intent(ContactUpdateActivity.this, ContactListActivity.class);
+        startActivity(intent);
+    }
+}

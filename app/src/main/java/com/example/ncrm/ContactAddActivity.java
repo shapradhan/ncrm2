@@ -3,9 +3,7 @@ package com.example.ncrm;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -20,92 +18,55 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 
 public class ContactAddActivity extends MainActivity {
-
-    private Button mAddContactBtn;
-    private EditText mNameEditText;
-    private EditText mOrganizationEditText;
-    private EditText mStreetAddressEditText;
-    private EditText mCityEditText;
-    private Spinner mCountrySpinner;
-    private EditText mPhoneNumberEditText;
-    private EditText mMobileNumberEditText;
-    private EditText mEmailEditText;
-    private EditText mWebsiteEditText;
-    private EditText mFacebookIdEditText;
-    private EditText mTwitterEditText;
-    private EditText mLinkedInEditText;
-
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mContactsDatabaseReference;
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_contact_add);
 
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         getLayoutInflater().inflate(R.layout.activity_contact_add, frameLayout);
 
-        mAddContactBtn = (Button) findViewById(R.id.addContactBtn);
-        mAddContactBtn.setOnClickListener(new View.OnClickListener() {
+        Button addContactBtn = (Button) findViewById(R.id.addContactBtn);
+        addContactBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mNameEditText = (EditText) findViewById(R.id.contactNameEditText);
-                mOrganizationEditText = (EditText) findViewById(R.id.contactOrganizationEditText);
-                mStreetAddressEditText = (EditText) findViewById(R.id.contactAddressStreetEditText);
-                mCityEditText = (EditText) findViewById(R.id.contactAddressCityEditText);
-                mCountrySpinner = (Spinner) findViewById(R.id.contactAddressCountrySpinner);
-                mPhoneNumberEditText = (EditText) findViewById(R.id.contactPhoneNumberEditText);
-                mMobileNumberEditText = (EditText) findViewById(R.id.contactMobileNumberEditText);
-                mEmailEditText = (EditText) findViewById(R.id.contactEmailEditText);
-                mWebsiteEditText = (EditText) findViewById(R.id.contactWebsiteEditText);
-                mFacebookIdEditText = (EditText) findViewById(R.id.contactFacebookEditText);
-                mTwitterEditText = (EditText) findViewById(R.id.contactTwitterEditText);
-                mLinkedInEditText = (EditText) findViewById(R.id.contactLinkedInEditText);
+                EditText nameEditText = (EditText) findViewById(R.id.contactNameEditText);
+                EditText organizationEditText = (EditText) findViewById(R.id.contactOrganizationEditText);
+                EditText streetAddressEditText = (EditText) findViewById(R.id.contactAddressStreetEditText);
+                EditText cityEditText = (EditText) findViewById(R.id.contactAddressCityEditText);
+                Spinner countrySpinner = (Spinner) findViewById(R.id.contactAddressCountrySpinner);
+                EditText phoneNumberEditText = (EditText) findViewById(R.id.contactPhoneNumberEditText);
+                EditText mobileNumberEditText = (EditText) findViewById(R.id.contactMobileNumberEditText);
+                EditText emailEditText = (EditText) findViewById(R.id.contactEmailEditText);
+                EditText websiteEditText = (EditText) findViewById(R.id.contactWebsiteEditText);
+                EditText facebookIdEditText = (EditText) findViewById(R.id.contactFacebookEditText);
+                EditText twitterEditText = (EditText) findViewById(R.id.contactTwitterEditText);
+                EditText linkedInEditText = (EditText) findViewById(R.id.contactLinkedInEditText);
 
-                String name = "";
-                String organization = "";
-                String streetAddress = "";
-                String city = "";
-                String country = "";
-                String phoneNumber = "";
-                String mobileNumber = "";
-                String email = "";
-                String website = "";
-                String facebookId = "";
-                String twitterId = "";
-                String linkedInId = "";
+                String name = getStringFromEditText(nameEditText);
+                String organization = getStringFromEditText(organizationEditText);
+                String streetAddress = getStringFromEditText(streetAddressEditText);
+                String city = getStringFromEditText(cityEditText);
+                String country = countrySpinner.getSelectedItem().toString();
+                String phoneNumber = getStringFromEditText(phoneNumberEditText);
+                String mobileNumber = getStringFromEditText(mobileNumberEditText);
+                String email = getStringFromEditText(emailEditText);
+                String website = getStringFromEditText(websiteEditText);
+                String facebookId = getStringFromEditText(facebookIdEditText);
+                String twitterId = getStringFromEditText(twitterEditText);
+                String linkedInId = getStringFromEditText(linkedInEditText);
 
-                name = mNameEditText.getText().toString();
-                organization = mOrganizationEditText.getText().toString();
-                streetAddress = mStreetAddressEditText.getText().toString();
-                city = mCityEditText.getText().toString();
-                country = mCountrySpinner.getSelectedItem().toString();
-                phoneNumber = mPhoneNumberEditText.getText().toString();
-                mobileNumber = mMobileNumberEditText.getText().toString();
-                email = mEmailEditText.getText().toString();
-                website = mWebsiteEditText.getText().toString();
-                facebookId = mFacebookIdEditText.getText().toString();
-                twitterId = mTwitterEditText.getText().toString();
-                linkedInId = mLinkedInEditText.getText().toString();
+                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                DatabaseReference contactsDatabaseReference = firebaseDatabase.getReference().child("contacts").child(uid);
 
-                mFirebaseDatabase = FirebaseDatabase.getInstance();
-                mFirebaseAuth = FirebaseAuth.getInstance();
-
-                String user = mFirebaseAuth.getCurrentUser().getUid();
-                mContactsDatabaseReference = mFirebaseDatabase.getReference().child("contacts").child(user);
-//                String id = mContactsDatabaseReference.push().getKey();
-//                System.out.println("FFFFFF " + id);
                 Contact contact = new Contact(name, organization, streetAddress, city, country, phoneNumber, mobileNumber,
-                        email, website, facebookId, twitterId, linkedInId, user);
-                mContactsDatabaseReference.push().setValue(contact);
-//                String id = mContactsDatabaseReference.push().getKey();
-//                System.out.println("KEYJEY " + id);
-                cleanUpEditText(mNameEditText, mOrganizationEditText, mStreetAddressEditText, mCityEditText,
-                        mPhoneNumberEditText, mMobileNumberEditText, mEmailEditText, mFacebookIdEditText,
-                        mTwitterEditText, mLinkedInEditText);
+                        email, website, facebookId, twitterId, linkedInId, uid);
+                contactsDatabaseReference.push().setValue(contact);
+
+                cleanUpEditText(nameEditText, organizationEditText, streetAddressEditText, cityEditText,
+                        phoneNumberEditText, mobileNumberEditText, emailEditText, facebookIdEditText,
+                        twitterEditText, linkedInEditText);
+
                 Intent intent = new Intent(ContactAddActivity.this, ContactListActivity.class);
                 startActivity(intent);
             }
@@ -113,8 +74,17 @@ public class ContactAddActivity extends MainActivity {
     }
 
     private void cleanUpEditText(EditText... editTexts) {
-        for (EditText editText: editTexts) {
+        for (EditText editText : editTexts) {
             editText = null;
+        }
+    }
+
+    private String getStringFromEditText(EditText editText) {
+        String editTextString = editText.getText().toString();
+        if (editTextString != null && editTextString.length() > 0) {
+            return editTextString;
+        } else {
+            return "";
         }
     }
 }
