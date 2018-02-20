@@ -43,29 +43,29 @@
 
         <activity
             android:name=".ContactAddActivity"
-            android:label="Add a Contact"
+            android:label="Create a contact"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
             android:name=".ContactDetailActivity"
-            android:label="Contacts"
+            android:label="Contact detail"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ContactUpdateActivity"
-            android:label="Contacts"
+            android:label="Update a contact"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".MeetingAddActivity"
-            android:label="Add a Meeting"
+            android:label="Create a meeting"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
             android:name=".MeetingListActivity"
-            android:label="List a Meeting"
+            android:label="Meetings"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
 
@@ -77,7 +77,7 @@
 
         <activity
             android:name=".MeetingDetailActivity"
-            android:label="Meeting Details"
+            android:label="Meeting detail"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
 
