@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+
 /**
  * Created by shameer on 2018-02-10.
  */
@@ -42,18 +43,18 @@ public class ContactAddActivity extends MainActivity {
                 EditText twitterEditText = (EditText) findViewById(R.id.contactTwitterEditText);
                 EditText linkedInEditText = (EditText) findViewById(R.id.contactLinkedInEditText);
 
-                String name = getStringFromEditText(nameEditText);
-                String organization = getStringFromEditText(organizationEditText);
-                String streetAddress = getStringFromEditText(streetAddressEditText);
-                String city = getStringFromEditText(cityEditText);
+                String name = Utility.getStringFromEditText(nameEditText);
+                String organization = Utility.getStringFromEditText(organizationEditText);
+                String streetAddress = Utility.getStringFromEditText(streetAddressEditText);
+                String city = Utility.getStringFromEditText(cityEditText);
                 String country = countrySpinner.getSelectedItem().toString();
-                String phoneNumber = getStringFromEditText(phoneNumberEditText);
-                String mobileNumber = getStringFromEditText(mobileNumberEditText);
-                String email = getStringFromEditText(emailEditText);
-                String website = getStringFromEditText(websiteEditText);
-                String facebookId = getStringFromEditText(facebookIdEditText);
-                String twitterId = getStringFromEditText(twitterEditText);
-                String linkedInId = getStringFromEditText(linkedInEditText);
+                String phoneNumber = Utility.getStringFromEditText(phoneNumberEditText);
+                String mobileNumber = Utility.getStringFromEditText(mobileNumberEditText);
+                String email = Utility.getStringFromEditText(emailEditText);
+                String website = Utility.getStringFromEditText(websiteEditText);
+                String facebookId = Utility.getStringFromEditText(facebookIdEditText);
+                String twitterId = Utility.getStringFromEditText(twitterEditText);
+                String linkedInId = Utility.getStringFromEditText(linkedInEditText);
 
                 FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                 String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -63,7 +64,7 @@ public class ContactAddActivity extends MainActivity {
                         email, website, facebookId, twitterId, linkedInId, uid);
                 contactsDatabaseReference.push().setValue(contact);
 
-                cleanUpEditText(nameEditText, organizationEditText, streetAddressEditText, cityEditText,
+                Utility.cleanUpEditText(nameEditText, organizationEditText, streetAddressEditText, cityEditText,
                         phoneNumberEditText, mobileNumberEditText, emailEditText, facebookIdEditText,
                         twitterEditText, linkedInEditText);
 
@@ -71,20 +72,5 @@ public class ContactAddActivity extends MainActivity {
                 startActivity(intent);
             }
         });
-    }
-
-    private void cleanUpEditText(EditText... editTexts) {
-        for (EditText editText : editTexts) {
-            editText = null;
-        }
-    }
-
-    private String getStringFromEditText(EditText editText) {
-        String editTextString = editText.getText().toString();
-        if (editTextString != null && editTextString.length() > 0) {
-            return editTextString;
-        } else {
-            return "";
-        }
     }
 }

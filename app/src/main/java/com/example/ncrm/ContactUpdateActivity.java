@@ -75,34 +75,19 @@ public class ContactUpdateActivity extends MainActivity {
         });
     }
 
-    private void cleanUpEditText(EditText... editTexts) {
-        for (EditText editText : editTexts) {
-            editText = null;
-        }
-    }
-
-    private String getStringFromEditText(EditText editText) {
-        String editTextString = editText.getText().toString();
-        if (editTextString != null && editTextString.length() > 0) {
-            return editTextString;
-        } else {
-            return "";
-        }
-    }
-
     private void updateContact() {
-        String name = getStringFromEditText(mNameEditText);
-        String organization = getStringFromEditText(mOrganizationEditText);
-        String streetAddress = getStringFromEditText(mStreetAddressEditText);
-        String city = getStringFromEditText(mCityEditText);
+        String name = Utility.getStringFromEditText(mNameEditText);
+        String organization = Utility.getStringFromEditText(mOrganizationEditText);
+        String streetAddress = Utility.getStringFromEditText(mStreetAddressEditText);
+        String city = Utility.getStringFromEditText(mCityEditText);
         String country = mCountrySpinner.getSelectedItem().toString();
-        String phoneNumber = getStringFromEditText(mPhoneNumberEditText);
-        String mobileNumber = getStringFromEditText(mMobileNumberEditText);
-        String email = getStringFromEditText(mEmailEditText);
-        String website = getStringFromEditText(mWebsiteEditText);
-        String facebookId = getStringFromEditText(mFacebookIdEditText);
-        String twitterId = getStringFromEditText(mTwitterEditText);
-        String linkedInId = getStringFromEditText(mLinkedInEditText);
+        String phoneNumber = Utility.getStringFromEditText(mPhoneNumberEditText);
+        String mobileNumber = Utility.getStringFromEditText(mMobileNumberEditText);
+        String email = Utility.getStringFromEditText(mEmailEditText);
+        String website = Utility.getStringFromEditText(mWebsiteEditText);
+        String facebookId = Utility.getStringFromEditText(mFacebookIdEditText);
+        String twitterId = Utility.getStringFromEditText(mTwitterEditText);
+        String linkedInId = Utility.getStringFromEditText(mLinkedInEditText);
 
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -113,7 +98,7 @@ public class ContactUpdateActivity extends MainActivity {
         DatabaseReference contactsDatabaseReference = firebaseDatabase.getReference().child("contacts").child(uid).child(contactId);
         contactsDatabaseReference.setValue(updatedContact);
 
-        cleanUpEditText(mNameEditText, mOrganizationEditText, mStreetAddressEditText, mCityEditText,
+        Utility.cleanUpEditText(mNameEditText, mOrganizationEditText, mStreetAddressEditText, mCityEditText,
                 mPhoneNumberEditText, mMobileNumberEditText, mEmailEditText, mFacebookIdEditText,
                 mTwitterEditText, mLinkedInEditText);
 
