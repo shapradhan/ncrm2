@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,21 +25,12 @@ import java.util.List;
 public class MapsActivity extends MainActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private boolean mMapReady = false;
-    private Button mBtnNormal;
-    private Button mBtnSatellite;
-    private Button mBtnHybrid;
-    private Button mBtnSeattle;
-    private Button mBtnTokyo;
-    private Button mBtnDublin;
-    private Button mBtnStreetView;
     private String mStreetAddress;
     private String mCity;
     private String mCountry;
 
     @Override
     public void onMapReady(GoogleMap map) {
-        mMapReady = true;
         mMap = map;
         String fullAddress = mStreetAddress + ", " + mCity + ", " + mCountry;
         LatLng addressLatLng = convertAddressToLatLng(this, fullAddress);
@@ -54,12 +44,13 @@ public class MapsActivity extends MainActivity implements OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(target));
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         getLayoutInflater().inflate(R.layout.activity_maps, frameLayout);
+
         Intent intent = getIntent();
         mStreetAddress = intent.getStringExtra("streetAddress");
         mCity = intent.getStringExtra("city");
@@ -76,9 +67,11 @@ public class MapsActivity extends MainActivity implements OnMapReadyCallback {
 
         try {
             addressList = geocoder.getFromLocationName(address, 10);
+
             if (addressList == null) {
                 return null;
             }
+
             Address location = addressList.get(0);
             latLng = new LatLng(location.getLatitude(), location.getLongitude());
         } catch (IOException e) {
