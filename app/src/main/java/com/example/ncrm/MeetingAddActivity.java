@@ -128,7 +128,7 @@ public class MeetingAddActivity extends MainActivity {
             public void onClick(View v) {
                 participantListAdapter.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
                 participantListAdapter.notifyDataSetChanged();
-
+                participantsNames.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
                 System.out.println("there");
                 getListViewSize(participantListView);
             }

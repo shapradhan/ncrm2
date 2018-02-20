@@ -28,6 +28,7 @@
     <string-array name="countries">
         <item>Nepal</item>
         <item>Sweden</item>
+        <item>United States</item>
     </string-array>
     <string name="update">Update</string>
     <string name="title">Title</string>
