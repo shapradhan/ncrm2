@@ -40,4 +40,5 @@
     <string name="participant">Participant</string>
     <string name="agenda">Agenda</string>
     <string name="meetings">Meetings</string>
+    <string name="reminder">Reminder</string>
 </resources>
