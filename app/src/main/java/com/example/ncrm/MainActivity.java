@@ -24,6 +24,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.File;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity
@@ -144,6 +145,16 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
 
+            case R.id.nav_files:
+                try {
+                    Intent intent = new Intent(MainActivity.this, FileListActivity.class);
+                    startActivity(intent);
+                    drawer.closeDrawers();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
 
             case  R.id.nav_signout:
                 AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {

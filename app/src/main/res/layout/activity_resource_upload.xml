@@ -24,10 +24,10 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="File title" />
+                    android:text="@string/file_title" />
 
                 <EditText
-                    android:id="@+id/contactNameEditText"
+                    android:id="@+id/fileNameEditText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -46,7 +46,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/organization" />
+                    android:text="@string/description" />
 
                 <EditText
                     android:layout_width="wrap_content"
@@ -54,7 +54,7 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:inputType="textMultiLine"
-                    android:id="resourceDescription"/>
+                    android:id="@+id/resourceDescriptionEditText"/>
             </LinearLayout>
 
             <RelativeLayout
@@ -62,10 +62,10 @@
                 android:layout_height="wrap_content">
                 <Button
                     android:id="@+id/selectFileBtn"
-                    android:layout_width="wrap_content"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Select"
+                    android:text="@string/select_file"
                     android:layout_margin="10dp"
                     android:padding="10dp"
                     android:layout_alignParentRight="true"/>
@@ -76,10 +76,10 @@
                 android:layout_height="wrap_content">
                 <Button
                     android:id="@+id/uploadFileBtn"
-                    android:layout_width="wrap_content"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Upload"
+                    android:text="@string/upload"
                     android:layout_margin="10dp"
                     android:padding="10dp"
                     android:layout_alignParentRight="true"/>
