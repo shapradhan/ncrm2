@@ -16,6 +16,16 @@ public class Reminder implements Serializable {
     @Exclude
     private String id;
 
+    public Reminder() {
+
+    }
+
+    public Reminder(String reminderItem, String reminderDate, String reminderTime) {
+        this.reminderItem = reminderItem;
+        this.reminderDate = reminderDate;
+        this.reminderTime = reminderTime;
+    }
+
     public String getReminderItem() {
         return reminderItem;
     }

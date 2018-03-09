@@ -53,13 +53,13 @@ public class ReminderListActivity extends MainActivity {
         getDataFromFirebase();
 
         FloatingActionButton createReminderFAB = (FloatingActionButton) findViewById(R.id.addReminderFAB);
-//        createReminderFAB.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(ReminderListActivity.this, ReminderAddActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        createReminderFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ReminderListActivity.this, ReminderAddActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void getDataFromFirebase() {
