@@ -20,6 +20,10 @@
                 android:id="@+id/nav_meetings"
                 android:icon="@drawable/ic_menu_contacts"
                 android:title="@string/meetings" />
+            <item
+                android:id="@+id/nav_reminders"
+                android:icon="@drawable/ic_menu_contacts"
+                android:title="@string/reminder" />
         </menu>
     </item>
 

@@ -133,6 +133,18 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
 
+            case R.id.nav_reminders:
+                try {
+                    Intent intent = new Intent(MainActivity.this, ReminderListActivity.class);
+                    startActivity(intent);
+                    drawer.closeDrawers();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+
+
             case  R.id.nav_signout:
                 AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
