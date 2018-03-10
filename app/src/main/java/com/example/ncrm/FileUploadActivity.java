@@ -2,6 +2,7 @@ package com.example.ncrm;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -58,7 +59,7 @@ public class FileUploadActivity extends MainActivity {
             public void onClick(View view) {
                 mFileName = Utility.getStringFromEditText(fileNameEditText);
                 String fileDescription = Utility.getStringFromEditText(fileDescriptionEditText);
-                uploadFile();
+                new UploadFile().execute();
             }
         });
     }
@@ -115,6 +116,24 @@ public class FileUploadActivity extends MainActivity {
                     });
         }
         else {
+        }
+    }
+
+    public class UploadFile extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            uploadFile();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return null;
         }
     }
 }
