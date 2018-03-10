@@ -12,16 +12,16 @@ public class File implements Serializable {
     private String fileName;
     private Long createdOn;
     private Long modifiedOn;
+    private Long lastViewedOn;
     private String type;
     private String userId;
 
     @Exclude
     private String id;
 
-    public File(String fileName, Long createdOn, Long modifiedOn, String type, String userId) {
+    public File(String fileName, Long createdOn, String type, String userId) {
         this.fileName = fileName;
         this.createdOn = createdOn;
-        this.modifiedOn = modifiedOn;
         this.type = type;
         this.userId = userId;
     }
@@ -50,6 +50,14 @@ public class File implements Serializable {
 
     public void setModifiedOn(Long modifiedOn) {
         this.modifiedOn = modifiedOn;
+    }
+
+    public Long getLastViewedOn() {
+        return lastViewedOn;
+    }
+
+    public void setLastViewedOn(Long lastViewedOn) {
+        this.lastViewedOn = lastViewedOn;
     }
 
     public String getType() {
