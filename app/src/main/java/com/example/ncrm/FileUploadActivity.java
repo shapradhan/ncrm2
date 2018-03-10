@@ -112,7 +112,7 @@ public class FileUploadActivity extends MainActivity {
                             DatabaseReference filesDatabaseReference = firebaseDatabase.getReference().child("files").child(uid);
 
 
-                            File file = new File(mFileName, System.currentTimeMillis(), System.currentTimeMillis(), mFileMimeType, uid);
+                            File file = new File(mFileName, System.currentTimeMillis(), mFileMimeType, uid);
                             filesDatabaseReference.push().setValue(file);
                         }
                     })

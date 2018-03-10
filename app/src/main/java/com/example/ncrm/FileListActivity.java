@@ -25,6 +25,13 @@ import java.util.ArrayList;
  */
 
 public class FileListActivity extends MainActivity {
+    RecyclerView mFileListRecyclerView;
+    FileAdapter mFileAdapter;
+    ArrayList<File> mFileList;
+    FirebaseDatabase mFirebaseDatabase;
+    DatabaseReference mFilesDatabaseReference;
+    ChildEventListener mChildEventListener;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,13 +39,68 @@ public class FileListActivity extends MainActivity {
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         getLayoutInflater().inflate(R.layout.activity_file_list, frameLayout);
 
-        FloatingActionButton addFileFAB = (FloatingActionButton) findViewById(R.id.addFileFAB);
-        addFileFAB.setOnClickListener(new View.OnClickListener() {
+        mFileListRecyclerView = (RecyclerView) findViewById(R.id.fileListRecyclerView);
+        mFileListRecyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        mFileListRecyclerView.setLayoutManager(layoutManager);
+        mFileListRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mFileListRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayoutManager.VERTICAL));
+
+        mFileList = new ArrayList<>();
+        mFileAdapter = new FileAdapter(mFileList, this);
+
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        getDataFromFirebase();
+
+        FloatingActionButton createFileFAB = (FloatingActionButton) findViewById(R.id.addFileFAB);
+        createFileFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FileListActivity.this, FileUploadActivity.class);
                 startActivity(intent);
             }
         });
+    }
+
+    private void getDataFromFirebase() {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mFilesDatabaseReference = mFirebaseDatabase.getReference().child("files").child(uid);
+        attachDatabaseReadListener();
+    }
+
+    private void attachDatabaseReadListener() {
+        if (mChildEventListener == null) {
+            mChildEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    File file = dataSnapshot.getValue(File.class);
+                    String id = dataSnapshot.getKey();
+                    file.setId(id);
+                    mFileList.add(file);
+                    mFileListRecyclerView.setAdapter(mFileAdapter);
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            mFilesDatabaseReference.addChildEventListener(mChildEventListener);
+        }
     }
 }
