@@ -84,12 +84,33 @@
                     android:padding="10dp"
                     android:layout_alignParentRight="true"/>
             </RelativeLayout>
-            <ProgressBar
-                android:id="@+id/fileUploadProgressBar"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="invisible"/>
+                android:gravity="bottom">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="10dp"
+                    android:layout_margin="1dp">
+                    <ProgressBar
+                        android:id="@+id/fileUploadProgressBar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"/>
+                    <TextView
+                        android:id="@+id/fileUploadSizeTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:textSize="10dp"
+                        android:visibility="invisible"/>
+                </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
 
 

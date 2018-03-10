@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -30,6 +31,7 @@ public class FileUploadActivity extends MainActivity {
     private StorageReference mStorageReference;
     private ProgressBar mFileUploadProgressBar;
     private String mFileName;
+    private TextView mFileUploadSizeTextView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,7 +41,9 @@ public class FileUploadActivity extends MainActivity {
         getLayoutInflater().inflate(R.layout.activity_file_upload, frameLayout);
 
         mStorageReference = FirebaseStorage.getInstance().getReference();
-        mFileUploadProgressBar =(ProgressBar) findViewById(R.id.fileUploadProgressBar);
+
+        mFileUploadProgressBar = (ProgressBar) findViewById(R.id.fileUploadProgressBar);
+        mFileUploadSizeTextView = (TextView) findViewById(R.id.fileUploadSizeTextView);
 
         Button selectFileBtn = (Button) findViewById(R.id.selectFileBtn);
         final Button uploadFileBtn = (Button) findViewById(R.id.uploadFileBtn);
@@ -91,7 +95,6 @@ public class FileUploadActivity extends MainActivity {
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             // Get a URL to the uploaded content
                             Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                            System.out.println("DU "  + downloadUrl.toString());
                             mFileUploadProgressBar.setVisibility(View.INVISIBLE);
                             Toast.makeText(getApplicationContext(), "File successfully uploaded", Toast.LENGTH_SHORT).show();
                         }
@@ -108,10 +111,11 @@ public class FileUploadActivity extends MainActivity {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                             double TOTAL_PERCENTAGE = 100.0;
-                            double sizeTransferredPortion = taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount();
-                            int progressPercentage = (int) (TOTAL_PERCENTAGE * sizeTransferredPortion);
+                            double percentageUploaded = (TOTAL_PERCENTAGE * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                             mFileUploadProgressBar.setVisibility(View.VISIBLE);
-                            mFileUploadProgressBar.setProgress(progressPercentage);
+                            mFileUploadSizeTextView.setVisibility(View.VISIBLE);
+                            mFileUploadProgressBar.setProgress((int) percentageUploaded);
+                            mFileUploadSizeTextView.setText(taskSnapshot.getBytesTransferred() + " bytes of " + taskSnapshot.getTotalByteCount() + " bytes");
                         }
                     });
         }
