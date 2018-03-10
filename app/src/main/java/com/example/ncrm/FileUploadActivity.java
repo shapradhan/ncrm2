@@ -16,10 +16,15 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.util.Date;
 
 /**
  * Created by shameer on 2018-03-09.
@@ -32,6 +37,9 @@ public class FileUploadActivity extends MainActivity {
     private ProgressBar mFileUploadProgressBar;
     private String mFileName;
     private TextView mFileUploadSizeTextView;
+    private String mFileMimeType;
+    private EditText mFileNameEditText;
+    private EditText mFileDescriptionEditText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,8 +56,8 @@ public class FileUploadActivity extends MainActivity {
         Button selectFileBtn = (Button) findViewById(R.id.selectFileBtn);
         final Button uploadFileBtn = (Button) findViewById(R.id.uploadFileBtn);
 
-        final EditText fileNameEditText = (EditText) findViewById(R.id.fileNameEditText);
-        final EditText fileDescriptionEditText = (EditText) findViewById(R.id.fileDescriptionEditText);
+        mFileNameEditText = (EditText) findViewById(R.id.fileNameEditText);
+        mFileDescriptionEditText = (EditText) findViewById(R.id.fileDescriptionEditText);
 
         selectFileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,8 +69,8 @@ public class FileUploadActivity extends MainActivity {
         uploadFileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mFileName = Utility.getStringFromEditText(fileNameEditText);
-                String fileDescription = Utility.getStringFromEditText(fileDescriptionEditText);
+                mFileName = Utility.getStringFromEditText(mFileNameEditText);
+                String fileDescription = Utility.getStringFromEditText(mFileDescriptionEditText);
                 new UploadFile().execute();
             }
         });
@@ -82,6 +90,7 @@ public class FileUploadActivity extends MainActivity {
         if (requestCode == PICK_FILE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             // Image is selected
             mFilePath = data.getData();
+            mFileMimeType = getContentResolver().getType(mFilePath);
         }
     }
 
@@ -94,9 +103,17 @@ public class FileUploadActivity extends MainActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             // Get a URL to the uploaded content
-                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                            Uri uploadUrl = taskSnapshot.getDownloadUrl();
                             mFileUploadProgressBar.setVisibility(View.INVISIBLE);
                             Toast.makeText(getApplicationContext(), "File successfully uploaded", Toast.LENGTH_SHORT).show();
+
+                            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            DatabaseReference filesDatabaseReference = firebaseDatabase.getReference().child("files").child(uid);
+
+
+                            File file = new File(mFileName, System.currentTimeMillis(), System.currentTimeMillis(), mFileMimeType, uid);
+                            filesDatabaseReference.push().setValue(file);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -132,11 +149,15 @@ public class FileUploadActivity extends MainActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            uploadFile();
+            Utility.cleanUpEditText(mFileNameEditText, mFileDescriptionEditText);
+            Intent intent = new Intent(FileUploadActivity.this, FileListActivity.class);
+            startActivity(intent);
+
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
+            uploadFile();
             return null;
         }
     }

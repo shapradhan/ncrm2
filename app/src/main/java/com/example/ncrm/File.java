@@ -10,15 +10,15 @@ import java.io.Serializable;
 
 public class File implements Serializable {
     private String fileName;
-    private String createdOn;
-    private String modifiedOn;
+    private Long createdOn;
+    private Long modifiedOn;
     private String type;
     private String userId;
 
     @Exclude
     private String id;
 
-    public File(String fileName, String createdOn, String modifiedOn, String type, String userId) {
+    public File(String fileName, Long createdOn, Long modifiedOn, String type, String userId) {
         this.fileName = fileName;
         this.createdOn = createdOn;
         this.modifiedOn = modifiedOn;
@@ -36,19 +36,19 @@ public class File implements Serializable {
         this.fileName = fileName;
     }
 
-    public String getCreatedOn() {
+    public Long getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(String createdOn) {
+    public void setCreatedOn(Long createdOn) {
         this.createdOn = createdOn;
     }
 
-    public String getModifiedOn() {
+    public Long getModifiedOn() {
         return modifiedOn;
     }
 
-    public void setModifiedOn(String modifiedOn) {
+    public void setModifiedOn(Long modifiedOn) {
         this.modifiedOn = modifiedOn;
     }
 
