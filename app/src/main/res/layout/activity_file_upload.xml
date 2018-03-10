@@ -54,7 +54,7 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:inputType="textMultiLine"
-                    android:id="@+id/resourceDescriptionEditText"/>
+                    android:id="@+id/fileDescriptionEditText"/>
             </LinearLayout>
 
             <RelativeLayout
@@ -84,6 +84,14 @@
                     android:padding="10dp"
                     android:layout_alignParentRight="true"/>
             </RelativeLayout>
+            <ProgressBar
+                android:id="@+id/fileUploadProgressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"/>
         </LinearLayout>
+
+
     </ScrollView>
 </LinearLayout>
