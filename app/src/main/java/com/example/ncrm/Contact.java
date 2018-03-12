@@ -47,6 +47,21 @@ public class Contact implements Serializable {
         this.userId = userId;
     }
 
+    public Contact(String name, String organization, String streetAddress, String city, String country, String phoneNumber, String mobileNumber, String email, String website, String facebookId, String twitterId, String linkedInId) {
+        this.name = name;
+        this.organization = organization;
+        this.streetAddress = streetAddress;
+        this.city = city;
+        this.country = country;
+        this.phoneNumber = phoneNumber;
+        this.mobileNumber = mobileNumber;
+        this.email = email;
+        this.website = website;
+        this.facebookId = facebookId;
+        this.twitterId = twitterId;
+        this.linkedInId = linkedInId;
+    }
+
     public Contact() {
     }
 

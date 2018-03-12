@@ -45,4 +45,5 @@
     <string name="description">Description</string>
     <string name="select_file">Select File</string>
     <string name="upload">Upload</string>
+    <string name="add_caps">ADD</string>
 </resources>
