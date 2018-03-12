@@ -22,7 +22,6 @@ public class Contact implements Serializable {
     private String website;
     private String facebookId;
     private String twitterId;
-    private String linkedInId;
     private String userId;
     private Map<String, Boolean> meeting;
 
@@ -31,7 +30,7 @@ public class Contact implements Serializable {
 
     public Contact(String name, String organization, String streetAddress, String city, String country,
                    String phoneNumber, String mobileNumber, String email, String website,
-                   String facebookId, String twitterId, String linkedInId, String userId) {
+                   String facebookId, String twitterId, String userId) {
         this.name = name;
         this.organization = organization;
         this.streetAddress = streetAddress;
@@ -43,11 +42,10 @@ public class Contact implements Serializable {
         this.website = website;
         this.facebookId = facebookId;
         this.twitterId = twitterId;
-        this.linkedInId = linkedInId;
         this.userId = userId;
     }
 
-    public Contact(String name, String organization, String streetAddress, String city, String country, String phoneNumber, String mobileNumber, String email, String website, String facebookId, String twitterId, String linkedInId) {
+    public Contact(String name, String organization, String streetAddress, String city, String country, String phoneNumber, String mobileNumber, String email, String website, String facebookId, String twitterId) {
         this.name = name;
         this.organization = organization;
         this.streetAddress = streetAddress;
@@ -59,7 +57,6 @@ public class Contact implements Serializable {
         this.website = website;
         this.facebookId = facebookId;
         this.twitterId = twitterId;
-        this.linkedInId = linkedInId;
     }
 
     public Contact() {
@@ -164,14 +161,6 @@ public class Contact implements Serializable {
 
     public void setTwitterId(String twitterId) {
         this.twitterId = twitterId;
-    }
-
-    public String getLinkedInId() {
-        return linkedInId;
-    }
-
-    public void setLinkedInId(String linkedInId) {
-        this.linkedInId = linkedInId;
     }
 
     public String getUserId() {

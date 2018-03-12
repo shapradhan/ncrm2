@@ -29,7 +29,6 @@ public class ContactUpdateActivity extends MainActivity {
     private EditText mWebsiteEditText;
     private EditText mFacebookIdEditText;
     private EditText mTwitterEditText;
-    private EditText mLinkedInEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +50,6 @@ public class ContactUpdateActivity extends MainActivity {
         mWebsiteEditText = (EditText) findViewById(R.id.contactWebsiteEditText);
         mFacebookIdEditText = (EditText) findViewById(R.id.contactFacebookEditText);
         mTwitterEditText = (EditText) findViewById(R.id.contactTwitterEditText);
-        mLinkedInEditText = (EditText) findViewById(R.id.contactLinkedInEditText);
 
         mNameEditText.setText(selectedContact.getName());
         mOrganizationEditText.setText(selectedContact.getOrganization());
@@ -64,7 +62,6 @@ public class ContactUpdateActivity extends MainActivity {
         mWebsiteEditText.setText(selectedContact.getWebsite());
         mFacebookIdEditText.setText(selectedContact.getFacebookId());
         mTwitterEditText.setText(selectedContact.getTwitterId());
-        mLinkedInEditText.setText(selectedContact.getLinkedInId());
 
         Button updateContactBtn = (Button) findViewById(R.id.updateContactBtn);
         updateContactBtn.setOnClickListener(new View.OnClickListener() {
@@ -87,20 +84,19 @@ public class ContactUpdateActivity extends MainActivity {
         String website = Utility.getStringFromEditText(mWebsiteEditText);
         String facebookId = Utility.getStringFromEditText(mFacebookIdEditText);
         String twitterId = Utility.getStringFromEditText(mTwitterEditText);
-        String linkedInId = Utility.getStringFromEditText(mLinkedInEditText);
 
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String contactId = selectedContact.getId();
 
-        Contact updatedContact = new Contact(name, organization, streetAddress, city, country, phoneNumber, mobileNumber, email, website, facebookId, twitterId, linkedInId, contactId);
+        Contact updatedContact = new Contact(name, organization, streetAddress, city, country, phoneNumber, mobileNumber, email, website, facebookId, twitterId, contactId);
         DatabaseReference contactsDatabaseReference = firebaseDatabase.getReference().child("contacts").child(uid).child(contactId);
         contactsDatabaseReference.setValue(updatedContact);
 
         Utility.cleanUpEditText(mNameEditText, mOrganizationEditText, mStreetAddressEditText, mCityEditText,
                 mPhoneNumberEditText, mMobileNumberEditText, mEmailEditText, mFacebookIdEditText,
-                mTwitterEditText, mLinkedInEditText);
+                mTwitterEditText);
 
         Intent intent = new Intent(ContactUpdateActivity.this, ContactListActivity.class);
         startActivity(intent);

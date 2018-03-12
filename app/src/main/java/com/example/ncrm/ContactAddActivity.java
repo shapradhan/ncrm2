@@ -62,7 +62,6 @@ public class ContactAddActivity extends MainActivity {
         EditText websiteEditText = (EditText) findViewById(R.id.contactWebsiteEditText);
         EditText facebookIdEditText = (EditText) findViewById(R.id.contactFacebookEditText);
         EditText twitterEditText = (EditText) findViewById(R.id.contactTwitterEditText);
-        EditText linkedInEditText = (EditText) findViewById(R.id.contactLinkedInEditText);
 
         String name = Utility.getStringFromEditText(nameEditText);
         String organization = Utility.getStringFromEditText(organizationEditText);
@@ -75,7 +74,6 @@ public class ContactAddActivity extends MainActivity {
         String website = Utility.getStringFromEditText(websiteEditText);
         String facebookId = Utility.getStringFromEditText(facebookIdEditText);
         String twitterId = Utility.getStringFromEditText(twitterEditText);
-        String linkedInId = Utility.getStringFromEditText(linkedInEditText);
 
         Contact contact = new Contact(
                 name,
@@ -88,8 +86,7 @@ public class ContactAddActivity extends MainActivity {
                 email,
                 website,
                 facebookId,
-                twitterId,
-                linkedInId
+                twitterId
         );
 
         return contact;
