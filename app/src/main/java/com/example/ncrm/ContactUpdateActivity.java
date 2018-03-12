@@ -3,6 +3,7 @@ package com.example.ncrm;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -17,18 +18,20 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 
 public class ContactUpdateActivity extends MainActivity {
-    EditText mNameEditText;
-    Contact selectedContact;
+    private Contact selectedContact;
+
+    private EditText mNameEditText;
     private EditText mOrganizationEditText;
     private EditText mStreetAddressEditText;
     private EditText mCityEditText;
-    private Spinner mCountrySpinner;
     private EditText mPhoneNumberEditText;
     private EditText mMobileNumberEditText;
     private EditText mEmailEditText;
     private EditText mWebsiteEditText;
     private EditText mFacebookIdEditText;
     private EditText mTwitterEditText;
+
+    private Spinner mCountrySpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,35 @@ public class ContactUpdateActivity extends MainActivity {
         Intent intent = getIntent();
         selectedContact = (Contact) intent.getSerializableExtra("contact");
 
+        setValuesFromDatabase(selectedContact);
+
+        Button updateContactBtn = (Button) findViewById(R.id.updateContactBtn);
+        updateContactBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateContact();
+            }
+        });
+    }
+
+    private DatabaseReference getDatabaseReference() {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String contactId = selectedContact.getId();
+        DatabaseReference contactsDatabaseReference = firebaseDatabase.getReference().child("contacts").child(uid).child(contactId);
+        return contactsDatabaseReference;
+    }
+
+    private void updateContact() {
+        Contact updatedContact = getInputValues();
+
+        DatabaseReference databaseReference = getDatabaseReference();
+        databaseReference.setValue(updatedContact);
+        
+        navigateScene();
+    }
+
+    private void setValuesFromDatabase(Contact selectedContact) {
         mNameEditText = findViewById(R.id.contactNameEditText);
         mOrganizationEditText = (EditText) findViewById(R.id.contactOrganizationEditText);
         mStreetAddressEditText = (EditText) findViewById(R.id.contactAddressStreetEditText);
@@ -51,28 +83,24 @@ public class ContactUpdateActivity extends MainActivity {
         mFacebookIdEditText = (EditText) findViewById(R.id.contactFacebookEditText);
         mTwitterEditText = (EditText) findViewById(R.id.contactTwitterEditText);
 
+        String country = selectedContact.getCountry();
+        ArrayAdapter arrayAdapter = (ArrayAdapter) mCountrySpinner.getAdapter();
+        int spinnerPosition = arrayAdapter.getPosition(country);
+        mCountrySpinner.setSelection(spinnerPosition);
+
         mNameEditText.setText(selectedContact.getName());
         mOrganizationEditText.setText(selectedContact.getOrganization());
         mStreetAddressEditText.setText(selectedContact.getStreetAddress());
         mCityEditText.setText(selectedContact.getCity());
-        mCountrySpinner.setSelection(1);
         mPhoneNumberEditText.setText(selectedContact.getPhoneNumber());
         mMobileNumberEditText.setText(selectedContact.getMobileNumber());
         mEmailEditText.setText(selectedContact.getEmail());
         mWebsiteEditText.setText(selectedContact.getWebsite());
         mFacebookIdEditText.setText(selectedContact.getFacebookId());
         mTwitterEditText.setText(selectedContact.getTwitterId());
-
-        Button updateContactBtn = (Button) findViewById(R.id.updateContactBtn);
-        updateContactBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateContact();
-            }
-        });
     }
 
-    private void updateContact() {
+    private Contact getInputValues() {
         String name = Utility.getStringFromEditText(mNameEditText);
         String organization = Utility.getStringFromEditText(mOrganizationEditText);
         String streetAddress = Utility.getStringFromEditText(mStreetAddressEditText);
@@ -85,19 +113,24 @@ public class ContactUpdateActivity extends MainActivity {
         String facebookId = Utility.getStringFromEditText(mFacebookIdEditText);
         String twitterId = Utility.getStringFromEditText(mTwitterEditText);
 
+        Contact updatedContact = new Contact(
+                name,
+                organization,
+                streetAddress,
+                city,
+                country,
+                phoneNumber,
+                mobileNumber,
+                email,
+                website,
+                facebookId,
+                twitterId
+        );
 
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        String contactId = selectedContact.getId();
+        return updatedContact;
+    }
 
-        Contact updatedContact = new Contact(name, organization, streetAddress, city, country, phoneNumber, mobileNumber, email, website, facebookId, twitterId, contactId);
-        DatabaseReference contactsDatabaseReference = firebaseDatabase.getReference().child("contacts").child(uid).child(contactId);
-        contactsDatabaseReference.setValue(updatedContact);
-
-        Utility.cleanUpEditText(mNameEditText, mOrganizationEditText, mStreetAddressEditText, mCityEditText,
-                mPhoneNumberEditText, mMobileNumberEditText, mEmailEditText, mFacebookIdEditText,
-                mTwitterEditText);
-
+    private void navigateScene() {
         Intent intent = new Intent(ContactUpdateActivity.this, ContactListActivity.class);
         startActivity(intent);
     }
