@@ -9,6 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +26,8 @@ import java.util.List;
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder> {
     ArrayList<Contact> mContactList = new ArrayList<>();
     Context mContext;
+    ArrayList<String> mContactIDList = new ArrayList<>();
+    ArrayList<String> mcid;
 
     public ContactAdapter(ArrayList<Contact> contactList, Context context) {
         mContactList = contactList;
@@ -64,7 +73,26 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
             Contact contact = this.mContacts.get(position);
             Intent intent = new Intent(mContext, ContactDetailActivity.class);
             intent.putExtra("object", contact);
+            intent.putExtra("contactIDList", mContactIDList);
             mContext.startActivity(intent);
         }
+    }
+
+    private void getMeetingData(String contactId) {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference contactMeetingDatabaseReference = firebaseDatabase.getReference().child("contacts").child(uid).child(contactId).child("meetings");
+        contactMeetingDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    mContactIDList.add(ds.getKey());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 }

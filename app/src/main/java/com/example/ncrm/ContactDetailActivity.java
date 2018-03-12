@@ -17,12 +17,25 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+
 /**
  * Created by shameer on 2018-02-10.
  */
 
 public class ContactDetailActivity extends MainActivity {
     Contact mSelectedContact;
+    ChildEventListener mChildEventListener;
+    ArrayList<String> mMeetingIdArray;
+    private ArrayList<String> mMeetingIDList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,6 +46,7 @@ public class ContactDetailActivity extends MainActivity {
 
         Intent intent = getIntent();
         mSelectedContact = (Contact) intent.getSerializableExtra("object");
+        String contactId = mSelectedContact.getId();
 
         ImageButton mapBtn = (ImageButton) findViewById(R.id.mapBtn);
         mapBtn.setOnClickListener(new View.OnClickListener() {
@@ -110,6 +124,8 @@ public class ContactDetailActivity extends MainActivity {
                 openTwitter(mSelectedContact.getTwitterId());
             }
         });
+
+        getMeetingData(contactId);
     }
 
     @Override
@@ -230,6 +246,47 @@ public class ContactDetailActivity extends MainActivity {
             startActivity(intent);
         } else {
             Toast.makeText(getApplicationContext(), "Twitter ID is not available.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void getMeetingData(String contactId) {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference contactMeetingDatabaseReference = firebaseDatabase.getReference().child("contacts").child(uid).child(contactId).child("meetings");
+
+        contactMeetingDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    mMeetingIDList.add(ds.getKey());
+
+                }
+                getMeetingInfo();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void getMeetingInfo() {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        for(String meetingId : mMeetingIDList) {
+            System.out.println(meetingId);
+            DatabaseReference contactMeetingDatabaseReference = firebaseDatabase.getReference().child("meetings").child(uid).child(meetingId);
+
+            contactMeetingDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Meeting meeting = dataSnapshot.getValue(Meeting.class);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
         }
     }
 }
