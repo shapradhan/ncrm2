@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/contactDetailContainer">
+    android:id="@+id/contactDetailContainer"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -126,5 +127,28 @@
                 app:srcCompat="@drawable/ic_linkedin"
                 android:background="@null"/>
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="25dp"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:text="@string/meetings"/>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/contactMeetingListView">
+        </ListView>
+
     </LinearLayout>
 </LinearLayout>

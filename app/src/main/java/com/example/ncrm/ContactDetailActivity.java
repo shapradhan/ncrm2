@@ -12,8 +12,10 @@ import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,9 +35,10 @@ import java.util.ArrayList;
 
 public class ContactDetailActivity extends MainActivity {
     Contact mSelectedContact;
-    ChildEventListener mChildEventListener;
-    ArrayList<String> mMeetingIdArray;
     private ArrayList<String> mMeetingIDList = new ArrayList<>();
+    private ArrayList<Meeting> mMeetingsArray = new ArrayList<>();
+    private ArrayAdapter<String> mAllContactsNamesArrayAdapter;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -126,6 +129,10 @@ public class ContactDetailActivity extends MainActivity {
         });
 
         getMeetingData(contactId);
+
+        ListView meetingsListView = (ListView) findViewById(R.id.contactMeetingListView);
+        mAllContactsNamesArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        meetingsListView.setAdapter(mAllContactsNamesArrayAdapter);
     }
 
     @Override
@@ -259,7 +266,6 @@ public class ContactDetailActivity extends MainActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     mMeetingIDList.add(ds.getKey());
-
                 }
                 getMeetingInfo();
             }
@@ -273,20 +279,21 @@ public class ContactDetailActivity extends MainActivity {
     private void getMeetingInfo() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        for(String meetingId : mMeetingIDList) {
-            System.out.println(meetingId);
+        for(final String meetingId : mMeetingIDList) {
             DatabaseReference contactMeetingDatabaseReference = firebaseDatabase.getReference().child("meetings").child(uid).child(meetingId);
 
             contactMeetingDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Meeting meeting = dataSnapshot.getValue(Meeting.class);
+                    mAllContactsNamesArrayAdapter.add(meeting.getTitle() + " - " + meeting.getDate() + " - " + meeting.getTime());
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
+
         }
     }
 }
