@@ -45,4 +45,5 @@
     <string name="select_file">Select File</string>
     <string name="upload">Upload</string>
     <string name="add_caps">ADD</string>
+    <string name="update_caps">UPDATE</string>
 </resources>

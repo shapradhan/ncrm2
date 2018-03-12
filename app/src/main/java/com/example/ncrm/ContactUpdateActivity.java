@@ -2,6 +2,8 @@ package com.example.ncrm;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -53,6 +55,22 @@ public class ContactUpdateActivity extends MainActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        final MenuItem menuItem = menu.add(Menu.NONE, 1000, Menu.NONE, R.string.update_caps);
+        menuItem.setShowAsAction(1);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        updateContact();
+        navigateScene();
+        return true;
+    }
+
     private DatabaseReference getDatabaseReference() {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -66,8 +84,6 @@ public class ContactUpdateActivity extends MainActivity {
 
         DatabaseReference databaseReference = getDatabaseReference();
         databaseReference.setValue(updatedContact);
-        
-        navigateScene();
     }
 
     private void setValuesFromDatabase(Contact selectedContact) {
