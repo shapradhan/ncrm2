@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -45,8 +46,18 @@ public class ContactAddActivity extends MainActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-        addInDatabase();
-        navigateScene();
+
+        Contact contact = getInputValues();
+        DatabaseReference databaseReference = getDatabaseReference();
+        contact.setUserId(mUid);
+
+        if (validateContact(contact)) {
+            addInDatabase(databaseReference, contact);
+            navigateScene();
+        } else {
+            Toast.makeText(getApplicationContext(), "Please provide name for the contact", Toast.LENGTH_SHORT).show();
+        }
+        
         return true;
     }
 
@@ -97,17 +108,20 @@ public class ContactAddActivity extends MainActivity {
         return firebaseDatabase.getReference().child("contacts").child(mUid);
     }
 
-    private void addInDatabase() {
-        Contact contact = getInputValues();
-        DatabaseReference databaseReference = getDatabaseReference();
-
-
-        contact.setUserId(mUid);
+    private void addInDatabase(DatabaseReference databaseReference, Contact contact) {
         databaseReference.push().setValue(contact);
     }
 
     private void navigateScene() {
         Intent intent = new Intent(ContactAddActivity.this, ContactListActivity.class);
         startActivity(intent);
+    }
+
+    private boolean validateContact(Contact contact) {
+        if (contact.getName() != null && !contact.getName().equals("")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
