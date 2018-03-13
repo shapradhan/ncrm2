@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -133,6 +134,16 @@ public class ContactDetailActivity extends MainActivity {
         ListView meetingsListView = (ListView) findViewById(R.id.contactMeetingListView);
         mAllContactsNamesArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
         meetingsListView.setAdapter(mAllContactsNamesArrayAdapter);
+
+        meetingsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Meeting selectedMeeting = mMeetingsArray.get(position);
+                Intent intent = new Intent(getApplicationContext(), MeetingDetailActivity.class);
+                intent.putExtra("object", selectedMeeting);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -286,6 +297,8 @@ public class ContactDetailActivity extends MainActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Meeting meeting = dataSnapshot.getValue(Meeting.class);
+                    meeting.setId(meetingId);
+                    mMeetingsArray.add(meeting);
                     mAllContactsNamesArrayAdapter.add(meeting.getTitle() + " - " + meeting.getDate() + " - " + meeting.getTime());
                 }
 
