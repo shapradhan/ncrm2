@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
@@ -16,12 +15,13 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -47,6 +47,24 @@ public class MeetingUpdateActivity extends MainActivity {
     private ArrayAdapter<String> mMeetingParticipantArrayAdapter;
 
     private ArrayList<String> mParticipantIdArray = new ArrayList<>();
+
+    private static void getListViewSize(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+        // Get total height
+        int totalHeight = 0;
+        for (int size = 0; size < listAdapter.getCount(); size++) {
+            View listItem = listAdapter.getView(size, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,16 +144,10 @@ public class MeetingUpdateActivity extends MainActivity {
         mAgendaEditText.setText(mSelectedMeeting.getAgenda());
 
 
-
         Map<String, Boolean> participants = mSelectedMeeting.getParticipants();
         for (Map.Entry<String, Boolean> pair : participants.entrySet()) {
-            mParticipantIdArray.add(pair.getKey());
+            getNameFromId(pair.getKey());
         }
-
-//        mMeetingParticipantArrayAdapter.add(mParticipantIdArray);
-//        mMeetingParticipantArrayAdapter.notifyDataSetChanged();
-//        mParticipantIdArray.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
-        getListViewSize(mParticipantListView);
     }
 
     private Meeting getInputValues() {
@@ -171,22 +183,22 @@ public class MeetingUpdateActivity extends MainActivity {
         startActivity(intent);
     }
 
-    public static void getListViewSize(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            return;
-        }
-        // Get total height
-        int totalHeight = 0;
-        for (int size = 0; size < listAdapter.getCount(); size++) {
-            View listItem = listAdapter.getView(size, null, listView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
+    private void getNameFromId(String contactId) {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference contactsDatabaseReference = firebaseDatabase.getReference().child("contacts").child(uid).child(contactId);
+        contactsDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mMeetingParticipantArrayAdapter.add(dataSnapshot.child("name").getValue().toString() + " - " + dataSnapshot.child("organization").getValue().toString());
+                getListViewSize(mParticipantListView);
+            }
 
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }
