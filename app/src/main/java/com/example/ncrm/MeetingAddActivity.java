@@ -1,5 +1,6 @@
 package com.example.ncrm;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
@@ -41,6 +42,7 @@ public class MeetingAddActivity extends MainActivity {
     private ArrayAdapter<String> mAllContactsNamesArrayAdapter;
     private AutoCompleteTextView mMeetingParticipantAutoCompleteTextView;
     private ListView mParticipantListView;
+    private String mUid;
 
     public static void getListViewSize(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
@@ -70,8 +72,8 @@ public class MeetingAddActivity extends MainActivity {
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
-        final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mContactDatabaseReference = mFirebaseDatabase.getReference().child("contacts").child(uid);
+        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mContactDatabaseReference = mFirebaseDatabase.getReference().child("contacts").child(mUid);
 
         mParticipantListView = (ListView) findViewById(R.id.participantList);
 
@@ -108,56 +110,23 @@ public class MeetingAddActivity extends MainActivity {
         addMeetingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addMeeting(uid);
+                addMeeting();
             }
         });
     }
 
-    private void addMeeting(String uid) {
-        EditText meetingTitleEditText = (EditText) findViewById(R.id.meetingTitleEditText);
-        EditText meetingDateEditText = (EditText) findViewById(R.id.meetingDateEditText);
-        EditText meetingTimeEditText = (EditText) findViewById(R.id.meetingTimeEditText);
-        EditText meetingVenueEditText = (EditText) findViewById(R.id.meetingVenueEditText);
-        EditText meetingStreetAddressEditText = (EditText) findViewById(R.id.meetingStreetAddressEditText);
-        EditText meetingCityEditText = (EditText) findViewById(R.id.meetingCityEditText);
-//        EditText meetingCountryEditText = (EditText) findViewById(R.id.meetingCountryEditText);
-        EditText meetingAgendaEditText = (EditText) findViewById(R.id.meetingAgendaEditText);
-        Spinner meetingCountrySpinner = (Spinner) findViewById(R.id.contactAddressCountrySpinner);
+    private void addMeeting() {
+        Meeting meeting = getInputValues();
+        DatabaseReference databaseReference = getDatabaseReference();
 
-        String meetingTitle = Utility.getStringFromEditText(meetingTitleEditText);
-        String meetingDate = Utility.getStringFromEditText(meetingDateEditText);
-        String meetingTime = Utility.getStringFromEditText(meetingTimeEditText);
-        String meetingVenue = Utility.getStringFromEditText(meetingVenueEditText);
-        String meetingStreetAddress = Utility.getStringFromEditText(meetingStreetAddressEditText);
-        String meetingCity = Utility.getStringFromEditText(meetingCityEditText);
-        String meetingCountry = meetingCountrySpinner.getSelectedItem().toString();
-        String meetingAgenda = Utility.getStringFromEditText(meetingAgendaEditText);
-
-        HashMap<String, Boolean> meetingParticipantsDictionary = new HashMap<>();
-        for (String participantName : mParticipantsArray) {
-            meetingParticipantsDictionary.put(mParticipatingContactsIdDictionary.get(participantName).toString(), true);
-        }
-
-        DatabaseReference mMeetingsDatabaseReference = mFirebaseDatabase.getReference().child("meetings").child(uid);
-        Meeting meeting = new Meeting(
-                meetingTitle,
-                meetingVenue,
-                meetingStreetAddress,
-                meetingCity,
-                meetingCountry,
-                meetingDate,
-                meetingTime,
-                meetingParticipantsDictionary);
-
-        DatabaseReference newMeetingReference = mMeetingsDatabaseReference.push();
+        DatabaseReference newMeetingReference = databaseReference.push();
         String meetingId = newMeetingReference.getKey();
         newMeetingReference.setValue(meeting);
 
         HashMap<String, Boolean> meetingInContact = new HashMap<>();
         meetingInContact.put(meetingId, true);
 
-        Set<String> keys = meetingParticipantsDictionary.keySet();
-
+        Set<String> keys = meeting.getParticipants().keySet();
         for (String key : keys) {
             mContactDatabaseReference.child(key).child("meetings").child(meetingId).setValue(true);
         }
@@ -192,5 +161,53 @@ public class MeetingAddActivity extends MainActivity {
                 getListViewSize(mParticipantListView);
             }
         });
+    }
+
+    private Meeting getInputValues() {
+        EditText meetingTitleEditText = (EditText) findViewById(R.id.meetingTitleEditText);
+        EditText meetingDateEditText = (EditText) findViewById(R.id.meetingDateEditText);
+        EditText meetingTimeEditText = (EditText) findViewById(R.id.meetingTimeEditText);
+        EditText meetingVenueEditText = (EditText) findViewById(R.id.meetingVenueEditText);
+        EditText meetingStreetAddressEditText = (EditText) findViewById(R.id.meetingStreetAddressEditText);
+        EditText meetingCityEditText = (EditText) findViewById(R.id.meetingCityEditText);
+        EditText meetingAgendaEditText = (EditText) findViewById(R.id.meetingAgendaEditText);
+        Spinner meetingCountrySpinner = (Spinner) findViewById(R.id.contactAddressCountrySpinner);
+
+        String meetingTitle = Utility.getStringFromEditText(meetingTitleEditText);
+        String meetingDate = Utility.getStringFromEditText(meetingDateEditText);
+        String meetingTime = Utility.getStringFromEditText(meetingTimeEditText);
+        String meetingVenue = Utility.getStringFromEditText(meetingVenueEditText);
+        String meetingStreetAddress = Utility.getStringFromEditText(meetingStreetAddressEditText);
+        String meetingCity = Utility.getStringFromEditText(meetingCityEditText);
+        String meetingAgenda = Utility.getStringFromEditText(meetingAgendaEditText);
+        String meetingCountry = meetingCountrySpinner.getSelectedItem().toString();
+
+        HashMap<String, Boolean> meetingParticipantsDictionary = new HashMap<>();
+        for (String participantName : mParticipantsArray) {
+            meetingParticipantsDictionary.put(mParticipatingContactsIdDictionary.get(participantName).toString(), true);
+        }
+
+        Meeting meeting = new Meeting(
+                meetingTitle,
+                meetingVenue,
+                meetingStreetAddress,
+                meetingCity,
+                meetingCountry,
+                meetingDate,
+                meetingTime,
+                meetingParticipantsDictionary
+        );
+
+        return meeting;
+    }
+
+    private DatabaseReference getDatabaseReference() {
+        DatabaseReference meetingsDatabaseReference = mFirebaseDatabase.getReference().child("meetings").child(mUid);
+        return meetingsDatabaseReference;
+    }
+
+    private void navigateScene() {
+        Intent intent = new Intent(MeetingAddActivity.this, MeetingListActivity.class);
+        startActivity(intent);
     }
 }
