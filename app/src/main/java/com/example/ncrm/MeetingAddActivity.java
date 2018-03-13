@@ -223,6 +223,7 @@ public class MeetingAddActivity extends MainActivity {
                 meetingCountry,
                 meetingDate,
                 meetingTime,
+                meetingAgenda,
                 meetingParticipantsDictionary
         );
 

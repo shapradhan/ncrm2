@@ -18,6 +18,7 @@ public class Meeting implements Serializable {
     private String country;
     private String date;
     private String time;
+    private String agenda;
     private Map<String, Boolean> participants;
 
     @Exclude
@@ -25,7 +26,7 @@ public class Meeting implements Serializable {
 
     public Meeting() {    }
 
-    public Meeting(String title, String venue, String streetAddress, String city, String country, String date, String time, Map<String, Boolean> participants) {
+    public Meeting(String title, String venue, String streetAddress, String city, String country, String date, String time, String agenda, Map<String, Boolean> participants) {
         this.title = title;
         this.venue = venue;
         this.streetAddress = streetAddress;
@@ -33,6 +34,7 @@ public class Meeting implements Serializable {
         this.country = country;
         this.date = date;
         this.time = time;
+        this.agenda = agenda;
         this.participants = participants;
     }
 
@@ -98,6 +100,14 @@ public class Meeting implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getAgenda() {
+        return agenda;
+    }
+
+    public void setAgenda(String agenda) {
+        this.agenda = agenda;
     }
 
     public Map<String, Boolean> getParticipants() {
