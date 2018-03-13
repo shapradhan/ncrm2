@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -22,7 +23,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by shameer on 2018-03-13.
@@ -41,12 +46,20 @@ public class MeetingUpdateActivity extends MainActivity {
     private Spinner mCountrySpinner;
     private ListView mParticipantListView;
 
-    private ArrayAdapter<String> mParticipantsNamesArrayAdapter;
-    private AutoCompleteTextView mMeetingParticipantAutoCompleteTextView;
+    private Dictionary mParticipatingContactsIdDictionary = new Hashtable();
 
     private ArrayAdapter<String> mMeetingParticipantArrayAdapter;
+    private ArrayAdapter<String> mAllContactsNamesArrayAdapter;
+    private AutoCompleteTextView mMeetingParticipantAutoCompleteTextView;
 
     private ArrayList<String> mParticipantIdArray = new ArrayList<>();
+    private ArrayList<String> mParticipantsArray = new ArrayList<>();
+    private ArrayList<String> mAlreadyExistingParticipants = new ArrayList<>();
+    
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mContactDatabaseReference;
+
+    private String mUid;
 
     private static void getListViewSize(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
@@ -76,9 +89,9 @@ public class MeetingUpdateActivity extends MainActivity {
         mSelectedMeeting = (Meeting) intent.getSerializableExtra("meeting");
 
         // ArrayAdapter to show all available contacts in a AutoCompleteTextView
-        mParticipantsNamesArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        mAllContactsNamesArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
         mMeetingParticipantAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.meetingParticipantAutoCompleteTextView);
-        mMeetingParticipantAutoCompleteTextView.setAdapter(mParticipantsNamesArrayAdapter);
+        mMeetingParticipantAutoCompleteTextView.setAdapter(mAllContactsNamesArrayAdapter);
 
         mParticipantListView = (ListView) findViewById(R.id.participantList);
 
@@ -87,6 +100,17 @@ public class MeetingUpdateActivity extends MainActivity {
         mParticipantListView.setAdapter(mMeetingParticipantArrayAdapter);
 
         setValuesFromDatabase();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+
+        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mContactDatabaseReference = mFirebaseDatabase.getReference().child("contacts").child(mUid);
+
+        // Get the data from database and put it in ArrayAdapters
+        addContactValueEventListener(mContactDatabaseReference);
+
+        ImageButton addParticipantBtn = (ImageButton) findViewById(R.id.addParticipantBtn);
+        addParticipant(addParticipantBtn);
+
     }
 
     @Override
@@ -117,6 +141,15 @@ public class MeetingUpdateActivity extends MainActivity {
         Meeting updatedMeeting = getInputValues();
         DatabaseReference databaseReference = getDatabaseReference();
         databaseReference.setValue(updatedMeeting);
+        String meetingId = databaseReference.getKey();
+
+        HashMap<String, Boolean> meetingInContact = new HashMap<>();
+        meetingInContact.put(meetingId, true);
+
+        Set<String> keys = updatedMeeting.getParticipants().keySet();
+        for (String key : keys) {
+            mContactDatabaseReference.child(key).child("meetings").child(meetingId).setValue(true);
+        }
     }
 
     private void setValuesFromDatabase() {
@@ -145,8 +178,10 @@ public class MeetingUpdateActivity extends MainActivity {
 
 
         Map<String, Boolean> participants = mSelectedMeeting.getParticipants();
-        for (Map.Entry<String, Boolean> pair : participants.entrySet()) {
-            getNameFromId(pair.getKey());
+        if (participants != null) {
+            for (Map.Entry<String, Boolean> pair : participants.entrySet()) {
+                getNameFromId(pair.getKey());
+            }
         }
     }
 
@@ -160,20 +195,22 @@ public class MeetingUpdateActivity extends MainActivity {
         String country = mCountrySpinner.getSelectedItem().toString();
         String agenda = Utility.getStringFromEditText(mAgendaEditText);
 
-//        Meeting updatedMeeting = new Meeting(
-//                title,
-//                venue,
-//                streetAddress,
-//                city,
-//                country,
-//                date,
-//                time,
-//                agenda,
-//
-//
-//        );
+        HashMap<String, Boolean> participantsDictionary = new HashMap<>();
+        for (String participantName : mParticipantsArray) {
+            participantsDictionary.put(mParticipatingContactsIdDictionary.get(participantName).toString(), true);
+        }
 
-        Meeting updatedMeeting = new Meeting();
+        Meeting updatedMeeting = new Meeting(
+                title,
+                venue,
+                streetAddress,
+                city,
+                country,
+                date,
+                time,
+                agenda,
+                participantsDictionary
+        );
 
         return updatedMeeting;
     }
@@ -187,10 +224,12 @@ public class MeetingUpdateActivity extends MainActivity {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference contactsDatabaseReference = firebaseDatabase.getReference().child("contacts").child(uid).child(contactId);
+
         contactsDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mMeetingParticipantArrayAdapter.add(dataSnapshot.child("name").getValue().toString() + " - " + dataSnapshot.child("organization").getValue().toString());
+                mAlreadyExistingParticipants.add(dataSnapshot.child("name").getValue().toString() + " - " + dataSnapshot.child("organization").getValue().toString());
                 getListViewSize(mParticipantListView);
             }
 
@@ -201,4 +240,35 @@ public class MeetingUpdateActivity extends MainActivity {
         });
     }
 
+    private void addContactValueEventListener(DatabaseReference databaseReference) {
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    String name = ds.child("name").getValue(String.class);
+                    String organization = ds.child("organization").getValue(String.class);
+                    String editTextLabel = name + " - " + organization;
+                    mAllContactsNamesArrayAdapter.add(editTextLabel);
+                    mParticipatingContactsIdDictionary.put(editTextLabel, ds.getKey());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void addParticipant(ImageButton addParticipantBtn) {
+        addParticipantBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMeetingParticipantArrayAdapter.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
+                mMeetingParticipantArrayAdapter.notifyDataSetChanged();
+                mParticipantsArray.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
+                getListViewSize(mParticipantListView);
+            }
+        });
+    }
 }
+
