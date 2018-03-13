@@ -55,9 +55,9 @@ public class ContactAddActivity extends MainActivity {
             addInDatabase(databaseReference, contact);
             navigateScene();
         } else {
-            Toast.makeText(getApplicationContext(), "Please provide name for the contact", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Please provide contact name", Toast.LENGTH_SHORT).show();
         }
-        
+
         return true;
     }
 

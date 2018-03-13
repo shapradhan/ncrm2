@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -122,25 +123,40 @@ public class MeetingAddActivity extends MainActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-        addMeeting();
-        navigateScene();
-        return true;
-    }
 
-    private void addMeeting() {
         Meeting meeting = getInputValues();
         DatabaseReference databaseReference = getDatabaseReference();
 
-        DatabaseReference newMeetingReference = databaseReference.push();
-        String meetingId = newMeetingReference.getKey();
-        newMeetingReference.setValue(meeting);
+        boolean addedInDatabase = addInDatabase(databaseReference, meeting);
+        if (addedInDatabase) {
+            navigateScene();
+        } else {
+            Toast.makeText(getApplicationContext(), "Please provide meeting title", Toast.LENGTH_SHORT).show();
+        }
+        return true;
+    }
 
-        HashMap<String, Boolean> meetingInContact = new HashMap<>();
-        meetingInContact.put(meetingId, true);
+    private boolean addInDatabase(DatabaseReference databaseReference, Meeting meeting) {
+        if (databaseReference != null & meeting != null) {
+            if (validateMeeting(meeting)) {
+                DatabaseReference newMeetingReference = databaseReference.push();
+                String meetingId = newMeetingReference.getKey();
+                newMeetingReference.setValue(meeting);
 
-        Set<String> keys = meeting.getParticipants().keySet();
-        for (String key : keys) {
-            mContactDatabaseReference.child(key).child("meetings").child(meetingId).setValue(true);
+                HashMap<String, Boolean> meetingInContact = new HashMap<>();
+                meetingInContact.put(meetingId, true);
+
+                Set<String> keys = meeting.getParticipants().keySet();
+                for (String key : keys) {
+                    mContactDatabaseReference.child(key).child("meetings").child(meetingId).setValue(true);
+                }
+                return true;
+            }
+            else {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 
@@ -221,5 +237,13 @@ public class MeetingAddActivity extends MainActivity {
     private void navigateScene() {
         Intent intent = new Intent(MeetingAddActivity.this, MeetingListActivity.class);
         startActivity(intent);
+    }
+
+    private boolean validateMeeting(Meeting meeting) {
+        if (meeting.getTitle() != null && !meeting.getTitle().equals("")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
