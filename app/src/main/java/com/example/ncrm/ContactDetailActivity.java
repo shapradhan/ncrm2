@@ -1,6 +1,9 @@
 package com.example.ncrm;
 
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -21,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,18 +41,23 @@ public class ContactDetailActivity extends MainActivity {
     private ArrayList<String> mMeetingIDList = new ArrayList<>();
     private ArrayList<Meeting> mMeetingsArray = new ArrayList<>();
     private ArrayAdapter<String> mAllContactsNamesArrayAdapter;
+    private FirebaseDatabase mFirebaseDatabase;
+    private String mUid;
+    private String mContactId;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         getLayoutInflater().inflate(R.layout.activity_contact_detail, frameLayout);
 
         Intent intent = getIntent();
         mSelectedContact = (Contact) intent.getSerializableExtra("object");
-        String contactId = mSelectedContact.getId();
+        mContactId = mSelectedContact.getId();
 
         ImageButton mapBtn = (ImageButton) findViewById(R.id.mapBtn);
         mapBtn.setOnClickListener(new View.OnClickListener() {
@@ -129,7 +136,7 @@ public class ContactDetailActivity extends MainActivity {
             }
         });
 
-        getMeetingData(contactId);
+        getMeetingData(mContactId);
 
         ListView meetingsListView = (ListView) findViewById(R.id.contactMeetingListView);
         mAllContactsNamesArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
@@ -150,6 +157,7 @@ public class ContactDetailActivity extends MainActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         menu.findItem(R.id.action_update).setVisible(true);
+        menu.findItem(R.id.action_delete).setVisible(true);
         return true;
     }
 
@@ -157,11 +165,16 @@ public class ContactDetailActivity extends MainActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
         int id = item.getItemId();
+        Intent intent;
         switch (id) {
             case R.id.action_update:
-                Intent intent = new Intent(ContactDetailActivity.this, ContactUpdateActivity.class);
+                intent = new Intent(ContactDetailActivity.this, ContactUpdateActivity.class);
                 intent.putExtra("contact", mSelectedContact);
                 startActivity(intent);
+                break;
+            case R.id.action_delete:
+                showDeleteConfirmationDialog();
+                break;
         }
         return true;
     }
@@ -268,9 +281,8 @@ public class ContactDetailActivity extends MainActivity {
     }
 
     private void getMeetingData(String contactId) {
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference contactMeetingDatabaseReference = firebaseDatabase.getReference().child("contacts").child(uid).child(contactId).child("meetings");
+        DatabaseReference contactMeetingDatabaseReference = firebaseDatabase.getReference().child("contacts").child(mUid).child(contactId).child("meetings");
 
         contactMeetingDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -289,9 +301,8 @@ public class ContactDetailActivity extends MainActivity {
 
     private void getMeetingInfo() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         for(final String meetingId : mMeetingIDList) {
-            DatabaseReference contactMeetingDatabaseReference = firebaseDatabase.getReference().child("meetings").child(uid).child(meetingId);
+            DatabaseReference contactMeetingDatabaseReference = mFirebaseDatabase.getReference().child("meetings").child(uid).child(meetingId);
 
             contactMeetingDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -308,5 +319,56 @@ public class ContactDetailActivity extends MainActivity {
             });
 
         }
+    }
+
+    private void showDeleteConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ContactDetailActivity.this);
+        builder.setMessage("Are you sure you want to delete?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                deleteFromDatabase();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog confirmationDialog = builder.create();
+        confirmationDialog.show();
+    }
+
+    private void deleteFromDatabase() {
+        final DatabaseReference contactsDatabaseReference = mFirebaseDatabase.getReference().child("contacts").child(mUid).child(mContactId);
+        contactsDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean meetingExists = false;
+                for (DataSnapshot ds1 : dataSnapshot.getChildren()) {
+                    if (ds1.getKey().equals("meetings")) {
+                        meetingExists = true;
+                    }
+                }
+                if (meetingExists) {
+                    Toast.makeText(getApplicationContext(), "Data associated with this contact exists. Please delete such data before deleting this contact.", Toast.LENGTH_LONG).show();
+                } else {
+                    contactsDatabaseReference.removeValue();
+                    navigateToList(getApplicationContext());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void navigateToList(Context context) {
+        Intent intent = new Intent(context, ContactListActivity.class);
+        startActivity(intent);
     }
 }
