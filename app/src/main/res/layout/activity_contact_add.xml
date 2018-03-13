@@ -130,13 +130,7 @@
                     android:layout_weight="1"
                     android:text="@string/country" />
 
-                <Spinner
-                    android:id="@+id/contactAddressCountrySpinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:entries="@array/countries"
-                    android:focusable="false"/>
+                w
             </LinearLayout>
 
             <LinearLayout

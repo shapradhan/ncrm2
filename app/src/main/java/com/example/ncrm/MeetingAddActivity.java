@@ -3,6 +3,8 @@ package com.example.ncrm;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,13 +108,23 @@ public class MeetingAddActivity extends MainActivity {
             }
         });
 
-        Button addMeetingBtn = (Button) findViewById(R.id.addMeetingBtn);
-        addMeetingBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addMeeting();
-            }
-        });
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        final MenuItem menuItem = menu.add(Menu.NONE, 1000, Menu.NONE, R.string.add_caps);
+        menuItem.setShowAsAction(1);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        addMeeting();
+        navigateScene();
+        return true;
     }
 
     private void addMeeting() {
