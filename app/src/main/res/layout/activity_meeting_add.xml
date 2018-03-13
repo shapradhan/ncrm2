@@ -83,19 +83,22 @@
                     android:focusable="false"/>
             </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp">
-
-            <TextView
-                android:id="@+id/meetingVenueTitle"
-                android:layout_width="100dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/venue" />
+                android:layout_margin="5dp">
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/meetingVenueTitle"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/location"
+                    android:layout_marginTop="20dp"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"/>
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -174,14 +177,29 @@
                     android:layout_weight="1"
                     android:text="@string/country" />
 
-                <EditText
-                    android:id="@+id/meetingCountryEditText"
+                <Spinner
+                    android:id="@+id/contactAddressCountrySpinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="textPersonName"
-                    android:text="" />
+                    android:entries="@array/countries"
+                    android:focusable="false"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
+
+                <TextView
+                    android:id="@+id/meetingParticipantTitle"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/participant"
+                    android:layout_marginTop="20dp"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"/>
             </LinearLayout>
 
             <LinearLayout
@@ -241,6 +259,22 @@
                 android:layout_margin="5dp">
 
                 <TextView
+                    android:id="@+id/meetingAgendaTitle"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/agenda"
+                    android:layout_marginTop="20dp"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
+
+                <TextView
                     android:id="@+id/meetingAgenda"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
@@ -253,8 +287,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:ems="10"
-                    android:inputType="phone"
-                    android:text="" />
+                    android:inputType="textMultiLine" />
             </LinearLayout>
 
             <RelativeLayout

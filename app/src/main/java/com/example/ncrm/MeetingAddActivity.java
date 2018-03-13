@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -119,8 +120,9 @@ public class MeetingAddActivity extends MainActivity {
         EditText meetingVenueEditText = (EditText) findViewById(R.id.meetingVenueEditText);
         EditText meetingStreetAddressEditText = (EditText) findViewById(R.id.meetingStreetAddressEditText);
         EditText meetingCityEditText = (EditText) findViewById(R.id.meetingCityEditText);
-        EditText meetingCountryEditText = (EditText) findViewById(R.id.meetingCountryEditText);
+//        EditText meetingCountryEditText = (EditText) findViewById(R.id.meetingCountryEditText);
         EditText meetingAgendaEditText = (EditText) findViewById(R.id.meetingAgendaEditText);
+        Spinner meetingCountrySpinner = (Spinner) findViewById(R.id.contactAddressCountrySpinner);
 
         String meetingTitle = Utility.getStringFromEditText(meetingTitleEditText);
         String meetingDate = Utility.getStringFromEditText(meetingDateEditText);
@@ -128,7 +130,7 @@ public class MeetingAddActivity extends MainActivity {
         String meetingVenue = Utility.getStringFromEditText(meetingVenueEditText);
         String meetingStreetAddress = Utility.getStringFromEditText(meetingStreetAddressEditText);
         String meetingCity = Utility.getStringFromEditText(meetingCityEditText);
-        String meetingCountry = Utility.getStringFromEditText(meetingCountryEditText);
+        String meetingCountry = meetingCountrySpinner.getSelectedItem().toString();
         String meetingAgenda = Utility.getStringFromEditText(meetingAgendaEditText);
 
         HashMap<String, Boolean> meetingParticipantsDictionary = new HashMap<>();
