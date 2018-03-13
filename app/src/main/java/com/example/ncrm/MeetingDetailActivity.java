@@ -3,6 +3,8 @@ package com.example.ncrm;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -49,6 +51,33 @@ public class MeetingDetailActivity extends MainActivity {
 
         getDataFromFirebase();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.findItem(R.id.action_update).setVisible(true);
+        menu.findItem(R.id.action_delete).setVisible(true);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        Intent intent;
+        switch (id) {
+            case R.id.action_update:
+                intent = new Intent(MeetingDetailActivity.this, MeetingUpdateActivity.class);
+                intent.putExtra("meeting", mSelectedMeeting);
+                startActivity(intent);
+                break;
+            case R.id.action_delete:
+//                showDeleteConfirmationDialog();
+                break;
+        }
+        return true;
+    }
+
 
     private void getDataFromFirebase() {
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
