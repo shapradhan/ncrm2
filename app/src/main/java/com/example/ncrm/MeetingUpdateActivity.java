@@ -1,7 +1,11 @@
 package com.example.ncrm;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,13 +54,10 @@ public class MeetingUpdateActivity extends MainActivity {
 
     private Dictionary mParticipatingContactsIdDictionary = new Hashtable();
 
-    private ArrayAdapter<String> mMeetingParticipantArrayAdapter;
     private ArrayAdapter<String> mAllContactsNamesArrayAdapter;
     private AutoCompleteTextView mMeetingParticipantAutoCompleteTextView;
 
-    private ArrayList<String> mParticipantIdArray = new ArrayList<>();
     private ArrayList<String> mParticipantsArray = new ArrayList<>();
-    private ArrayList<String> mAlreadyExistingParticipants = new ArrayList<>();
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mContactDatabaseReference;
@@ -96,8 +99,7 @@ public class MeetingUpdateActivity extends MainActivity {
         mParticipantListView = (ListView) findViewById(R.id.participantList);
 
         // ArrayAdapter to show selected contact names who participate in the meeting
-        mMeetingParticipantArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, mParticipantIdArray);
-        mParticipantListView.setAdapter(mMeetingParticipantArrayAdapter);
+        mParticipantListView.setAdapter(new MeetingUpdateActivity.ParticipantAdapter(this, R.layout.participant_list_item, mParticipantsArray));
 
         setValuesFromDatabase();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -148,6 +150,7 @@ public class MeetingUpdateActivity extends MainActivity {
 
         Set<String> keys = updatedMeeting.getParticipants().keySet();
         for (String key : keys) {
+            System.out.println("KEY " + key);
             mContactDatabaseReference.child(key).child("meetings").child(meetingId).setValue(true);
         }
     }
@@ -162,7 +165,6 @@ public class MeetingUpdateActivity extends MainActivity {
         mCountrySpinner = (Spinner) findViewById(R.id.meetingCountrySpinner);
         mAgendaEditText = (EditText) findViewById(R.id.meetingAgendaEditText);
 
-
         String country = mSelectedMeeting.getCountry();
         ArrayAdapter arrayAdapter = (ArrayAdapter) mCountrySpinner.getAdapter();
         int spinnerPosition = arrayAdapter.getPosition(country);
@@ -176,10 +178,24 @@ public class MeetingUpdateActivity extends MainActivity {
         mCityEditText.setText(mSelectedMeeting.getCity());
         mAgendaEditText.setText(mSelectedMeeting.getAgenda());
 
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Map<String, Boolean> participants = mSelectedMeeting.getParticipants();
         if (participants != null) {
             for (Map.Entry<String, Boolean> pair : participants.entrySet()) {
                 getNameFromId(pair.getKey());
+                DatabaseReference contactsDatabaseReference = firebaseDatabase.getReference().child("contacts").child(uid).child(pair.getKey());
+                contactsDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        dataSnapshot.child("meetings").child(mSelectedMeeting.getId()).getRef().removeValue();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         }
     }
@@ -231,8 +247,7 @@ public class MeetingUpdateActivity extends MainActivity {
         contactsDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mMeetingParticipantArrayAdapter.add(dataSnapshot.child("name").getValue().toString() + " - " + dataSnapshot.child("organization").getValue().toString());
-                mAlreadyExistingParticipants.add(dataSnapshot.child("name").getValue().toString() + " - " + dataSnapshot.child("organization").getValue().toString());
+                mParticipantsArray.add(dataSnapshot.child("name").getValue().toString() + " - " + dataSnapshot.child("organization").getValue().toString());
                 getListViewSize(mParticipantListView);
             }
 
@@ -266,11 +281,50 @@ public class MeetingUpdateActivity extends MainActivity {
         addParticipantBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMeetingParticipantArrayAdapter.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
-                mMeetingParticipantArrayAdapter.notifyDataSetChanged();
+                mParticipantsArray.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
                 getListViewSize(mParticipantListView);
             }
         });
+    }
+
+    private class ParticipantAdapter extends ArrayAdapter<String> {
+        private int layout;
+
+        public ParticipantAdapter(@NonNull Context context, int resource, @NonNull List<String> objects) {
+            super(context, resource, objects);
+            layout = resource;
+        }
+
+        @NonNull
+        @Override
+        public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            MeetingUpdateActivity.ParticipantViewHolder mainParticipantViewHolder = null;
+            if (convertView == null) {
+                LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+                convertView = layoutInflater.inflate(layout, parent, false);
+                MeetingUpdateActivity.ParticipantViewHolder participantViewHolder = new MeetingUpdateActivity.ParticipantViewHolder();
+                participantViewHolder.removeBtn = (ImageButton) convertView.findViewById(R.id.removeBtn);
+                participantViewHolder.participantTextView = (TextView) convertView.findViewById(R.id.participantText);
+                participantViewHolder.participantTextView.setText(getItem(position));
+                participantViewHolder.removeBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mParticipantsArray.remove(position);
+                        notifyDataSetChanged();
+                    }
+                });
+                convertView.setTag(participantViewHolder);
+            } else {
+                mainParticipantViewHolder = (MeetingUpdateActivity.ParticipantViewHolder) convertView.getTag();
+                mainParticipantViewHolder.participantTextView.setText(getItem(position));
+            }
+            return convertView;
+        }
+    }
+
+    public class ParticipantViewHolder {
+        ImageButton removeBtn;
+        TextView participantTextView;
     }
 }
 
