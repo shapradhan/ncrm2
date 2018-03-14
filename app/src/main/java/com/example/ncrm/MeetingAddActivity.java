@@ -98,7 +98,7 @@ public class MeetingAddActivity extends MainActivity {
         EditText meetingTimeEditText = (EditText) findViewById(R.id.meetingTimeEditText);
         SetTime meetingTime = new SetTime(this, meetingTimeEditText);
 
-      mParticipantListView.setAdapter(new ParticipantAdapter(this, R.layout.participant_list_item, mParticipantsArray));
+        mParticipantListView.setAdapter(new ParticipantAdapter(this, R.layout.participant_list_item, mParticipantsArray));
 
         ImageButton addParticipantBtn = (ImageButton) findViewById(R.id.addParticipantBtn);
         addParticipant(addParticipantBtn);

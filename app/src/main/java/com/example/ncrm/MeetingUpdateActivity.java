@@ -97,6 +97,13 @@ public class MeetingUpdateActivity extends MainActivity {
         mMeetingParticipantAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.meetingParticipantAutoCompleteTextView);
         mMeetingParticipantAutoCompleteTextView.setAdapter(mAllContactsNamesArrayAdapter);
 
+        EditText meetingDateEditText = (EditText) findViewById(R.id.meetingDateEditText);
+        SetDate meetingDate = new SetDate(this, meetingDateEditText);
+
+        EditText meetingTimeEditText = (EditText) findViewById(R.id.meetingTimeEditText);
+        SetTime meetingTime = new SetTime(this, meetingTimeEditText);
+
+
         mParticipantListView = (ListView) findViewById(R.id.participantList);
 
         // ArrayAdapter to show selected contact names who participate in the meeting
