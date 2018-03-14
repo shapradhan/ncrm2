@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -100,10 +98,7 @@ public class MeetingAddActivity extends MainActivity {
         EditText meetingTimeEditText = (EditText) findViewById(R.id.meetingTimeEditText);
         SetTime meetingTime = new SetTime(this, meetingTimeEditText);
 
-        // ArrayAdapter to show selected contact names who participate in the meeting
-//        mMeetingParticipantArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, new ArrayList<String>());
-//        mParticipantListView.setAdapter(mMeetingParticipantArrayAdapter);
-        mParticipantListView.setAdapter(new ParticipantAdapter(this, R.layout.participant_list_item, mParticipantsArray));
+      mParticipantListView.setAdapter(new ParticipantAdapter(this, R.layout.participant_list_item, mParticipantsArray));
 
         ImageButton addParticipantBtn = (ImageButton) findViewById(R.id.addParticipantBtn);
         addParticipant(addParticipantBtn);
@@ -115,8 +110,6 @@ public class MeetingAddActivity extends MainActivity {
                 return false;
             }
         });
-
-
     }
 
     @Override
@@ -190,11 +183,7 @@ public class MeetingAddActivity extends MainActivity {
         addParticipantBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                mMeetingParticipantArrayAdapter.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
-//                mMeetingParticipantArrayAdapter.notifyDataSetChanged();
-
-                mParticipantsArray.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
-                System.out.println("MPL " + mParticipantsArray);
+            mParticipantsArray.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
                 getListViewSize(mParticipantListView);
             }
         });
@@ -278,7 +267,9 @@ public class MeetingAddActivity extends MainActivity {
                 participantViewHolder.removeBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(getContext(), "Button clicked for " + getItem(position), Toast.LENGTH_SHORT).show();
+                        mParticipantsArray.remove(position);
+                        notifyDataSetChanged();
+
                     }
                 });
                 convertView.setTag(participantViewHolder);
