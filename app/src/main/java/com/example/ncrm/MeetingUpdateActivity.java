@@ -55,7 +55,7 @@ public class MeetingUpdateActivity extends MainActivity {
     private ArrayList<String> mParticipantIdArray = new ArrayList<>();
     private ArrayList<String> mParticipantsArray = new ArrayList<>();
     private ArrayList<String> mAlreadyExistingParticipants = new ArrayList<>();
-    
+
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mContactDatabaseReference;
 
@@ -176,7 +176,6 @@ public class MeetingUpdateActivity extends MainActivity {
         mCityEditText.setText(mSelectedMeeting.getCity());
         mAgendaEditText.setText(mSelectedMeeting.getAgenda());
 
-
         Map<String, Boolean> participants = mSelectedMeeting.getParticipants();
         if (participants != null) {
             for (Map.Entry<String, Boolean> pair : participants.entrySet()) {
@@ -194,6 +193,10 @@ public class MeetingUpdateActivity extends MainActivity {
         String city = Utility.getStringFromEditText(mCityEditText);
         String country = mCountrySpinner.getSelectedItem().toString();
         String agenda = Utility.getStringFromEditText(mAgendaEditText);
+
+        for (int position = 0; position < mParticipantListView.getCount(); position++) {
+            mParticipantsArray.add(mParticipantListView.getAdapter().getItem(position).toString());
+        }
 
         HashMap<String, Boolean> participantsDictionary = new HashMap<>();
         for (String participantName : mParticipantsArray) {
@@ -265,7 +268,6 @@ public class MeetingUpdateActivity extends MainActivity {
             public void onClick(View v) {
                 mMeetingParticipantArrayAdapter.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
                 mMeetingParticipantArrayAdapter.notifyDataSetChanged();
-                mParticipantsArray.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
                 getListViewSize(mParticipantListView);
             }
         });
