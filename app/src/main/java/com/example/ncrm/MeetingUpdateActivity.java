@@ -58,6 +58,7 @@ public class MeetingUpdateActivity extends MainActivity {
     private AutoCompleteTextView mMeetingParticipantAutoCompleteTextView;
 
     private ArrayList<String> mParticipantsArray = new ArrayList<>();
+    private ArrayList<String> mAllContactsNamesArray = new ArrayList<>();
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mContactDatabaseReference;
@@ -92,7 +93,7 @@ public class MeetingUpdateActivity extends MainActivity {
         mSelectedMeeting = (Meeting) intent.getSerializableExtra("meeting");
 
         // ArrayAdapter to show all available contacts in a AutoCompleteTextView
-        mAllContactsNamesArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        mAllContactsNamesArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mAllContactsNamesArray);
         mMeetingParticipantAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.meetingParticipantAutoCompleteTextView);
         mMeetingParticipantAutoCompleteTextView.setAdapter(mAllContactsNamesArrayAdapter);
 
@@ -112,7 +113,6 @@ public class MeetingUpdateActivity extends MainActivity {
 
         ImageButton addParticipantBtn = (ImageButton) findViewById(R.id.addParticipantBtn);
         addParticipant(addParticipantBtn);
-
     }
 
     @Override
@@ -132,10 +132,10 @@ public class MeetingUpdateActivity extends MainActivity {
     }
 
     private DatabaseReference getDatabaseReference() {
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String meetingId = mSelectedMeeting.getId();
-        DatabaseReference meetingsDatabaseReference = firebaseDatabase.getReference().child("meetings").child(uid).child(meetingId);
+        DatabaseReference meetingsDatabaseReference = mFirebaseDatabase.getReference().child("meetings").child(mUid).child(meetingId);
         return meetingsDatabaseReference;
     }
 
@@ -150,7 +150,6 @@ public class MeetingUpdateActivity extends MainActivity {
 
         Set<String> keys = updatedMeeting.getParticipants().keySet();
         for (String key : keys) {
-            System.out.println("KEY " + key);
             mContactDatabaseReference.child(key).child("meetings").child(meetingId).setValue(true);
         }
     }
@@ -266,7 +265,7 @@ public class MeetingUpdateActivity extends MainActivity {
                     String name = ds.child("name").getValue(String.class);
                     String organization = ds.child("organization").getValue(String.class);
                     String editTextLabel = name + " - " + organization;
-                    mAllContactsNamesArrayAdapter.add(editTextLabel);
+                    mAllContactsNamesArray.add(editTextLabel);
                     mParticipatingContactsIdDictionary.put(editTextLabel, ds.getKey());
                 }
             }
