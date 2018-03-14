@@ -1,8 +1,12 @@
 package com.example.ncrm;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -17,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -95,8 +101,9 @@ public class MeetingAddActivity extends MainActivity {
         SetTime meetingTime = new SetTime(this, meetingTimeEditText);
 
         // ArrayAdapter to show selected contact names who participate in the meeting
-        mMeetingParticipantArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, new ArrayList<String>());
-        mParticipantListView.setAdapter(mMeetingParticipantArrayAdapter);
+//        mMeetingParticipantArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, new ArrayList<String>());
+//        mParticipantListView.setAdapter(mMeetingParticipantArrayAdapter);
+        mParticipantListView.setAdapter(new ParticipantAdapter(this, R.layout.participant_list_item, mParticipantsArray));
 
         ImageButton addParticipantBtn = (ImageButton) findViewById(R.id.addParticipantBtn);
         addParticipant(addParticipantBtn);
@@ -183,9 +190,11 @@ public class MeetingAddActivity extends MainActivity {
         addParticipantBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMeetingParticipantArrayAdapter.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
-                mMeetingParticipantArrayAdapter.notifyDataSetChanged();
+//                mMeetingParticipantArrayAdapter.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
+//                mMeetingParticipantArrayAdapter.notifyDataSetChanged();
+
                 mParticipantsArray.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
+                System.out.println("MPL " + mParticipantsArray);
                 getListViewSize(mParticipantListView);
             }
         });
@@ -246,5 +255,44 @@ public class MeetingAddActivity extends MainActivity {
         } else {
             return false;
         }
+    }
+
+    private class ParticipantAdapter extends ArrayAdapter<String> {
+        private int layout;
+        public ParticipantAdapter(@NonNull Context context, int resource, @NonNull List<String> objects) {
+            super(context, resource, objects);
+            layout = resource;
+        }
+
+        @NonNull
+        @Override
+        public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            ParticipantViewHolder mainParticipantViewHolder = null;
+            if (convertView  == null) {
+                LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+                convertView = layoutInflater.inflate(layout, parent, false);
+                ParticipantViewHolder participantViewHolder = new ParticipantViewHolder();
+                participantViewHolder.removeBtn = (ImageButton) convertView.findViewById(R.id.removeBtn);
+                participantViewHolder.participantTextView = (TextView) convertView.findViewById(R.id.participantText);
+                participantViewHolder.participantTextView.setText(getItem(position));
+                participantViewHolder.removeBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(getContext(), "Button clicked for " + getItem(position), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                convertView.setTag(participantViewHolder);
+            }
+            else {
+                mainParticipantViewHolder = (ParticipantViewHolder) convertView.getTag();
+                mainParticipantViewHolder.participantTextView.setText(getItem(position));
+            }
+            return convertView;
+        }
+    }
+
+    public class ParticipantViewHolder {
+        ImageButton removeBtn;
+        TextView participantTextView;
     }
 }
