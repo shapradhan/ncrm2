@@ -3,11 +3,11 @@ package com.example.ncrm;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.View;
-import android.widget.Button;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -32,32 +32,76 @@ public class ReminderAddActivity extends MainActivity {
 
         EditText reminderTimeEditText = (EditText) findViewById(R.id.reminderTimeEditText);
         SetTime reminderTime = new SetTime(this, reminderTimeEditText);
+    }
 
-        Button addReminderBtn = (Button) findViewById(R.id.addReminderBtn);
-        addReminderBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText reminderItemEditText = (EditText) findViewById(R.id.reminderItemEditText);
-                EditText reminderDateEditText = (EditText) findViewById(R.id.reminderDateEditText);
-                EditText reminderTimeEditText = (EditText) findViewById(R.id.reminderTimeEditText);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        final MenuItem menuItem = menu.add(Menu.NONE, 1000, Menu.NONE, R.string.add_caps);
+        menuItem.setShowAsAction(1);
+        return true;
+    }
 
-                String reminderItem = Utility.getStringFromEditText(reminderItemEditText);
-                String reminderDate = Utility.getStringFromEditText(reminderDateEditText);
-                String reminderTime = Utility.getStringFromEditText(reminderTimeEditText);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
 
-                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                DatabaseReference remindersDatabaseReference = firebaseDatabase.getReference().child("reminders").child(uid);
+        Reminder reminder = getInputValues();
+        DatabaseReference databaseReference = getDatabaseReference();
 
-                Reminder reminder = new Reminder(reminderItem, reminderDate, reminderTime);
+        boolean addedInDatabase = addInDatabase(databaseReference, reminder);
+        if (addedInDatabase) {
+            navigateScene();
+        } else {
+            Toast.makeText(getApplicationContext(), "Please provide meeting title", Toast.LENGTH_SHORT).show();
+        }
+        return true;
+    }
 
-                remindersDatabaseReference.push().setValue(reminder);
-
-                Utility.cleanUpEditText(reminderItemEditText, reminderDateEditText, reminderTimeEditText);
-
-                Intent intent = new Intent(ReminderAddActivity.this, ReminderListActivity.class);
-                startActivity(intent);
+    private boolean addInDatabase(DatabaseReference databaseReference, Reminder reminder) {
+        if (databaseReference != null & reminder != null) {
+            if (validateReminder(reminder)) {
+                databaseReference.push().setValue(reminder);
+                return true;
+            } else {
+                return false;
             }
-        });
+        } else {
+            return false;
+        }
+    }
+
+    private boolean validateReminder(Reminder reminder) {
+        if (reminder.getReminderItem() != null && !reminder.getReminderItem().equals("")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private DatabaseReference getDatabaseReference() {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference remindersDatabaseReference = firebaseDatabase.getReference().child("reminders").child(uid);
+        return remindersDatabaseReference;
+    }
+
+    private Reminder getInputValues() {
+        EditText reminderItemEditText = (EditText) findViewById(R.id.reminderItemEditText);
+        EditText reminderDateEditText = (EditText) findViewById(R.id.reminderDateEditText);
+        EditText reminderTimeEditText = (EditText) findViewById(R.id.reminderTimeEditText);
+
+        String reminderItem = Utility.getStringFromEditText(reminderItemEditText);
+        String reminderDate = Utility.getStringFromEditText(reminderDateEditText);
+        String reminderTime = Utility.getStringFromEditText(reminderTimeEditText);
+
+        Reminder reminder = new Reminder(reminderItem, reminderDate, reminderTime);
+
+        return reminder;
+    }
+
+    private void navigateScene() {
+        Intent intent = new Intent(ReminderAddActivity.this, ReminderListActivity.class);
+        startActivity(intent);
     }
 }
