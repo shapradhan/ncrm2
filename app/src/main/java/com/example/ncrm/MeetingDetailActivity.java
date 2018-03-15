@@ -1,5 +1,8 @@
 package com.example.ncrm;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -28,7 +31,8 @@ public class MeetingDetailActivity extends MainActivity {
     private ArrayList<String> mParticipantNamesArray = new ArrayList<>();
     private ListView mParticipantListView;
     private FirebaseDatabase mFirebaseDatabase;
-    private String uid;
+    private String mUid;
+    private String mMeetingId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,6 +43,7 @@ public class MeetingDetailActivity extends MainActivity {
 
         Intent intent = getIntent();
         mSelectedMeeting = (Meeting) intent.getSerializableExtra("object");
+        mMeetingId = mSelectedMeeting.getId();
 
         TextView meetingTitle = (TextView) findViewById(R.id.meetingTitle);
         meetingTitle.setText(mSelectedMeeting.getTitle());
@@ -72,20 +77,19 @@ public class MeetingDetailActivity extends MainActivity {
                 startActivity(intent);
                 break;
             case R.id.action_delete:
-//                showDeleteConfirmationDialog();
+                showDeleteConfirmationDialog();
                 break;
         }
         return true;
     }
 
-
     private void getDataFromFirebase() {
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
         DatabaseReference meetingParticipantDatabaseReference = mFirebaseDatabase.getReference()
                 .child("meetings")
-                .child(uid)
+                .child(mUid)
                 .child(mSelectedMeeting.getId())
                 .child("participants");
 
@@ -101,7 +105,7 @@ public class MeetingDetailActivity extends MainActivity {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     DatabaseReference meetingParticipantNameDatabaseReference = mFirebaseDatabase.getReference()
                             .child("contacts")
-                            .child(uid)
+                            .child(mUid)
                             .child(ds.getKey())
                             .child("name");
 
@@ -124,5 +128,64 @@ public class MeetingDetailActivity extends MainActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+
+    private void deleteFromDatabase() {
+        final DatabaseReference meetingsDatabaseReference = mFirebaseDatabase.getReference().child("meetings").child(mUid).child(mMeetingId);
+        deleteFromContact();
+        meetingsDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds1 : dataSnapshot.getChildren()) {
+                    meetingsDatabaseReference.removeValue();
+                }
+                navigateToList(getApplicationContext());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
+    }
+
+    private void deleteFromContact() {
+        DatabaseReference contactDatabaseReference = mFirebaseDatabase.getReference().child("contacts").child(mUid);
+        contactDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds1 : dataSnapshot.getChildren()) {
+                    if (ds1.child("meetings").child(mMeetingId).getValue() != null && ds1.child("meetings").child(mMeetingId).getValue().toString().equals("true")) {
+                        ds1.child("meetings").child(mMeetingId).getRef().removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
+    }
+
+    private void showDeleteConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MeetingDetailActivity.this);
+        builder.setMessage("Are you sure you want to delete?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                deleteFromDatabase();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog confirmationDialog = builder.create();
+        confirmationDialog.show();
+    }
+
+    private void navigateToList(Context context) {
+        Intent intent = new Intent(context, MeetingListActivity.class);
+        startActivity(intent);
     }
 }
