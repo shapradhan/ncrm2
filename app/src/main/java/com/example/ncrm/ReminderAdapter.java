@@ -77,6 +77,7 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference remindersDatabaseReference = FirebaseDatabase.getInstance().getReference().child("reminders").child(uid).child(reminderId);
         remindersDatabaseReference.removeValue();
+        mReminderList.remove(adapterPosition);
         notifyItemRemoved(adapterPosition);
     }
 
