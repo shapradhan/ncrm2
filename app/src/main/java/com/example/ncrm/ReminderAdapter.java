@@ -8,6 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
 /**
@@ -35,8 +39,9 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         holder.mReminderItem.setText(reminder.getReminderItem());
         holder.mReminderDate.setText(reminder.getReminderDate());
         holder.mReminderTime.setText(reminder.getReminderTime());
-        attachChildListener(holder.mEditBtn, reminder);
-        attachChildListener(holder.mDeleteBtn, reminder);
+        attachChildListener(holder.mEditBtn, reminder, holder.getAdapterPosition());
+        attachChildListener(holder.mDeleteBtn, reminder, holder.getAdapterPosition());
+
     }
 
     @Override
@@ -44,7 +49,7 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         return mReminderList.size();
     }
 
-    private void attachChildListener(final ImageButton button, final Reminder reminder) {
+    private void attachChildListener(final ImageButton button, final Reminder reminder, final int adapterPosition) {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,7 +58,7 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
                         editReminder(reminder);
                         break;
                     case R.id.deleteBtn:
-                        deleteReminder(reminder);
+                        deleteReminder(reminder, adapterPosition);
                         break;
                 }
             }
@@ -63,7 +68,12 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
     private void editReminder(Reminder reminder) {
     }
 
-    private void deleteReminder(Reminder reminder) {
+    private void deleteReminder(Reminder reminder, int adapterPosition) {
+        String reminderId = reminder.getId();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference remindersDatabaseReference = FirebaseDatabase.getInstance().getReference().child("reminders").child(uid).child(reminderId);
+        remindersDatabaseReference.removeValue();
+        notifyItemRemoved(adapterPosition);
     }
 
     public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
