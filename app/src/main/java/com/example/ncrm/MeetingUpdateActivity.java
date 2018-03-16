@@ -88,6 +88,13 @@ public class MeetingUpdateActivity extends MainActivity {
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         getLayoutInflater().inflate(R.layout.activity_meeting_update, frameLayout);
 
+        EditText meetingDateEditText = (EditText) findViewById(R.id.meetingDateEditText);
+        SetDate meetingDate = new SetDate(this, meetingDateEditText);
+
+        EditText meetingTimeEditText = (EditText) findViewById(R.id.meetingTimeEditText);
+        SetTime meetingTime = new SetTime(this, meetingTimeEditText);
+
+
         Intent intent = getIntent();
         mSelectedMeeting = (Meeting) intent.getSerializableExtra("meeting");
 

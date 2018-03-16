@@ -28,6 +28,12 @@ public class ReminderUpdateActivity extends MainActivity {
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         getLayoutInflater().inflate(R.layout.activity_reminder_add, frameLayout);
 
+        EditText reminderDateEditText = (EditText) findViewById(R.id.reminderDateEditText);
+        SetDate reminderDate = new SetDate(this, reminderDateEditText);
+
+        EditText reminderTimeEditText = (EditText) findViewById(R.id.reminderTimeEditText);
+        SetTime reminderTime = new SetTime(this, reminderTimeEditText);
+
         Intent intent = getIntent();
         selectedReminder = (Reminder) intent.getSerializableExtra("object");
 
