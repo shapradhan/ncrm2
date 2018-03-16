@@ -297,6 +297,7 @@ public class MeetingUpdateActivity extends MainActivity {
             public void onClick(View v) {
                 mParticipantsArray.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
                 getListViewSize(mParticipantListView);
+                mMeetingParticipantAutoCompleteTextView.setText("");
             }
         });
     }
