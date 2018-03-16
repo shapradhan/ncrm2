@@ -114,7 +114,8 @@
             android:name=".MediaViewerActivity"
             android:label="Update reminder"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="orientation|screenSize"/>
     </application>
 
 </manifest>
