@@ -110,6 +110,11 @@
             android:label="Update reminder"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".MediaViewerActivity"
+            android:label="Update reminder"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
     </application>
 
 </manifest>

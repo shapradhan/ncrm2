@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 /**
@@ -37,7 +35,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
         holder.mFileNameItem.setText(file.getFileName());
         holder.mFileTypeItem.setText(file.getType());
         holder.mCreatedOnItem.setText(file.getCreatedOn().toString());
-        holder.mLastViewedOnItem.setText(file.getLastViewedOn().toString());
+//        holder.mLastViewedOnItem.setText(file.getLastViewedOn().toString());
     }
 
     @Override
@@ -66,6 +64,15 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
 
         @Override
         public void onClick(View v) {
+            int position = getAdapterPosition();
+            File file = this.mFiles.get(position);
+            String[] fileTypeParts = file.getType().split("/");
+            String fileType = fileTypeParts[0];
+            if (fileType.equals("image")) {
+                Intent intent = new Intent(mContext, MediaViewerActivity.class);
+                intent.putExtra("url", file.getUrl());
+                mContext.startActivity(intent);
+            }
         }
     }
 }

@@ -24,8 +24,6 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.util.Date;
-
 /**
  * Created by shameer on 2018-03-09.
  */
@@ -112,7 +110,7 @@ public class FileUploadActivity extends MainActivity {
                             DatabaseReference filesDatabaseReference = firebaseDatabase.getReference().child("files").child(uid);
 
 
-                            File file = new File(mFileName, System.currentTimeMillis(), mFileMimeType, uid);
+                            File file = new File(mFileName, System.currentTimeMillis(), mFileMimeType, uid, taskSnapshot.getDownloadUrl().toString());
                             filesDatabaseReference.push().setValue(file);
                         }
                     })
@@ -135,8 +133,7 @@ public class FileUploadActivity extends MainActivity {
                             mFileUploadSizeTextView.setText(taskSnapshot.getBytesTransferred() + " bytes of " + taskSnapshot.getTotalByteCount() + " bytes");
                         }
                     });
-        }
-        else {
+        } else {
         }
     }
 

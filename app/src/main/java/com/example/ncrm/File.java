@@ -15,15 +15,17 @@ public class File implements Serializable {
     private Long lastViewedOn;
     private String type;
     private String userId;
+    private String url;
 
     @Exclude
     private String id;
 
-    public File(String fileName, Long createdOn, String type, String userId) {
+    public File(String fileName, Long createdOn, String type, String userId, String url) {
         this.fileName = fileName;
         this.createdOn = createdOn;
         this.type = type;
         this.userId = userId;
+        this.url = url;
     }
 
     public File() {}
@@ -70,6 +72,14 @@ public class File implements Serializable {
 
     public String getUserId() {
         return userId;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public void setUserId(String userId) {
