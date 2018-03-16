@@ -58,7 +58,6 @@ public class MeetingUpdateActivity extends MainActivity {
     private AutoCompleteTextView mMeetingParticipantAutoCompleteTextView;
 
     private ArrayList<String> mParticipantsArray = new ArrayList<>();
-    private ArrayList<String> mAllContactsNamesArray = new ArrayList<>();
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mContactDatabaseReference;
@@ -93,16 +92,9 @@ public class MeetingUpdateActivity extends MainActivity {
         mSelectedMeeting = (Meeting) intent.getSerializableExtra("meeting");
 
         // ArrayAdapter to show all available contacts in a AutoCompleteTextView
-        mAllContactsNamesArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mAllContactsNamesArray);
+        mAllContactsNamesArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
         mMeetingParticipantAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.meetingParticipantAutoCompleteTextView);
         mMeetingParticipantAutoCompleteTextView.setAdapter(mAllContactsNamesArrayAdapter);
-
-        EditText meetingDateEditText = (EditText) findViewById(R.id.meetingDateEditText);
-        SetDate meetingDate = new SetDate(this, meetingDateEditText);
-
-        EditText meetingTimeEditText = (EditText) findViewById(R.id.meetingTimeEditText);
-        SetTime meetingTime = new SetTime(this, meetingTimeEditText);
-
 
         mParticipantListView = (ListView) findViewById(R.id.participantList);
 
@@ -120,6 +112,7 @@ public class MeetingUpdateActivity extends MainActivity {
 
         ImageButton addParticipantBtn = (ImageButton) findViewById(R.id.addParticipantBtn);
         addParticipant(addParticipantBtn);
+
     }
 
     @Override
@@ -139,10 +132,10 @@ public class MeetingUpdateActivity extends MainActivity {
     }
 
     private DatabaseReference getDatabaseReference() {
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String meetingId = mSelectedMeeting.getId();
-        DatabaseReference meetingsDatabaseReference = mFirebaseDatabase.getReference().child("meetings").child(mUid).child(meetingId);
+        DatabaseReference meetingsDatabaseReference = firebaseDatabase.getReference().child("meetings").child(uid).child(meetingId);
         return meetingsDatabaseReference;
     }
 
@@ -157,8 +150,13 @@ public class MeetingUpdateActivity extends MainActivity {
 
         Set<String> keys = updatedMeeting.getParticipants().keySet();
         for (String key : keys) {
+            System.out.println("KEY " + key);
             mContactDatabaseReference.child(key).child("meetings").child(meetingId).setValue(true);
         }
+
+
+
+
     }
 
     private void setValuesFromDatabase() {
@@ -170,6 +168,7 @@ public class MeetingUpdateActivity extends MainActivity {
         mCityEditText = (EditText) findViewById(R.id.meetingCityEditText);
         mCountrySpinner = (Spinner) findViewById(R.id.meetingCountrySpinner);
         mAgendaEditText = (EditText) findViewById(R.id.meetingAgendaEditText);
+
 
         String country = mSelectedMeeting.getCountry();
         ArrayAdapter arrayAdapter = (ArrayAdapter) mCountrySpinner.getAdapter();
@@ -204,6 +203,8 @@ public class MeetingUpdateActivity extends MainActivity {
                 });
             }
         }
+
+
     }
 
     private Meeting getInputValues() {
@@ -272,7 +273,7 @@ public class MeetingUpdateActivity extends MainActivity {
                     String name = ds.child("name").getValue(String.class);
                     String organization = ds.child("organization").getValue(String.class);
                     String editTextLabel = name + " - " + organization;
-                    mAllContactsNamesArray.add(editTextLabel);
+                    mAllContactsNamesArrayAdapter.add(editTextLabel);
                     mParticipatingContactsIdDictionary.put(editTextLabel, ds.getKey());
                 }
             }
@@ -289,7 +290,6 @@ public class MeetingUpdateActivity extends MainActivity {
             public void onClick(View v) {
                 mParticipantsArray.add(mMeetingParticipantAutoCompleteTextView.getText().toString());
                 getListViewSize(mParticipantListView);
-                mMeetingParticipantAutoCompleteTextView.setText("");
             }
         });
     }
