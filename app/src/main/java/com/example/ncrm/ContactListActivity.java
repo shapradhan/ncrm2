@@ -19,6 +19,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by shameer on 2018-02-10.
@@ -77,6 +79,7 @@ public class ContactListActivity extends MainActivity {
                     String id = dataSnapshot.getKey();
                     contact.setId(id);
                     mContactList.add(contact);
+                    sortArray(mContactList);
                     mContactListRecyclerView.setAdapter(mContactAdapter);
                 }
 
@@ -102,5 +105,14 @@ public class ContactListActivity extends MainActivity {
             };
             mContactsDatabaseReference.addChildEventListener(mChildEventListener);
         }
+    }
+
+    private void sortArray(ArrayList<Contact> arrayList) {
+        Collections.sort(arrayList, new Comparator<Contact>() {
+            @Override
+            public int compare(Contact contact1, Contact contact2) {
+                return contact1.getName().compareTo(contact2.getName());
+            }
+        });
     }
 }
