@@ -1,6 +1,7 @@
 package com.example.ncrm;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +67,9 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
     }
 
     private void editReminder(Reminder reminder) {
+        Intent intent = new Intent(mContext, ReminderUpdateActivity.class);
+        intent.putExtra("object", reminder);
+        mContext.startActivity(intent);
     }
 
     private void deleteReminder(Reminder reminder, int adapterPosition) {
