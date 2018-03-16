@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -18,7 +19,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by shameer on 2018-03-09.
@@ -77,6 +85,7 @@ public class ReminderListActivity extends MainActivity {
                     String id = dataSnapshot.getKey();
                     reminder.setId(id);
                     mReminderList.add(reminder);
+                    sortArray(mReminderList);
                     mReminderListRecyclerView.setAdapter(mReminderAdapter);
                 }
 
@@ -102,5 +111,44 @@ public class ReminderListActivity extends MainActivity {
             };
             mRemindersDatabaseReference.addChildEventListener(mChildEventListener);
         }
+    }
+
+    private void sortArray(ArrayList<Reminder> arrayList) {
+        Collections.sort(arrayList, new Comparator<Reminder>() {
+            @Override
+            public int compare(Reminder reminder1, Reminder reminder2) {
+                Date date1 = convertStringToDate(reminder1.getReminderDate());
+                Date date2 = convertStringToDate(reminder2.getReminderDate());
+
+                if (date1.compareTo(date2) == 0) {
+                    Date time1 = convertStringToTime(reminder1.getReminderTime());
+                    Date time2 = convertStringToTime(reminder2.getReminderTime());
+                    return (time1.compareTo(time2));
+                }
+                return date1.compareTo(date2);
+            }
+        });
+    }
+
+    private Date convertStringToDate(String dateString) {
+        DateFormat format = new SimpleDateFormat("EE, dd MMMM yyyy", Locale.ENGLISH);
+        try {
+            Date date = format.parse(dateString);
+            return date;
+        } catch (ParseException e) {
+            Toast.makeText(getApplicationContext(), "Could not convert string to date", Toast.LENGTH_SHORT).show();
+        }
+        return null;
+    }
+
+    private Date convertStringToTime(String timeString) {
+        DateFormat format = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
+        try {
+            Date time = format.parse(timeString);
+            return time;
+        } catch (ParseException e) {
+            Toast.makeText(getApplicationContext(), "Could not convert string to date", Toast.LENGTH_SHORT).show();
+        }
+        return null;
     }
 }
