@@ -37,7 +37,7 @@ import java.util.ArrayList;
  */
 
 public class ContactDetailActivity extends MainActivity {
-    Contact mSelectedContact;
+    private Contact mSelectedContact;
     private ArrayList<String> mMeetingIDList = new ArrayList<>();
     private ArrayList<Meeting> mMeetingsArray = new ArrayList<>();
     private ArrayAdapter<String> mAllContactsNamesArrayAdapter;
@@ -57,6 +57,7 @@ public class ContactDetailActivity extends MainActivity {
 
         Intent intent = getIntent();
         mSelectedContact = (Contact) intent.getSerializableExtra("object");
+
         mContactId = mSelectedContact.getId();
 
         ImageButton mapBtn = (ImageButton) findViewById(R.id.mapBtn);
@@ -71,72 +72,9 @@ public class ContactDetailActivity extends MainActivity {
             }
         });
 
-        TextView contactName = (TextView) findViewById(R.id.contactItemName);
-        contactName.setText(mSelectedContact.getName());
-
-        TextView contactOrganization = (TextView) findViewById(R.id.contactItemOrganization);
-        contactOrganization.setText(mSelectedContact.getOrganization());
-
-        TextView contactFullAddress = (TextView) findViewById(R.id.contactItemFullAddress);
-        contactFullAddress.setText(mSelectedContact.getStreetAddress() + ", " + mSelectedContact.getCity() + ", " + mSelectedContact.getCountry());
-
-        ImageButton phoneBtn = (ImageButton) findViewById(R.id.phoneBtn);
-        phoneBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                initiateCall(mSelectedContact.getPhoneNumber(), "Phone");
-            }
-        });
-
-        ImageButton mobileBtn = (ImageButton) findViewById(R.id.mobileBtn);
-        mobileBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                initiateCall(mSelectedContact.getMobileNumber(), "Mobile");
-            }
-        });
-
-        ImageButton smsBtn = (ImageButton) findViewById(R.id.smsBtn);
-        smsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendSMS(mSelectedContact.getMobileNumber());
-            }
-        });
-
-        ImageButton emailBtn = (ImageButton) findViewById(R.id.emailBtn);
-        emailBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendEmail(mSelectedContact.getEmail());
-            }
-        });
-
-        ImageButton websiteBtn = (ImageButton) findViewById(R.id.websiteBtn);
-        websiteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openWebsite(mSelectedContact.getWebsite());
-            }
-        });
-
-        ImageButton facebookBtn = (ImageButton) findViewById(R.id.facebookBtn);
-        facebookBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openFacebook(mSelectedContact.getFacebookId());
-            }
-        });
-
-        ImageButton twitterBtn = (ImageButton) findViewById(R.id.twitterBtn);
-        twitterBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openTwitter(mSelectedContact.getTwitterId());
-            }
-        });
-
-        getMeetingData(mContactId);
+        setTextViewValues();
+        setButtonClickListeners();
+        getMeetingData();
 
         ListView meetingsListView = (ListView) findViewById(R.id.contactMeetingListView);
         mAllContactsNamesArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
@@ -280,10 +218,8 @@ public class ContactDetailActivity extends MainActivity {
         }
     }
 
-    private void getMeetingData(String contactId) {
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference contactMeetingDatabaseReference = firebaseDatabase.getReference().child("contacts").child(mUid).child(contactId).child("meetings");
-
+    private void getMeetingData() {
+        DatabaseReference contactMeetingDatabaseReference = Utility.getDatabaseReference(mFirebaseDatabase, "contacts", mUid).child(mContactId).child("meetings");
         contactMeetingDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -300,9 +236,8 @@ public class ContactDetailActivity extends MainActivity {
     }
 
     private void getMeetingInfo() {
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        for(final String meetingId : mMeetingIDList) {
-            DatabaseReference contactMeetingDatabaseReference = mFirebaseDatabase.getReference().child("meetings").child(uid).child(meetingId);
+        for (final String meetingId : mMeetingIDList) {
+            DatabaseReference contactMeetingDatabaseReference = Utility.getDatabaseReference(mFirebaseDatabase, "meetings", mUid).child(meetingId);
 
             contactMeetingDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -342,7 +277,7 @@ public class ContactDetailActivity extends MainActivity {
     }
 
     private void deleteFromDatabase() {
-        final DatabaseReference contactsDatabaseReference = mFirebaseDatabase.getReference().child("contacts").child(mUid).child(mContactId);
+        final DatabaseReference contactsDatabaseReference = Utility.getDatabaseReference(mFirebaseDatabase, "contacts", mUid).child(mContactId);
         contactsDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -370,5 +305,74 @@ public class ContactDetailActivity extends MainActivity {
     private void navigateToList(Context context) {
         Intent intent = new Intent(context, ContactListActivity.class);
         startActivity(intent);
+    }
+
+    private void setTextViewValues() {
+        TextView contactName = (TextView) findViewById(R.id.contactItemName);
+        contactName.setText(mSelectedContact.getName());
+
+        TextView contactOrganization = (TextView) findViewById(R.id.contactItemOrganization);
+        contactOrganization.setText(mSelectedContact.getOrganization());
+
+        TextView contactFullAddress = (TextView) findViewById(R.id.contactItemFullAddress);
+        contactFullAddress.setText(mSelectedContact.getStreetAddress() + ", " + mSelectedContact.getCity() + ", " + mSelectedContact.getCountry());
+    }
+
+    private void setButtonClickListeners() {
+        ImageButton phoneBtn = (ImageButton) findViewById(R.id.phoneBtn);
+        phoneBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initiateCall(mSelectedContact.getPhoneNumber(), "Phone");
+            }
+        });
+
+        ImageButton mobileBtn = (ImageButton) findViewById(R.id.mobileBtn);
+        mobileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initiateCall(mSelectedContact.getMobileNumber(), "Mobile");
+            }
+        });
+
+        ImageButton smsBtn = (ImageButton) findViewById(R.id.smsBtn);
+        smsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendSMS(mSelectedContact.getMobileNumber());
+            }
+        });
+
+        ImageButton emailBtn = (ImageButton) findViewById(R.id.emailBtn);
+        emailBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendEmail(mSelectedContact.getEmail());
+            }
+        });
+
+        ImageButton websiteBtn = (ImageButton) findViewById(R.id.websiteBtn);
+        websiteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openWebsite(mSelectedContact.getWebsite());
+            }
+        });
+
+        ImageButton facebookBtn = (ImageButton) findViewById(R.id.facebookBtn);
+        facebookBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFacebook(mSelectedContact.getFacebookId());
+            }
+        });
+
+        ImageButton twitterBtn = (ImageButton) findViewById(R.id.twitterBtn);
+        twitterBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openTwitter(mSelectedContact.getTwitterId());
+            }
+        });
     }
 }
