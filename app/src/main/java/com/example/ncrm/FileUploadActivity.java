@@ -189,6 +189,7 @@ public class FileUploadActivity extends MainActivity {
             super.onPostExecute(aVoid);
             Utility.cleanUpEditText(mFileNameEditText, mFileDescriptionEditText);
             Intent intent = new Intent(FileUploadActivity.this, FileListActivity.class);
+            intent.putExtra("sortMethod", "name");
             startActivity(intent);
         }
 
