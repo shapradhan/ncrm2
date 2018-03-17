@@ -22,24 +22,23 @@ import java.util.ArrayList;
  */
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder> {
-    ArrayList<File> mFileList = new ArrayList<>();
-    Context mContext;
-    private StorageReference mStorageReference;
+    private ArrayList<File> mFileArrayList = new ArrayList<>();
+    private Context mContext;
 
     public FileAdapter(ArrayList<File> fileList, Context context) {
-        mFileList = fileList;
+        mFileArrayList = fileList;
         mContext = context;
     }
 
     @Override
     public FileAdapter.FileViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.file_item_view, parent, false);
-        return new FileAdapter.FileViewHolder(view, mContext, mFileList);
+        return new FileAdapter.FileViewHolder(view, mContext, mFileArrayList);
     }
 
     @Override
     public void onBindViewHolder(FileAdapter.FileViewHolder holder, int position) {
-        File file = mFileList.get(position);
+        File file = mFileArrayList.get(position);
         holder.mFileNameItem.setText(file.getFileName());
         holder.mFileTypeItem.setText(file.getType());
         holder.mCreatedOnItem.setText(file.getCreatedOn().toString());
@@ -49,7 +48,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
 
     @Override
     public int getItemCount() {
-        return mFileList.size();
+        return mFileArrayList.size();
     }
 
     private void attachChildListener(final ImageButton button, final File file, final int adapterPosition) {
@@ -77,13 +76,13 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
     private void deleteFile(File file, int adapterPosition) {
         String fileId = file.getId();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mStorageReference = FirebaseStorage.getInstance().getReference();
+        StorageReference mStorageReference = FirebaseStorage.getInstance().getReference();
         StorageReference fileReference = mStorageReference.child("files/" + file.getFileName());
         fileReference.delete();
 
         DatabaseReference remindersDatabaseReference = FirebaseDatabase.getInstance().getReference().child("files").child(uid).child(fileId);
         remindersDatabaseReference.removeValue();
-        mFileList.remove(adapterPosition);
+        mFileArrayList.remove(adapterPosition);
         notifyItemRemoved(adapterPosition);
     }
 

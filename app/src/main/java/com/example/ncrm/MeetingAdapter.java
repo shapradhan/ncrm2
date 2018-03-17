@@ -15,23 +15,23 @@ import java.util.ArrayList;
  */
 
 public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MeetingViewHolder> {
-    ArrayList<Meeting> mMeetingList = new ArrayList<>();
-    Context mContext;
+    private ArrayList<Meeting> mMeetingArrayList = new ArrayList<>();
+    private Context mContext;
 
     public MeetingAdapter(ArrayList<Meeting> meetingList, Context context) {
-        mMeetingList = meetingList;
+        mMeetingArrayList = meetingList;
         mContext = context;
     }
 
     @Override
     public MeetingAdapter.MeetingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.meeting_item_view, parent, false);
-        return new MeetingAdapter.MeetingViewHolder(view, mContext, mMeetingList);
+        return new MeetingAdapter.MeetingViewHolder(view, mContext, mMeetingArrayList);
     }
 
     @Override
     public void onBindViewHolder(MeetingAdapter.MeetingViewHolder holder, int position) {
-        Meeting meeting = mMeetingList.get(position);
+        Meeting meeting = mMeetingArrayList.get(position);
         holder.mMeetingTitleItem.setText(meeting.getTitle());
         holder.mMeetingDateItem.setText(meeting.getDate());
         holder.mMeetingTimeItem.setText(meeting.getTime());
@@ -39,7 +39,7 @@ public class MeetingAdapter extends RecyclerView.Adapter<MeetingAdapter.MeetingV
 
     @Override
     public int getItemCount() {
-        return mMeetingList.size();
+        return mMeetingArrayList.size();
     }
 
     public class MeetingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

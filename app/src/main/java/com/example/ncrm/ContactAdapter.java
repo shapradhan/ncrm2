@@ -24,37 +24,35 @@ import java.util.List;
  */
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder> {
-    ArrayList<Contact> mContactList = new ArrayList<>();
+    private ArrayList<Contact> mContactArrayList = new ArrayList<>();
     Context mContext;
-    ArrayList<String> mContactIDList = new ArrayList<>();
-    ArrayList<String> mcid;
 
     public ContactAdapter(ArrayList<Contact> contactList, Context context) {
-        mContactList = contactList;
+        mContactArrayList = contactList;
         mContext = context;
     }
 
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_item_view, parent, false);
-        return new ContactViewHolder(view, mContext, mContactList);
+        return new ContactViewHolder(view, mContext, mContactArrayList);
     }
 
     @Override
     public void onBindViewHolder(ContactAdapter.ContactViewHolder holder, int position) {
-        Contact contact = mContactList.get(position);
-        holder.mContactNameItem.setText(contact.getName());
-        holder.mContactOrganizationItem.setText(contact.getOrganization());
+        Contact contact = mContactArrayList.get(position);
+        holder.mNameItem.setText(contact.getName());
+        holder.mOrganizationItem.setText(contact.getOrganization());
     }
 
     @Override
     public int getItemCount() {
-        return mContactList.size();
+        return mContactArrayList.size();
     }
 
     public class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView mContactNameItem;
-        TextView mContactOrganizationItem;
+        TextView mNameItem;
+        TextView mOrganizationItem;
         ArrayList<Contact> mContacts = new ArrayList<>();
         Context mContext;
 
@@ -63,8 +61,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
             mContacts = contacts;
             mContext = context;
             itemView.setOnClickListener(this);
-            mContactNameItem = (TextView) itemView.findViewById(R.id.contactNameItem);
-            mContactOrganizationItem = (TextView) itemView.findViewById(R.id.contactOrganizationItem);
+            mNameItem = (TextView) itemView.findViewById(R.id.contactNameItem);
+            mOrganizationItem = (TextView) itemView.findViewById(R.id.contactOrganizationItem);
         }
 
         @Override
@@ -73,26 +71,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
             Contact contact = this.mContacts.get(position);
             Intent intent = new Intent(mContext, ContactDetailActivity.class);
             intent.putExtra("object", contact);
-            intent.putExtra("contactIDList", mContactIDList);
             mContext.startActivity(intent);
         }
-    }
-
-    private void getMeetingData(String contactId) {
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference contactMeetingDatabaseReference = firebaseDatabase.getReference().child("contacts").child(uid).child(contactId).child("meetings");
-        contactMeetingDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    mContactIDList.add(ds.getKey());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
     }
 }

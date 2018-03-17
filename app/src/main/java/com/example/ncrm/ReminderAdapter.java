@@ -20,34 +20,33 @@ import java.util.ArrayList;
  */
 
 public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.ReminderViewHolder> {
-    ArrayList<Reminder> mReminderList = new ArrayList<>();
-    Context mContext;
+    private ArrayList<Reminder> mReminderArrayList = new ArrayList<>();
+    private Context mContext;
 
     public ReminderAdapter(ArrayList<Reminder> reminderList, Context context) {
-        mReminderList = reminderList;
+        mReminderArrayList = reminderList;
         mContext = context;
     }
 
     @Override
     public ReminderViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.reminder_item_view, parent, false);
-        return new ReminderViewHolder(view, mContext, mReminderList);
+        return new ReminderViewHolder(view, mContext, mReminderArrayList);
     }
 
     @Override
     public void onBindViewHolder(ReminderAdapter.ReminderViewHolder holder, int position) {
-        final Reminder reminder = mReminderList.get(position);
+        final Reminder reminder = mReminderArrayList.get(position);
         holder.mReminderItem.setText(reminder.getReminderItem());
         holder.mReminderDate.setText(reminder.getReminderDate());
         holder.mReminderTime.setText(reminder.getReminderTime());
         attachChildListener(holder.mEditBtn, reminder, holder.getAdapterPosition());
         attachChildListener(holder.mDeleteBtn, reminder, holder.getAdapterPosition());
-
     }
 
     @Override
     public int getItemCount() {
-        return mReminderList.size();
+        return mReminderArrayList.size();
     }
 
     private void attachChildListener(final ImageButton button, final Reminder reminder, final int adapterPosition) {
@@ -77,7 +76,7 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference remindersDatabaseReference = FirebaseDatabase.getInstance().getReference().child("reminders").child(uid).child(reminderId);
         remindersDatabaseReference.removeValue();
-        mReminderList.remove(adapterPosition);
+        mReminderArrayList.remove(adapterPosition);
         notifyItemRemoved(adapterPosition);
     }
 
