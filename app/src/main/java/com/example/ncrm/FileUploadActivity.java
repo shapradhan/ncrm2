@@ -108,6 +108,8 @@ public class FileUploadActivity extends MainActivity {
             // Image is selected
             mFilePath = data.getData();
             mFileMimeType = getContentResolver().getType(mFilePath);
+            TextView selectedFileNameTextView = findViewById(R.id.selectedFileNameTextView);
+            selectedFileNameTextView.setText(mFileMimeType + " file selected.");
         }
     }
 
