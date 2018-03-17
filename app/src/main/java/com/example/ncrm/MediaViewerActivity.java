@@ -1,5 +1,6 @@
 package com.example.ncrm;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,6 +16,11 @@ import android.widget.MediaController;
 import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -93,6 +99,14 @@ public class MediaViewerActivity extends MainActivity {
             case R.id.action_update:
                 break;
             case R.id.action_delete:
+                String fileId = mSelectedFile.getId();
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                StorageReference fileReference = FirebaseStorage.getInstance().getReference().child("files/" + mSelectedFile.getFileName());
+                fileReference.delete();
+
+                DatabaseReference remindersDatabaseReference = FirebaseDatabase.getInstance().getReference().child("files").child(uid).child(fileId);
+                remindersDatabaseReference.removeValue();
+                navigateToList(getApplicationContext());
                 break;
         }
         return true;
@@ -103,5 +117,11 @@ public class MediaViewerActivity extends MainActivity {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         String formattedDate = dateFormat.format(date);
         return formattedDate;
+    }
+
+    private void navigateToList(Context context) {
+        Intent intent = new Intent(context, FileListActivity.class);
+        intent.putExtra("sortMethod", "name");
+        startActivity(intent);
     }
 }
