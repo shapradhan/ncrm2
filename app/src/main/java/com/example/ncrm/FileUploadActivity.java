@@ -69,7 +69,15 @@ public class FileUploadActivity extends MainActivity {
             public void onClick(View view) {
                 mFileName = Utility.getStringFromEditText(mFileNameEditText);
                 String fileDescription = Utility.getStringFromEditText(mFileDescriptionEditText);
-                new UploadFile().execute();
+
+                String fileCategories[] = mFileMimeType.split("/");
+                String fileType = fileCategories[0];
+
+                if (mFilePath != null && (fileType.equals("image") || fileType.equals("video"))) {
+                    new UploadFile().execute();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Only videos and images are allowed to be uploaded", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -93,48 +101,44 @@ public class FileUploadActivity extends MainActivity {
     }
 
     private void uploadFile() {
-        if (mFilePath != null) {
-            StorageReference fileReference = mStorageReference.child("files/" + mFileName);
+        StorageReference fileReference = mStorageReference.child("files/" + mFileName);
+        fileReference.putFile(mFilePath)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Get a URL to the uploaded content
+                        Uri uploadUrl = taskSnapshot.getDownloadUrl();
+                        mFileUploadProgressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(getApplicationContext(), "File successfully uploaded", Toast.LENGTH_SHORT).show();
 
-            fileReference.putFile(mFilePath)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            // Get a URL to the uploaded content
-                            Uri uploadUrl = taskSnapshot.getDownloadUrl();
-                            mFileUploadProgressBar.setVisibility(View.INVISIBLE);
-                            Toast.makeText(getApplicationContext(), "File successfully uploaded", Toast.LENGTH_SHORT).show();
+                        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                            DatabaseReference filesDatabaseReference = firebaseDatabase.getReference().child("files").child(uid);
+                        DatabaseReference filesDatabaseReference = firebaseDatabase.getReference().child("files").child(uid);
 
-
-                            File file = new File(mFileName, System.currentTimeMillis(), mFileMimeType, uid, taskSnapshot.getDownloadUrl().toString());
-                            filesDatabaseReference.push().setValue(file);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle unsuccessful uploads
-                            mFileUploadProgressBar.setVisibility(View.INVISIBLE);
-                            Toast.makeText(getApplicationContext(), "File could not be uploaded", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double TOTAL_PERCENTAGE = 100.0;
-                            double percentageUploaded = (TOTAL_PERCENTAGE * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                            mFileUploadProgressBar.setVisibility(View.VISIBLE);
-                            mFileUploadSizeTextView.setVisibility(View.VISIBLE);
-                            mFileUploadProgressBar.setProgress((int) percentageUploaded);
-                            mFileUploadSizeTextView.setText(taskSnapshot.getBytesTransferred() + " bytes of " + taskSnapshot.getTotalByteCount() + " bytes");
-                        }
-                    });
-        } else {
-        }
+                        File file = new File(mFileName, System.currentTimeMillis(), mFileMimeType, uid, taskSnapshot.getDownloadUrl().toString());
+                        filesDatabaseReference.push().setValue(file);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                        mFileUploadProgressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(getApplicationContext(), "File could not be uploaded", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        double TOTAL_PERCENTAGE = 100.0;
+                        double percentageUploaded = (TOTAL_PERCENTAGE * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                        mFileUploadProgressBar.setVisibility(View.VISIBLE);
+                        mFileUploadSizeTextView.setVisibility(View.VISIBLE);
+                        mFileUploadProgressBar.setProgress((int) percentageUploaded);
+                        mFileUploadSizeTextView.setText(taskSnapshot.getBytesTransferred() + " bytes of " + taskSnapshot.getTotalByteCount() + " bytes");
+                    }
+                });
     }
 
     public class UploadFile extends AsyncTask<Void, Void, Void> {
@@ -149,7 +153,6 @@ public class FileUploadActivity extends MainActivity {
             Utility.cleanUpEditText(mFileNameEditText, mFileDescriptionEditText);
             Intent intent = new Intent(FileUploadActivity.this, FileListActivity.class);
             startActivity(intent);
-
         }
 
         @Override

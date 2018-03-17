@@ -17,6 +17,8 @@ import com.bumptech.glide.Glide;
  */
 
 public class MediaViewerActivity extends MainActivity {
+    private ImageView mImageView;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,27 +26,28 @@ public class MediaViewerActivity extends MainActivity {
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         getLayoutInflater().inflate(R.layout.media_viewer, frameLayout);
 
-        ImageView imageViewer = findViewById(R.id.imageViewer);
+        mImageView = findViewById(R.id.imageViewer);
         VideoView videoPlayer = findViewById(R.id.videoPlayer);
+
         Intent intent = getIntent();
         String fileType = intent.getStringExtra("fileType");
         String url = intent.getStringExtra("url");
-
+        Uri uri = Uri.parse(url);
         switch (fileType) {
             case "image":
                 videoPlayer.setVisibility(View.GONE);
-                imageViewer.setVisibility(View.VISIBLE);
-                Glide.with(getApplicationContext()).load(url).into(imageViewer);
+                mImageView.setVisibility(View.VISIBLE);
+                Glide.with(getApplicationContext()).load(url).into(mImageView);
                 break;
             case "video":
-                imageViewer.setVisibility(View.GONE);
+                mImageView.setVisibility(View.GONE);
                 videoPlayer.setVisibility(View.VISIBLE);
                 MediaController mediaController = new MediaController(this);
                 mediaController.setAnchorView(videoPlayer);
                 videoPlayer.setMediaController(mediaController);
-                Uri uri = Uri.parse(url);
                 videoPlayer.setVideoURI(uri);
                 videoPlayer.requestFocus();
+                break;
         }
     }
 }
