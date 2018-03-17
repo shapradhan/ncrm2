@@ -18,6 +18,11 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 
 public class ReminderAddActivity extends MainActivity {
+    private String mUid;
+    private EditText mReminderEditText;
+    private EditText mDateEditTExt;
+    private EditText mTimeEditText;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,13 +30,15 @@ public class ReminderAddActivity extends MainActivity {
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         getLayoutInflater().inflate(R.layout.activity_reminder_add, frameLayout);
 
-        EditText reminderItemEditText = (EditText) findViewById(R.id.reminderItemEditText);
+        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        EditText reminderDateEditText = (EditText) findViewById(R.id.reminderDateEditText);
-        SetDate reminderDate = new SetDate(this, reminderDateEditText);
+        mReminderEditText = (EditText) findViewById(R.id.reminderItemEditText);
 
-        EditText reminderTimeEditText = (EditText) findViewById(R.id.reminderTimeEditText);
-        SetTime reminderTime = new SetTime(this, reminderTimeEditText);
+        mDateEditTExt = (EditText) findViewById(R.id.reminderDateEditText);
+        SetDate date = new SetDate(this, mDateEditTExt);
+
+        mTimeEditText = (EditText) findViewById(R.id.reminderTimeEditText);
+        SetTime time = new SetTime(this, mTimeEditText);
     }
 
     @Override
@@ -45,9 +52,9 @@ public class ReminderAddActivity extends MainActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-
         Reminder reminder = getInputValues();
-        DatabaseReference databaseReference = getDatabaseReference();
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = Utility.getDatabaseReference(firebaseDatabase, "reminders", mUid);
 
         boolean addedInDatabase = addInDatabase(databaseReference, reminder);
         if (addedInDatabase) {
@@ -79,23 +86,12 @@ public class ReminderAddActivity extends MainActivity {
         }
     }
 
-    private DatabaseReference getDatabaseReference() {
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference remindersDatabaseReference = firebaseDatabase.getReference().child("reminders").child(uid);
-        return remindersDatabaseReference;
-    }
-
     private Reminder getInputValues() {
-        EditText reminderItemEditText = (EditText) findViewById(R.id.reminderItemEditText);
-        EditText reminderDateEditText = (EditText) findViewById(R.id.reminderDateEditText);
-        EditText reminderTimeEditText = (EditText) findViewById(R.id.reminderTimeEditText);
+        String reminderItem = Utility.getStringFromEditText(mReminderEditText);
+        String date = Utility.getStringFromEditText(mDateEditTExt);
+        String time = Utility.getStringFromEditText(mTimeEditText);
 
-        String reminderItem = Utility.getStringFromEditText(reminderItemEditText);
-        String reminderDate = Utility.getStringFromEditText(reminderDateEditText);
-        String reminderTime = Utility.getStringFromEditText(reminderTimeEditText);
-
-        Reminder reminder = new Reminder(reminderItem, reminderDate, reminderTime);
+        Reminder reminder = new Reminder(reminderItem, date, time);
 
         return reminder;
     }

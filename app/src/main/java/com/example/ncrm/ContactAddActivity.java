@@ -3,11 +3,8 @@ package com.example.ncrm;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.MenuItemCompat;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
@@ -48,8 +45,10 @@ public class ContactAddActivity extends MainActivity {
         super.onOptionsItemSelected(item);
 
         Contact contact = getInputValues();
-        DatabaseReference databaseReference = getDatabaseReference();
         contact.setUserId(mUid);
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = Utility.getDatabaseReference(firebaseDatabase, "contacts", mUid);
 
         if (validateContact(contact)) {
             addInDatabase(databaseReference, contact);
@@ -101,11 +100,6 @@ public class ContactAddActivity extends MainActivity {
         );
 
         return contact;
-    }
-
-    private DatabaseReference getDatabaseReference() {
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        return firebaseDatabase.getReference().child("contacts").child(mUid);
     }
 
     private void addInDatabase(DatabaseReference databaseReference, Contact contact) {
