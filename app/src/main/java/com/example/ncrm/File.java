@@ -30,6 +30,12 @@ public class File implements Serializable {
         this.url = url;
     }
 
+    public File(String fileName, String description, Long modifiedOn) {
+        this.fileName = fileName;
+        this.description = description;
+        this.modifiedOn = modifiedOn;
+    }
+
     public File() {}
 
     public String getFileName() {

@@ -97,6 +97,9 @@ public class MediaViewerActivity extends MainActivity {
                 alertDialog.show();
                 break;
             case R.id.action_update:
+                Intent intent = new Intent(getApplicationContext(), FileUpdateActivity.class);
+                intent.putExtra("object", mSelectedFile);
+                startActivity(intent);
                 break;
             case R.id.action_delete:
                 String fileId = mSelectedFile.getId();

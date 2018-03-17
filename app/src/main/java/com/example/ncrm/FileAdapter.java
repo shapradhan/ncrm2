@@ -69,7 +69,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
     }
 
     private void editFile(File file) {
-        Intent intent = new Intent(mContext, FileUploadActivity.class);
+        Intent intent = new Intent(mContext, FileUpdateActivity.class);
         intent.putExtra("object", file);
         mContext.startActivity(intent);
     }

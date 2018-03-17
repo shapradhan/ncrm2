@@ -116,6 +116,12 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden"
             android:configChanges="orientation|screenSize"/>
+        <activity
+            android:name=".FileUpdateActivity"
+            android:label="Update reminder"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="orientation|screenSize"/>
     </application>
 
 </manifest>
