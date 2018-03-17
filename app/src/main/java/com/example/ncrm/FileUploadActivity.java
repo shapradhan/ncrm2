@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -52,7 +54,6 @@ public class FileUploadActivity extends MainActivity {
         mFileUploadSizeTextView = (TextView) findViewById(R.id.fileUploadSizeTextView);
 
         Button selectFileBtn = (Button) findViewById(R.id.selectFileBtn);
-        final Button uploadFileBtn = (Button) findViewById(R.id.uploadFileBtn);
 
         mFileNameEditText = (EditText) findViewById(R.id.fileNameEditText);
         mFileDescriptionEditText = (EditText) findViewById(R.id.fileDescriptionEditText);
@@ -63,23 +64,33 @@ public class FileUploadActivity extends MainActivity {
                 displayFileSelector();
             }
         });
+    }
 
-        uploadFileBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mFileName = Utility.getStringFromEditText(mFileNameEditText);
-                String fileDescription = Utility.getStringFromEditText(mFileDescriptionEditText);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        final MenuItem menuItem = menu.add(Menu.NONE, 1000, Menu.NONE, R.string.upload_caps);
+        menuItem.setShowAsAction(1);
+        return true;
+    }
 
-                String fileCategories[] = mFileMimeType.split("/");
-                String fileType = fileCategories[0];
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
 
-                if (mFilePath != null && (fileType.equals("image") || fileType.equals("video"))) {
-                    new UploadFile().execute();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Only videos and images are allowed to be uploaded", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        mFileName = Utility.getStringFromEditText(mFileNameEditText);
+        String fileDescription = Utility.getStringFromEditText(mFileDescriptionEditText);
+
+        String fileCategories[] = mFileMimeType.split("/");
+        String fileType = fileCategories[0];
+
+        if (mFilePath != null && (fileType.equals("image") || fileType.equals("video"))) {
+            new UploadFile().execute();
+        } else {
+            Toast.makeText(getApplicationContext(), "Only videos and images are allowed to be uploaded", Toast.LENGTH_SHORT).show();
+        }
+
+        return true;
     }
 
     private void displayFileSelector() {

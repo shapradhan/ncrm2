@@ -47,4 +47,5 @@
     <string name="add_caps">ADD</string>
     <string name="update_caps">UPDATE</string>
     <string name="delete">Delete</string>
+    <string name="upload_caps">UPLOAD</string>
 </resources>
