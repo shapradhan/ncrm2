@@ -48,4 +48,8 @@
     <string name="update_caps">UPDATE</string>
     <string name="delete">Delete</string>
     <string name="upload_caps">UPLOAD</string>
+    <string name="type">Type</string>
+    <string name="sort_by_name">Sort by Name</string>
+    <string name="sort_by_type">Sort by Type</string>
+    <string name="sort_by_date">Sort by Date</string>
 </resources>

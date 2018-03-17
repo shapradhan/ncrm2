@@ -148,6 +148,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_files:
                 try {
                     Intent intent = new Intent(MainActivity.this, FileListActivity.class);
+                    intent.putExtra("sortMethod", "name");
                     startActivity(intent);
                     drawer.closeDrawers();
                 }

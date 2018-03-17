@@ -13,4 +13,22 @@
         android:title="@string/delete"
         android:visible="false"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_sortByFileName"
+        android:orderInCategory="100"
+        android:title="@string/sort_by_name"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_sortByFileType"
+        android:orderInCategory="100"
+        android:title="@string/sort_by_type"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_sortByDate"
+        android:orderInCategory="100"
+        android:title="@string/sort_by_date"
+        android:visible="false"
+        app:showAsAction="never" />
 </menu>
