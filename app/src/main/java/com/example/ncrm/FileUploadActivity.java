@@ -26,6 +26,8 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
+
 /**
  * Created by shameer on 2018-03-09.
  */
@@ -40,6 +42,7 @@ public class FileUploadActivity extends MainActivity {
     private String mFileMimeType;
     private EditText mFileNameEditText;
     private EditText mFileDescriptionEditText;
+    private ArrayList<String> mFileNameList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,6 +52,10 @@ public class FileUploadActivity extends MainActivity {
         getLayoutInflater().inflate(R.layout.activity_file_upload, frameLayout);
 
         mStorageReference = FirebaseStorage.getInstance().getReference();
+
+        Intent intent = getIntent();
+        mFileNameList = intent.getStringArrayListExtra("fileList");
+        System.out.println("FL " + mFileNameList);
 
         mFileUploadProgressBar = (ProgressBar) findViewById(R.id.fileUploadProgressBar);
         mFileUploadSizeTextView = (TextView) findViewById(R.id.fileUploadSizeTextView);
@@ -81,15 +88,23 @@ public class FileUploadActivity extends MainActivity {
         mFileName = Utility.getStringFromEditText(mFileNameEditText);
         String fileDescription = Utility.getStringFromEditText(mFileDescriptionEditText);
 
-        String fileCategories[] = mFileMimeType.split("/");
-        String fileType = fileCategories[0];
+        String fileCategories[] = null;
+        String fileType = null;
 
-        if (mFilePath != null && (fileType.equals("image") || fileType.equals("video"))) {
-            new UploadFile().execute();
-        } else {
-            Toast.makeText(getApplicationContext(), "Only videos and images are allowed to be uploaded", Toast.LENGTH_SHORT).show();
+        if (mFilePath != null) {
+            fileCategories = mFileMimeType.split("/");
+            fileType = fileCategories[0];
         }
 
+        if (mFilePath == null) {
+            Toast.makeText(getApplicationContext(), "No file selected", Toast.LENGTH_SHORT).show();
+        } else if (!(fileType.equals("image") || fileType.equals("video"))) {
+            Toast.makeText(getApplicationContext(), "Only videos and images are allowed to be uploaded", Toast.LENGTH_SHORT).show();
+        } else if (fileNameExistenceChecker(mFileName)) {
+            Toast.makeText(getApplicationContext(), "Given file name already exists", Toast.LENGTH_SHORT).show();
+        } else {
+            new UploadFile().execute();
+        }
         return true;
     }
 
@@ -152,6 +167,15 @@ public class FileUploadActivity extends MainActivity {
                         mFileUploadSizeTextView.setText(taskSnapshot.getBytesTransferred() + " bytes of " + taskSnapshot.getTotalByteCount() + " bytes");
                     }
                 });
+    }
+
+    private boolean fileNameExistenceChecker(String newFileName) {
+        for (String fileName : mFileNameList) {
+            if (fileName.equals(newFileName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public class UploadFile extends AsyncTask<Void, Void, Void> {

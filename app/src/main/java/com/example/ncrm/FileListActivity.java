@@ -31,6 +31,7 @@ public class FileListActivity extends MainActivity {
     FirebaseDatabase mFirebaseDatabase;
     DatabaseReference mFilesDatabaseReference;
     ChildEventListener mChildEventListener;
+    ArrayList<String> mFileNameList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public class FileListActivity extends MainActivity {
         mFileListRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayoutManager.VERTICAL));
 
         mFileList = new ArrayList<>();
+        mFileNameList = new ArrayList<>();
         mFileAdapter = new FileAdapter(mFileList, this);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -57,6 +59,7 @@ public class FileListActivity extends MainActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FileListActivity.this, FileUploadActivity.class);
+                intent.putExtra("fileList", mFileNameList);
                 startActivity(intent);
             }
         });
@@ -76,6 +79,7 @@ public class FileListActivity extends MainActivity {
                     File file = dataSnapshot.getValue(File.class);
                     String id = dataSnapshot.getKey();
                     file.setId(id);
+                    mFileNameList.add(file.getFileName());
                     mFileList.add(file);
                     mFileListRecyclerView.setAdapter(mFileAdapter);
                 }
