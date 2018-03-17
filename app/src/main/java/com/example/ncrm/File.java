@@ -10,6 +10,7 @@ import java.io.Serializable;
 
 public class File implements Serializable {
     private String fileName;
+    private String description;
     private Long createdOn;
     private Long modifiedOn;
     private Long lastViewedOn;
@@ -20,8 +21,9 @@ public class File implements Serializable {
     @Exclude
     private String id;
 
-    public File(String fileName, Long createdOn, String type, String userId, String url) {
+    public File(String fileName, String description, Long createdOn, String type, String userId, String url) {
         this.fileName = fileName;
+        this.description = description;
         this.createdOn = createdOn;
         this.type = type;
         this.userId = userId;
@@ -36,6 +38,14 @@ public class File implements Serializable {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Long getCreatedOn() {

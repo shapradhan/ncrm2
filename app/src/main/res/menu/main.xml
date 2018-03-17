@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_viewDetails"
+        android:orderInCategory="100"
+        android:title="@string/view_details"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_update"
         android:orderInCategory="100"
         android:title="@string/update"
@@ -31,4 +37,5 @@
         android:title="@string/sort_by_date"
         android:visible="false"
         app:showAsAction="never" />
+
 </menu>

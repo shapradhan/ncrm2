@@ -43,6 +43,7 @@ public class FileUploadActivity extends MainActivity {
     private EditText mFileNameEditText;
     private EditText mFileDescriptionEditText;
     private ArrayList<String> mFileNameList;
+    private String mFileDescription;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,7 +87,7 @@ public class FileUploadActivity extends MainActivity {
         super.onOptionsItemSelected(item);
 
         mFileName = Utility.getStringFromEditText(mFileNameEditText);
-        String fileDescription = Utility.getStringFromEditText(mFileDescriptionEditText);
+        mFileDescription = Utility.getStringFromEditText(mFileDescriptionEditText);
 
         String fileCategories[] = null;
         String fileType = null;
@@ -144,7 +145,7 @@ public class FileUploadActivity extends MainActivity {
 
                         DatabaseReference filesDatabaseReference = firebaseDatabase.getReference().child("files").child(uid);
 
-                        File file = new File(mFileName, System.currentTimeMillis(), mFileMimeType, uid, taskSnapshot.getDownloadUrl().toString());
+                        File file = new File(mFileName, mFileDescription, System.currentTimeMillis(), mFileMimeType, uid, taskSnapshot.getDownloadUrl().toString());
                         filesDatabaseReference.push().setValue(file);
                     }
                 })

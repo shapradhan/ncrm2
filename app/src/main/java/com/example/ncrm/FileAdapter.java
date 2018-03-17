@@ -114,19 +114,9 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
         public void onClick(View v) {
             int position = getAdapterPosition();
             File file = this.mFiles.get(position);
-            String[] fileTypeParts = file.getType().split("/");
-            String fileType = fileTypeParts[0];
-            if (fileType.equals("application")) {
-                Intent intent = new Intent(mContext, MediaViewerActivity.class);
-                intent.putExtra("fileType", fileTypeParts[1]);
-                intent.putExtra("url", file.getUrl());
-                mContext.startActivity(intent);
-            } else {
-                Intent intent = new Intent(mContext, MediaViewerActivity.class);
-                intent.putExtra("fileType", fileType);
-                intent.putExtra("url", file.getUrl());
-                mContext.startActivity(intent);
-            }
+            Intent intent = new Intent(mContext, MediaViewerActivity.class);
+            intent.putExtra("object", file);
+            mContext.startActivity(intent);
         }
     }
 }
