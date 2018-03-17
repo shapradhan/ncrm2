@@ -136,7 +136,7 @@ public class MeetingAddActivity extends MainActivity {
         if (addedInDatabase) {
             navigateScene();
         } else {
-            Toast.makeText(getApplicationContext(), "Please provide meeting title", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Please provide meeting title, date, and time", Toast.LENGTH_SHORT).show();
         }
         return true;
     }
@@ -245,7 +245,12 @@ public class MeetingAddActivity extends MainActivity {
     }
 
     private boolean validateMeeting(Meeting meeting) {
-        if (meeting.getTitle() != null && !meeting.getTitle().equals("")) {
+        if (meeting.getTitle() != null &&
+                !meeting.getTitle().equals("") &&
+                meeting.getDate() != null &&
+                !meeting.getDate().equals("") &&
+                meeting.getTime() != null &&
+                !meeting.getTime().equals("")) {
             return true;
         } else {
             return false;
