@@ -18,7 +18,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by shameer on 2018-03-18.
@@ -39,6 +43,8 @@ public class DashboardFragment extends Fragment {
     private ArrayList<Reminder> mReminderArrayList = new ArrayList<>();
     private ArrayList<File> mRecentFilesArrayList = new ArrayList<>();
 
+    private long mEpochTime;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -46,6 +52,8 @@ public class DashboardFragment extends Fragment {
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        mEpochTime = System.currentTimeMillis();
 
         getUpcomingMeetings(uid);
         getReminders(uid);
@@ -93,10 +101,18 @@ public class DashboardFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Meeting meeting = ds.getValue(Meeting.class);
-                    mMeetingItemsArrayList.add(meeting.getTitle());
-                    meeting.setId(ds.getKey());
-                    mMeetingArrayList.add(meeting);
-                    mMeetingAdapter.notifyDataSetChanged();
+
+                    String date = meeting.getDate();
+                    String time = meeting.getTime();
+                    Date formattedDate = convertStringToDate(date, time);
+                    long epoch = formattedDate.getTime();
+
+                    if (epoch > mEpochTime) {
+                        mMeetingItemsArrayList.add(meeting.getTitle());
+                        meeting.setId(ds.getKey());
+                        mMeetingArrayList.add(meeting);
+                        mMeetingAdapter.notifyDataSetChanged();
+                    }
                 }
             }
 
@@ -114,10 +130,18 @@ public class DashboardFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Reminder reminder = ds.getValue(Reminder.class);
-                    mReminderItemsArrayList.add(reminder.getReminderItem());
-                    reminder.setId(ds.getKey());
-                    mReminderArrayList.add(reminder);
-                    mReminderAdapter.notifyDataSetChanged();
+
+                    String date = reminder.getReminderDate();
+                    String time = reminder.getReminderTime();
+                    Date formattedDate = convertStringToDate(date, time);
+                    long epoch = formattedDate.getTime();
+
+                    if (epoch > mEpochTime) {
+                        mReminderItemsArrayList.add(reminder.getReminderItem());
+                        reminder.setId(ds.getKey());
+                        mReminderArrayList.add(reminder);
+                        mReminderAdapter.notifyDataSetChanged();
+                    }
                 }
             }
 
@@ -147,5 +171,16 @@ public class DashboardFragment extends Fragment {
 
             }
         });
+    }
+
+    private Date convertStringToDate(String date, String time) {
+        DateFormat dateFormat = new SimpleDateFormat("EE, dd MMMM yyyy hh:mm aa");
+        Date formattedDate = null;
+        try {
+            formattedDate = dateFormat.parse(date + " " + time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return formattedDate;
     }
 }
