@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -62,6 +63,35 @@ public class DashboardFragment extends Fragment {
         getUpcomingMeetings(uid);
         getReminders(uid);
         getRecentFiles(uid);
+
+        TextView upcomingMeetingsTitle = view.findViewById(R.id.upcomingMeetingsTitle);
+        TextView remindersTitle = view.findViewById(R.id.remindersTitle);
+        TextView recentFilesTitle = view.findViewById(R.id.recentFilesTitle);
+
+        upcomingMeetingsTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), MeetingListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        remindersTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), ReminderListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        recentFilesTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), FileListActivity.class);
+                intent.putExtra("sortMethod", "name");
+                startActivity(intent);
+            }
+        });
 
         mMeetingAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, mMeetingItemsArrayList);
         mUpcomingMeetingsListView = (ListView) view.findViewById(R.id.upcomingMeetingsListView);

@@ -12,7 +12,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/upcomingMeetingsTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/upcoming_meetings"
@@ -27,7 +27,7 @@
                 android:layout_marginLeft="15dp"/>
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/remindersTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/reminders"
@@ -42,7 +42,7 @@
                 android:layout_marginLeft="15dp"/>
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/recentFilesTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/recent_files"
