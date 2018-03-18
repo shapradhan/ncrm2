@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -19,6 +20,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -54,7 +57,25 @@ public class MeetingDetailActivity extends MainActivity {
         TextView meetingTime = (TextView) findViewById(R.id.meetingTime);
         meetingTime.setText(mSelectedMeeting.getTime());
 
+        TextView venueTextView = (TextView) findViewById(R.id.meetingVenue);
+       venueTextView.setText(mSelectedMeeting.getVenue());
+
+        TextView streetAddressTextView = (TextView) findViewById(R.id.meetingStreetAddress);
+        streetAddressTextView.setText(mSelectedMeeting.getStreetAddress());
+//        meetingAddress.setText(mSelectedMeeting.getStreetAddress() + ", " + mSelectedMeeting.getCity() + ", " + mSelectedMeeting.getCountry());
+//        meetingAddress.setText(mSelectedMeeting.getStreetAddress() + "\n" + mSelectedMeeting.getCity() + "\n" + mSelectedMeeting.getCountry());
+
+        TextView cityTextView = (TextView) findViewById(R.id.meetingCity);
+        cityTextView.setText(mSelectedMeeting.getCity());
+
+        TextView countryTextView = (TextView) findViewById(R.id.meetingCountry);
+        countryTextView.setText(mSelectedMeeting.getCountry());
+
+        TextView meetingAgenda = (TextView) findViewById(R.id.meetingAgenda);
+        meetingAgenda.setText(mSelectedMeeting.getAgenda());
+
         getDataFromFirebase();
+        checkAddress(mSelectedMeeting.getVenue(), mSelectedMeeting.getStreetAddress(), mSelectedMeeting.getCity(), mSelectedMeeting.getCountry(), venueTextView, streetAddressTextView, cityTextView, countryTextView);
     }
 
     @Override
@@ -192,5 +213,20 @@ public class MeetingDetailActivity extends MainActivity {
     private void navigateToList(Context context) {
         Intent intent = new Intent(context, MeetingListActivity.class);
         startActivity(intent);
+    }
+
+    private void checkAddress(String venue, String streetAddress, String city, String country, TextView venueTextView, TextView streetAddressTextView, TextView cityTextView, TextView countryTextView) {
+        if (venue == null || venue.equals("")) {
+            venueTextView.setVisibility(View.GONE);
+        }
+        if (streetAddress == null || streetAddress.equals("")) {
+            streetAddressTextView.setVisibility(View.GONE);
+        }
+        if (city == null || city.equals("")) {
+            cityTextView.setVisibility(View.GONE);
+        }
+        if (country == null || country.equals("")) {
+            countryTextView.setVisibility(View.GONE);
+        }
     }
 }
