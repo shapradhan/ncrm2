@@ -45,6 +45,10 @@ public class DashboardFragment extends Fragment {
 
     private long mEpochTime;
 
+    private ListView mUpcomingMeetingsListView;
+    private ListView mRemindersListView;
+    private ListView mRecentFilesListView;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -60,10 +64,10 @@ public class DashboardFragment extends Fragment {
         getRecentFiles(uid);
 
         mMeetingAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, mMeetingItemsArrayList);
-        ListView upcomingMeetingsListView = (ListView) view.findViewById(R.id.upcomingMeetingsListView);
-        upcomingMeetingsListView.setAdapter(mMeetingAdapter);
+        mUpcomingMeetingsListView = (ListView) view.findViewById(R.id.upcomingMeetingsListView);
+        mUpcomingMeetingsListView.setAdapter(mMeetingAdapter);
 
-        upcomingMeetingsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mUpcomingMeetingsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Meeting meeting = mMeetingArrayList.get(position);
@@ -74,14 +78,14 @@ public class DashboardFragment extends Fragment {
         });
 
         mReminderAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, mReminderItemsArrayList);
-        ListView remindersListView = (ListView) view.findViewById(R.id.remindersListView);
-        remindersListView.setAdapter(mReminderAdapter);
+        mRemindersListView = (ListView) view.findViewById(R.id.remindersListView);
+        mRemindersListView.setAdapter(mReminderAdapter);
 
         mRecentFilesAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, mRecentFilesItemsArrayList);
-        ListView recentFilesListView = (ListView) view.findViewById(R.id.recentFilesListView);
-        recentFilesListView.setAdapter(mRecentFilesAdapter);
+        mRecentFilesListView = (ListView) view.findViewById(R.id.recentFilesListView);
+        mRecentFilesListView.setAdapter(mRecentFilesAdapter);
 
-        recentFilesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mRecentFilesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 File file = mRecentFilesArrayList.get(position);
@@ -96,6 +100,7 @@ public class DashboardFragment extends Fragment {
 
     private void getUpcomingMeetings(String uid) {
         DatabaseReference databaseReference = Utility.getDatabaseReference(mFirebaseDatabase, "meetings", uid);
+        System.out.println("CURRE " + mEpochTime);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -107,13 +112,16 @@ public class DashboardFragment extends Fragment {
                     Date formattedDate = convertStringToDate(date, time);
                     long epoch = formattedDate.getTime();
 
-                    if (epoch > mEpochTime) {
-                        mMeetingItemsArrayList.add(meeting.getTitle());
-                        meeting.setId(ds.getKey());
-                        mMeetingArrayList.add(meeting);
-                        mMeetingAdapter.notifyDataSetChanged();
+                    if (mMeetingItemsArrayList.size() != 3) {
+                        if (epoch > mEpochTime) {
+                            mMeetingItemsArrayList.add(meeting.getTitle());
+                            meeting.setId(ds.getKey());
+                            mMeetingArrayList.add(meeting);
+                            mMeetingAdapter.notifyDataSetChanged();
+                        }
                     }
                 }
+                Utility.getListViewSize(mUpcomingMeetingsListView);
             }
 
             @Override
@@ -136,13 +144,16 @@ public class DashboardFragment extends Fragment {
                     Date formattedDate = convertStringToDate(date, time);
                     long epoch = formattedDate.getTime();
 
-                    if (epoch > mEpochTime) {
-                        mReminderItemsArrayList.add(reminder.getReminderItem());
-                        reminder.setId(ds.getKey());
-                        mReminderArrayList.add(reminder);
-                        mReminderAdapter.notifyDataSetChanged();
+                    if (mReminderArrayList.size() != 3) {
+                        if (epoch > mEpochTime) {
+                            mReminderItemsArrayList.add(reminder.getReminderItem());
+                            reminder.setId(ds.getKey());
+                            mReminderArrayList.add(reminder);
+                            mReminderAdapter.notifyDataSetChanged();
+                        }
                     }
                 }
+                Utility.getListViewSize(mRemindersListView);
             }
 
             @Override
@@ -158,12 +169,15 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    File file = ds.getValue(File.class);
-                    mRecentFilesItemsArrayList.add(file.getFileName());
-                    file.setId(ds.getKey());
-                    mRecentFilesArrayList.add(file);
-                    mRecentFilesAdapter.notifyDataSetChanged();
+                    if (mRecentFilesArrayList.size() != 3) {
+                        File file = ds.getValue(File.class);
+                        mRecentFilesItemsArrayList.add(file.getFileName());
+                        file.setId(ds.getKey());
+                        mRecentFilesArrayList.add(file);
+                        mRecentFilesAdapter.notifyDataSetChanged();
+                    }
                 }
+                Utility.getListViewSize(mRecentFilesListView);
             }
 
             @Override
