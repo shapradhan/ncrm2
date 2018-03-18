@@ -37,5 +37,4 @@
         android:title="@string/sort_by_date"
         android:visible="false"
         app:showAsAction="never" />
-
 </menu>

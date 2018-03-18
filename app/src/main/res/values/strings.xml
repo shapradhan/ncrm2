@@ -53,4 +53,7 @@
     <string name="sort_by_type">Sort by Type</string>
     <string name="sort_by_date">Sort by Date</string>
     <string name="view_details">View details</string>
+    <string name="upcoming_meetings">Upcoming meetings</string>
+    <string name="reminders">Reminders</string>
+    <string name="recent_files">Recent files</string>
 </resources>
