@@ -96,6 +96,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.nav_dashboard:
+                try {
+                    Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    drawer.closeDrawers();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+
             case R.id.nav_contacts:
                 try {
                     Intent intent = new Intent(MainActivity.this, ContactListActivity.class);
