@@ -60,7 +60,7 @@ public class ReminderAddActivity extends MainActivity {
         if (addedInDatabase) {
             navigateScene();
         } else {
-            Toast.makeText(getApplicationContext(), "Please provide meeting title", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Please provide reminder, date, and time", Toast.LENGTH_SHORT).show();
         }
         return true;
     }
@@ -79,7 +79,9 @@ public class ReminderAddActivity extends MainActivity {
     }
 
     private boolean validateReminder(Reminder reminder) {
-        if (reminder.getReminderItem() != null && !reminder.getReminderItem().equals("")) {
+        if (reminder.getReminderItem() != null && !reminder.getReminderItem().equals("") &&
+                reminder.getReminderDate() != null && !reminder.getReminderDate().equals("") &&
+                reminder.getReminderTime() != null && !reminder.getReminderTime().equals("")) {
             return true;
         } else {
             return false;
