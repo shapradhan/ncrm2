@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -20,8 +21,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -36,6 +35,7 @@ public class MeetingDetailActivity extends MainActivity {
     private FirebaseDatabase mFirebaseDatabase;
     private String mUid;
     private String mMeetingId;
+    private ArrayList<String> mParticipantsIdArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,12 +58,10 @@ public class MeetingDetailActivity extends MainActivity {
         meetingTime.setText(mSelectedMeeting.getTime());
 
         TextView venueTextView = (TextView) findViewById(R.id.meetingVenue);
-       venueTextView.setText(mSelectedMeeting.getVenue());
+        venueTextView.setText(mSelectedMeeting.getVenue());
 
         TextView streetAddressTextView = (TextView) findViewById(R.id.meetingStreetAddress);
         streetAddressTextView.setText(mSelectedMeeting.getStreetAddress());
-//        meetingAddress.setText(mSelectedMeeting.getStreetAddress() + ", " + mSelectedMeeting.getCity() + ", " + mSelectedMeeting.getCountry());
-//        meetingAddress.setText(mSelectedMeeting.getStreetAddress() + "\n" + mSelectedMeeting.getCity() + "\n" + mSelectedMeeting.getCountry());
 
         TextView cityTextView = (TextView) findViewById(R.id.meetingCity);
         cityTextView.setText(mSelectedMeeting.getCity());
@@ -76,6 +74,29 @@ public class MeetingDetailActivity extends MainActivity {
 
         getDataFromFirebase();
         checkAddress(mSelectedMeeting.getVenue(), mSelectedMeeting.getStreetAddress(), mSelectedMeeting.getCity(), mSelectedMeeting.getCountry(), venueTextView, streetAddressTextView, cityTextView, countryTextView);
+
+        mParticipantListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                final String contactId = mParticipantsIdArrayList.get(position);
+                DatabaseReference contactDatabaseReference = Utility.getDatabaseReference(mFirebaseDatabase, "contacts", mUid).child(contactId);
+                contactDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Contact selectedContact = dataSnapshot.getValue(Contact.class);
+                        Intent intent = new Intent(getApplicationContext(), ContactDetailActivity.class);
+                        selectedContact.setId(contactId);
+                        intent.putExtra("object", selectedContact);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -125,6 +146,7 @@ public class MeetingDetailActivity extends MainActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    mParticipantsIdArrayList.add(ds.getKey());
                     DatabaseReference meetingParticipantNameDatabaseReference = mFirebaseDatabase.getReference()
                             .child("contacts")
                             .child(mUid)

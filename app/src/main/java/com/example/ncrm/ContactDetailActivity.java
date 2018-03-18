@@ -57,7 +57,6 @@ public class ContactDetailActivity extends MainActivity {
 
         Intent intent = getIntent();
         mSelectedContact = (Contact) intent.getSerializableExtra("object");
-
         mContactId = mSelectedContact.getId();
 
         ImageButton mapBtn = (ImageButton) findViewById(R.id.mapBtn);
