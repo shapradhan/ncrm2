@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -23,7 +24,12 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.Locale;
+
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 /**
  * Created by shameer on 2018-03-18.
@@ -31,11 +37,11 @@ import java.util.Date;
 
 public class DashboardFragment extends Fragment {
 
-    private ArrayList<String> mMeetingItemsArrayList = new ArrayList<>();
+    private ArrayList<String> mMeetingItemsArrayList;
     private ArrayAdapter<String> mMeetingAdapter;
-    private ArrayList<String> mReminderItemsArrayList = new ArrayList<>();
+    private ArrayList<String> mReminderItemsArrayList;
     private ArrayAdapter<String> mReminderAdapter;
-    private ArrayList<String> mRecentFilesItemsArrayList = new ArrayList<>();
+    private ArrayList<String> mRecentFilesItemsArrayList;
     private ArrayAdapter<String> mRecentFilesAdapter;
     private FirebaseDatabase mFirebaseDatabase;
 
@@ -57,6 +63,9 @@ public class DashboardFragment extends Fragment {
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mMeetingItemsArrayList = new ArrayList<>();
+        mReminderItemsArrayList = new ArrayList<>();
+        mRecentFilesItemsArrayList = new ArrayList<>();
 
         mEpochTime = System.currentTimeMillis();
 
@@ -130,7 +139,6 @@ public class DashboardFragment extends Fragment {
 
     private void getUpcomingMeetings(String uid) {
         DatabaseReference databaseReference = Utility.getDatabaseReference(mFirebaseDatabase, "meetings", uid);
-        System.out.println("CURRE " + mEpochTime);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -142,15 +150,25 @@ public class DashboardFragment extends Fragment {
                     Date formattedDate = convertStringToDate(date, time);
                     long epoch = formattedDate.getTime();
 
-                    if (mMeetingItemsArrayList.size() != 3) {
-                        if (epoch > mEpochTime) {
-                            mMeetingItemsArrayList.add(meeting.getTitle());
-                            meeting.setId(ds.getKey());
-                            mMeetingArrayList.add(meeting);
-                            mMeetingAdapter.notifyDataSetChanged();
-                        }
+                    if (epoch > mEpochTime) {
+                        mMeetingArrayList.add(meeting);
+                    }
+
+                    sortMeetingArray(mMeetingArrayList);
+                }
+
+                if (mMeetingArrayList.size() > 3) {
+                    for (int i = 0; i < 3; i++) {
+                        mMeetingItemsArrayList.add(mMeetingArrayList.get(i).getTitle());
+                        mMeetingAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    for (int i = 0; i < mMeetingArrayList.size(); i++) {
+                        mMeetingItemsArrayList.add(mMeetingArrayList.get(i).getTitle());
+                        mMeetingAdapter.notifyDataSetChanged();
                     }
                 }
+
                 Utility.getListViewSize(mUpcomingMeetingsListView);
             }
 
@@ -174,16 +192,48 @@ public class DashboardFragment extends Fragment {
                     Date formattedDate = convertStringToDate(date, time);
                     long epoch = formattedDate.getTime();
 
-                    if (mReminderArrayList.size() != 3) {
-                        if (epoch > mEpochTime) {
-                            mReminderItemsArrayList.add(reminder.getReminderItem());
-                            reminder.setId(ds.getKey());
-                            mReminderArrayList.add(reminder);
-                            mReminderAdapter.notifyDataSetChanged();
-                        }
+                    if (epoch > mEpochTime) {
+                        mReminderArrayList.add(reminder);
+                    }
+
+                    sortReminderArray(mReminderArrayList);
+                }
+
+                if (mReminderArrayList.size() > 3) {
+                    for (int i = 0; i < 3; i++) {
+                        mReminderItemsArrayList.add(mReminderArrayList.get(i).getReminderItem());
+                        mReminderAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    for (int i = 0; i < mReminderArrayList.size(); i++) {
+                        mReminderItemsArrayList.add(mReminderArrayList.get(i).getReminderItem());
+                        mReminderAdapter.notifyDataSetChanged();
                     }
                 }
+
                 Utility.getListViewSize(mRemindersListView);
+
+
+//                    String date = reminder.getReminderDate();
+//                    String time = reminder.getReminderTime();
+//
+////                    Date formattedDate = convertStringToDate(date);
+////                    Date formattedTime = convertStringToTime(time);
+//                    Date formattedDate = convertStringToDate(date, time);
+//
+//                    long epoch = formattedDate.getTime();
+//
+//                    if (mReminderArrayList.size() != 3) {
+//                        if (epoch > mEpochTime) {
+//                            mReminderItemsArrayList.add(reminder.getReminderItem());
+//                            reminder.setId(ds.getKey());
+//                            mReminderArrayList.add(reminder);
+//                            sortReminderArray(mReminderArrayList);
+//                            mReminderAdapter.notifyDataSetChanged();
+//                        }
+//                    }
+//                }
+//                Utility.getListViewSize(mRemindersListView);
             }
 
             @Override
@@ -226,5 +276,61 @@ public class DashboardFragment extends Fragment {
             e.printStackTrace();
         }
         return formattedDate;
+    }
+
+    private void sortMeetingArray(ArrayList<Meeting> arrayList) {
+        Collections.sort(arrayList, new Comparator<Meeting>() {
+            @Override
+            public int compare(Meeting meeting1, Meeting meeting2) {
+                Date date1 = convertStringToDate(meeting1.getDate());
+                Date date2 = convertStringToDate(meeting2.getDate());
+
+                if (date1.compareTo(date2) == 0) {
+                    Date time1 = convertStringToTime(meeting1.getTime());
+                    Date time2 = convertStringToTime(meeting2.getTime());
+                    return (time1.compareTo(time2));
+                }
+                return date1.compareTo(date2);
+            }
+        });
+    }
+
+    private Date convertStringToDate(String dateString) {
+        DateFormat format = new SimpleDateFormat("EE, dd MMMM yyyy", Locale.ENGLISH);
+        try {
+            Date date = format.parse(dateString);
+            return date;
+        } catch (ParseException e) {
+            Toast.makeText(getContext(), "Could not convert string to date", Toast.LENGTH_SHORT).show();
+        }
+        return null;
+    }
+
+    private Date convertStringToTime(String timeString) {
+        DateFormat format = new SimpleDateFormat("hh:mm aa", Locale.ENGLISH);
+        try {
+            Date time = format.parse(timeString);
+            return time;
+        } catch (ParseException e) {
+            Toast.makeText(getContext(), "Could not convert string to date", Toast.LENGTH_SHORT).show();
+        }
+        return null;
+    }
+
+    private void sortReminderArray(ArrayList<Reminder> arrayList) {
+        Collections.sort(arrayList, new Comparator<Reminder>() {
+            @Override
+            public int compare(Reminder reminder1, Reminder reminder2) {
+                Date date1 = convertStringToDate(reminder1.getReminderDate());
+                Date date2 = convertStringToDate(reminder2.getReminderDate());
+
+                if (date1.compareTo(date2) == 0) {
+                    Date time1 = convertStringToTime(reminder1.getReminderTime());
+                    Date time2 = convertStringToTime(reminder2.getReminderTime());
+                    return (time1.compareTo(time2));
+                }
+                return date1.compareTo(date2);
+            }
+        });
     }
 }
