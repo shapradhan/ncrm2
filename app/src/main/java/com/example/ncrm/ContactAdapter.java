@@ -2,30 +2,21 @@ package com.example.ncrm;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by shameer on 2018-02-10.
  */
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder> {
-    private ArrayList<Contact> mContactArrayList = new ArrayList<>();
     Context mContext;
+    private ArrayList<Contact> mContactArrayList = new ArrayList<>();
 
     public ContactAdapter(ArrayList<Contact> contactList, Context context) {
         mContactArrayList = contactList;

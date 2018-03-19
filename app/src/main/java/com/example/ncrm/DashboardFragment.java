@@ -29,8 +29,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
-
 /**
  * Created by shameer on 2018-03-18.
  */
