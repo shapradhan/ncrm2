@@ -144,7 +144,7 @@ public class DashboardFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Meeting meeting = ds.getValue(Meeting.class);
-
+                    meeting.setId(ds.getKey());
                     String date = meeting.getDate();
                     String time = meeting.getTime();
                     Date formattedDate = convertStringToDate(date, time);
@@ -186,7 +186,7 @@ public class DashboardFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Reminder reminder = ds.getValue(Reminder.class);
-
+                    reminder.setId(ds.getKey());
                     String date = reminder.getReminderDate();
                     String time = reminder.getReminderTime();
                     Date formattedDate = convertStringToDate(date, time);
@@ -212,28 +212,6 @@ public class DashboardFragment extends Fragment {
                 }
 
                 Utility.getListViewSize(mRemindersListView);
-
-
-//                    String date = reminder.getReminderDate();
-//                    String time = reminder.getReminderTime();
-//
-////                    Date formattedDate = convertStringToDate(date);
-////                    Date formattedTime = convertStringToTime(time);
-//                    Date formattedDate = convertStringToDate(date, time);
-//
-//                    long epoch = formattedDate.getTime();
-//
-//                    if (mReminderArrayList.size() != 3) {
-//                        if (epoch > mEpochTime) {
-//                            mReminderItemsArrayList.add(reminder.getReminderItem());
-//                            reminder.setId(ds.getKey());
-//                            mReminderArrayList.add(reminder);
-//                            sortReminderArray(mReminderArrayList);
-//                            mReminderAdapter.notifyDataSetChanged();
-//                        }
-//                    }
-//                }
-//                Utility.getListViewSize(mRemindersListView);
             }
 
             @Override
