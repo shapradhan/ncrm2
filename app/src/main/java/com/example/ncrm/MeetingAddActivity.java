@@ -164,9 +164,11 @@ public class MeetingAddActivity extends MainActivity {
         addParticipantBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            mParticipantsArrayList.add(mParticipantAutoCompleteTextView.getText().toString());
-            Utility.getListViewSize(mParticipantListView);
-                mParticipantAutoCompleteTextView.setText("");
+                if (!mParticipantAutoCompleteTextView.getText().toString().equals("") && mParticipantAutoCompleteTextView.getText().toString() != null) {
+                    mParticipantsArrayList.add(mParticipantAutoCompleteTextView.getText().toString());
+                    Utility.getListViewSize(mParticipantListView);
+                    mParticipantAutoCompleteTextView.setText("");
+                }
             }
         });
     }
