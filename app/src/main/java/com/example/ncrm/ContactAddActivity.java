@@ -85,6 +85,10 @@ public class ContactAddActivity extends MainActivity {
         String facebookId = Utility.getStringFromEditText(facebookIdEditText);
         String twitterId = Utility.getStringFromEditText(twitterEditText);
 
+        if (country.equals("Select")) {
+            country = "";
+        }
+
         Contact contact = new Contact(
                 name,
                 organization,

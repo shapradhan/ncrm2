@@ -195,6 +195,10 @@ public class MeetingAddActivity extends MainActivity {
             meetingParticipantsDictionary.put(mParticipatingContactsIdDictionary.get(participantName).toString(), true);
         }
 
+        if (meetingCountry.equals("Select")) {
+            meetingCountry = "";
+        }
+
         Meeting meeting = new Meeting(
                 meetingTitle,
                 meetingVenue,

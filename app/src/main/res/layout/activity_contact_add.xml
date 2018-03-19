@@ -136,7 +136,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:entries="@array/countries"
-                    android:focusable="false"/>
+                    android:focusable="false"
+                    android:text="@string/select"/>
             </LinearLayout>
 
             <LinearLayout
