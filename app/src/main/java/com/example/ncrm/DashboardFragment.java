@@ -159,12 +159,12 @@ public class DashboardFragment extends Fragment {
 
                 if (mMeetingArrayList.size() > 3) {
                     for (int i = 0; i < 3; i++) {
-                        mMeetingItemsArrayList.add(mMeetingArrayList.get(i).getTitle());
+                        mMeetingItemsArrayList.add(mMeetingArrayList.get(i).getTitle() + "  -  " + mMeetingArrayList.get(i).getDate());
                         mMeetingAdapter.notifyDataSetChanged();
                     }
                 } else {
                     for (int i = 0; i < mMeetingArrayList.size(); i++) {
-                        mMeetingItemsArrayList.add(mMeetingArrayList.get(i).getTitle());
+                        mMeetingItemsArrayList.add(mMeetingArrayList.get(i).getTitle() + "  -  " + mMeetingArrayList.get(i).getDate());
                         mMeetingAdapter.notifyDataSetChanged();
                     }
                 }
@@ -201,12 +201,12 @@ public class DashboardFragment extends Fragment {
 
                 if (mReminderArrayList.size() > 3) {
                     for (int i = 0; i < 3; i++) {
-                        mReminderItemsArrayList.add(mReminderArrayList.get(i).getReminderItem());
+                        mReminderItemsArrayList.add(mReminderArrayList.get(i).getReminderItem() + "  -  " + mReminderArrayList.get(i).getReminderDate() + "  -  " + mReminderArrayList.get(i).getReminderTime());
                         mReminderAdapter.notifyDataSetChanged();
                     }
                 } else {
                     for (int i = 0; i < mReminderArrayList.size(); i++) {
-                        mReminderItemsArrayList.add(mReminderArrayList.get(i).getReminderItem());
+                        mReminderItemsArrayList.add(mReminderArrayList.get(i).getReminderItem() + "  -  " + mReminderArrayList.get(i).getReminderDate() + "  -  " + mReminderArrayList.get(i).getReminderTime());
                         mReminderAdapter.notifyDataSetChanged();
                     }
                 }
@@ -229,7 +229,7 @@ public class DashboardFragment extends Fragment {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     if (mRecentFilesArrayList.size() != 3) {
                         File file = ds.getValue(File.class);
-                        mRecentFilesItemsArrayList.add(file.getFileName());
+                        mRecentFilesItemsArrayList.add(file.getFileName() + "  -  " + file.getType());
                         file.setId(ds.getKey());
                         mRecentFilesArrayList.add(file);
                         mRecentFilesAdapter.notifyDataSetChanged();
