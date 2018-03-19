@@ -43,66 +43,54 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ContactListActivity"
             android:label="Contacts"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ContactAddActivity"
-            android:label="Create a contact"
+            android:label="Create contact"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ContactDetailActivity"
-            android:label="Contact detail"
+            android:label="Contact details"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ContactUpdateActivity"
-            android:label="Update a contact"
+            android:label="Update contact"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".MeetingAddActivity"
-            android:label="Create a meeting"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
+
         <activity
             android:name=".MeetingListActivity"
             android:label="Meetings"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".MapsActivity"
-            android:label="Map"
+            android:name=".MeetingAddActivity"
+            android:label="Create meeting"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".MeetingDetailActivity"
-            android:label="Meeting detail"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".ReminderListActivity"
-            android:label="Reminder List"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".ReminderAddActivity"
-            android:label="Add a reminder"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".FileListActivity"
-            android:label="Files"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".FileUploadActivity"
-            android:label="Upload a file"
+            android:label="Meeting details"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".MeetingUpdateActivity"
-            android:label="Upload a file"
+            android:label="Update meeting"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".ReminderListActivity"
+            android:label="Reminders"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".ReminderAddActivity"
+            android:label="Create reminder"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
@@ -110,24 +98,35 @@
             android:label="Update reminder"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
+
+
         <activity
-            android:name=".MediaViewerActivity"
-            android:label="Update reminder"
+            android:name=".FileListActivity"
+            android:label="Files"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-            android:configChanges="orientation|screenSize"/>
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".FileUploadActivity"
+            android:label="Upload file"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".FileUpdateActivity"
-            android:label="Update reminder"
+            android:label="Update file"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden"
             android:configChanges="orientation|screenSize"/>
         <activity
-            android:name=".DashboardFragment"
-            android:label="Update reminder"
+            android:name=".MediaViewerActivity"
+            android:label="Media Viewer"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden"
             android:configChanges="orientation|screenSize"/>
-    </application>
 
+        <activity
+            android:name=".MapsActivity"
+            android:label="Map"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+    </application>
 </manifest>
