@@ -137,6 +137,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 break;
 
+            case R.id.nav_targets:
+                try {
+                    Intent intent = new Intent(MainActivity.this, TargetListActivity.class);
+                    startActivity(intent);
+                    drawer.closeDrawers();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+
             case R.id.nav_interaction:
                 try {
                     Intent intent = new Intent(MainActivity.this, InteractionListActivity.class);
