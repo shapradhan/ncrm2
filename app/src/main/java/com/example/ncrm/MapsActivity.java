@@ -34,7 +34,12 @@ public class MapsActivity extends MainActivity implements OnMapReadyCallback {
         mMap = map;
         String fullAddress = mStreetAddress + ", " + mCity + ", " + mCountry;
         LatLng addressLatLng = convertAddressToLatLng(this, fullAddress);
-        createMap(addressLatLng, mStreetAddress);
+        if (addressLatLng != null) {
+            createMap(addressLatLng, mStreetAddress);
+        }
+        else {
+            Utility.showMessageDialog(MapsActivity.this, getString(R.string.no_lat_lng_message));
+        }
     }
 
     private void createMap(LatLng latLng, String title) {
@@ -67,13 +72,16 @@ public class MapsActivity extends MainActivity implements OnMapReadyCallback {
 
         try {
             addressList = geocoder.getFromLocationName(address, 10);
-
+            if (addressList.size() > 0) {
+                Address location = addressList.get(0);
+                latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            } else {
+                return null;
+            }
             if (addressList == null) {
                 return null;
             }
 
-            Address location = addressList.get(0);
-            latLng = new LatLng(location.getLatitude(), location.getLongitude());
         } catch (IOException e) {
             e.printStackTrace();
         }

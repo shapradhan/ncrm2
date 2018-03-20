@@ -88,4 +88,20 @@ public class Utility {
         AlertDialog noInternetDialog = builder.create();
         noInternetDialog.show();
     }
+
+    public static void showMessageDialog(Context context, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                System.exit(0);
+            }
+        });
+        AlertDialog messageDialog = builder.create();
+        messageDialog.show();
+    }
+
 }
