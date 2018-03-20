@@ -25,6 +25,10 @@
                 android:icon="@drawable/ic_menu_reminders"
                 android:title="@string/reminder" />
             <item
+                android:id="@+id/nav_interaction"
+                android:icon="@drawable/ic_menu_contacts"
+                android:title="@string/interaction" />
+            <item
                 android:id="@+id/nav_files"
                 android:icon="@drawable/ic_menu_files"
                 android:title="Files" />
