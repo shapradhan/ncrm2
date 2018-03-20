@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         if (!Utility.isConnectedToNetwork(MainActivity.this)) {
-            Utility.notConnectedToNetworkDialog(MainActivity.this);
+            Utility.showMessageDialog(MainActivity.this, getString(R.string.not_connected_to_network_message));
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

@@ -62,4 +62,5 @@
     <string name="select">Select</string>
     <string name="subtitle">Customer relationship management</string>
     <string name="no_lat_lng_message">The address cannot be found in the map.</string>
+    <string name="not_connected_to_network_message">You are not connected to the Internet. This app needs Internet to work.</string>
 </resources>

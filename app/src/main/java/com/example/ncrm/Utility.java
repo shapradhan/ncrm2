@@ -74,21 +74,6 @@ public class Utility {
         }
     }
 
-    public static void notConnectedToNetworkDialog(Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage("You are not connected to the Internet. This app needs Internet to work.");
-        builder.setCancelable(false);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-                System.exit(0);
-            }
-        });
-        AlertDialog noInternetDialog = builder.create();
-        noInternetDialog.show();
-    }
-
     public static void showMessageDialog(Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(message);
