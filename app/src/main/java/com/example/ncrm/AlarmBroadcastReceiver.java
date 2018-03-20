@@ -12,27 +12,29 @@ import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
+import java.io.Serializable;
+
 /**
  * Created by shameer on 2018-03-20.
  */
 
-public class AlarmBroadcastReceiver extends BroadcastReceiver {
-    private static final int NOTIFICATION_ID_OPEN_ACTIVITY = 9;
-
+public class AlarmBroadcastReceiver extends BroadcastReceiver implements Serializable {
     @Override
     public void onReceive(Context context, Intent intent) {
         Toast.makeText(context, "Alarm worked.", Toast.LENGTH_LONG).show();
+
+        String reminderItem = intent.getStringExtra("reminderItem");
+        String date = intent.getStringExtra("date");
+        String time = intent.getStringExtra("time");
+
         Vibrator vibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
         vibrator.vibrate(10000);
-        showNotification(context);
+        showNotification(context, reminderItem, date, time);
     }
 
-    private void showNotification(Context context) {
-
+    private void showNotification(Context context, String reminderItem, String date, String time) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "channel_id")
                 .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
-                .setContentTitle("Title")
-                .setContentText("Text")
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -48,17 +50,16 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
             }
             builder = new NotificationCompat.Builder(context, "channel_id");
 
-            Intent intent = new Intent(context, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            Intent notificationIntent = new Intent(context, MainActivity.class);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
-            builder.setContentTitle("Title")  // required
+            builder.setContentTitle("Reminder: " + reminderItem + "  -  " + date + "  -  " + time)  // required
                     .setSmallIcon(android.R.drawable.ic_popup_reminder) // required
-                    .setContentText("App name")  // required
+                    .setContentText(context.getString(R.string.app_name))  // required
                     .setDefaults(Notification.DEFAULT_ALL)
                     .setAutoCancel(true)
                     .setContentIntent(pendingIntent)
-                    .setTicker("Ticker")
                     .setVibrate(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
         }
         Notification notification = builder.build();

@@ -77,7 +77,7 @@ public class ReminderAddActivity extends MainActivity {
                 databaseReference.push().setValue(reminder);
                 String dateTimeString = reminder.getReminderDate() + " " + reminder.getReminderTime();
                 long epoch = convertDateTimeStringToEpoch(dateTimeString);
-                createAlarm(epoch);
+                createAlarm(epoch, reminder);
                 return true;
             } else {
                 return false;
@@ -112,8 +112,11 @@ public class ReminderAddActivity extends MainActivity {
         startActivity(intent);
     }
 
-    private void createAlarm(long epoch) {
+    private void createAlarm(long epoch, Reminder reminder) {
         Intent intent = new Intent(ReminderAddActivity.this, AlarmBroadcastReceiver.class);
+        intent.putExtra("reminderItem", reminder.getReminderItem());
+        intent.putExtra("date", reminder.getReminderDate());
+        intent.putExtra("time", reminder.getReminderTime());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int) System.currentTimeMillis(), intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, epoch, pendingIntent);
