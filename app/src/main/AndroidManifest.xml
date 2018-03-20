@@ -100,6 +100,21 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
+            android:name=".TargetAddActivity"
+            android:label="Create Target"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".TargetListActivity"
+            android:label="Target list"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".TargetDetailActivity"
+            android:label="Target detail"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".InteractionAddActivity"
             android:label="Create Interaction"
             android:theme="@style/AppTheme.NoActionBar"
