@@ -18,15 +18,15 @@
                 android:title="@string/contacts" />
             <item
                 android:id="@+id/nav_meetings"
-                android:icon="@drawable/ic_menu_contacts"
+                android:icon="@drawable/ic_menu_meetings"
                 android:title="@string/meetings" />
             <item
                 android:id="@+id/nav_reminders"
-                android:icon="@drawable/ic_menu_contacts"
+                android:icon="@drawable/ic_menu_reminders"
                 android:title="@string/reminder" />
             <item
                 android:id="@+id/nav_files"
-                android:icon="@drawable/ic_menu_contacts"
+                android:icon="@drawable/ic_menu_files"
                 android:title="Files" />
         </menu>
     </item>

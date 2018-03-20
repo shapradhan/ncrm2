@@ -1,5 +1,7 @@
 package com.example.ncrm;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +14,10 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by shameer on 2018-03-09.
@@ -69,6 +75,9 @@ public class ReminderAddActivity extends MainActivity {
         if (databaseReference != null & reminder != null) {
             if (validateReminder(reminder)) {
                 databaseReference.push().setValue(reminder);
+                String dateTimeString = reminder.getReminderDate() + " " + reminder.getReminderTime();
+                long epoch = convertDateTimeStringToEpoch(dateTimeString);
+                createAlarm(epoch);
                 return true;
             } else {
                 return false;
@@ -101,5 +110,24 @@ public class ReminderAddActivity extends MainActivity {
     private void navigateScene() {
         Intent intent = new Intent(ReminderAddActivity.this, ReminderListActivity.class);
         startActivity(intent);
+    }
+
+    private void createAlarm(long epoch) {
+        Intent intent = new Intent(ReminderAddActivity.this, AlarmBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int) System.currentTimeMillis(), intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, epoch, pendingIntent);
+    }
+
+    private long convertDateTimeStringToEpoch(String dateTimeString) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EE, dd MMMM yyyy hh:mm aa");
+        Date date = null;
+        try {
+            date = simpleDateFormat.parse(dateTimeString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        long epoch = date.getTime();
+        return epoch;
     }
 }
