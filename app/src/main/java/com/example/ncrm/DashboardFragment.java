@@ -224,15 +224,26 @@ public class DashboardFragment extends Fragment {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<File> allFilesArrayList = new ArrayList<>();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    if (mRecentFilesArrayList.size() != 3) {
-                        File file = ds.getValue(File.class);
-                        mRecentFilesItemsArrayList.add(file.getFileName() + "  -  " + file.getType());
-                        file.setId(ds.getKey());
-                        mRecentFilesArrayList.add(file);
+                    File file = ds.getValue(File.class);
+                    allFilesArrayList.add(file);
+                }
+
+                Collections.reverse(allFilesArrayList);
+
+                if (allFilesArrayList.size() > 3) {
+                    for (int i = 0; i < 3; i++) {
+                        mRecentFilesItemsArrayList.add(allFilesArrayList.get(i).getFileName() + " - " + allFilesArrayList.get(i).getType());
+                        mRecentFilesAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    for (int i = 0; i < allFilesArrayList.size(); i++) {
+                        mRecentFilesItemsArrayList.add(allFilesArrayList.get(i).getFileName() + " - " + allFilesArrayList.get(i).getType());
                         mRecentFilesAdapter.notifyDataSetChanged();
                     }
                 }
+
                 Utility.getListViewSize(mRecentFilesListView);
             }
 
