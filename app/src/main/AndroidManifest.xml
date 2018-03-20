@@ -99,6 +99,21 @@
             android:label="Update reminder"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".InteractionAddActivity"
+            android:label="Create Interaction"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".InteractionListActivity"
+            android:label="Interaction list"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".InteractionDetailActivity"
+            android:label="Interaction detail"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
 
 
         <activity
@@ -113,16 +128,16 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".FileUpdateActivity"
+            android:configChanges="orientation|screenSize"
             android:label="Update file"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-            android:configChanges="orientation|screenSize"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".MediaViewerActivity"
+            android:configChanges="orientation|screenSize"
             android:label="Media Viewer"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-            android:configChanges="orientation|screenSize"/>
+            android:windowSoftInputMode="stateHidden" />
 
         <activity
             android:name=".MapsActivity"
