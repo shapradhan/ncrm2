@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/meetingDetailContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/interactionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textAllCaps="true"
+            android:textSize="25dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/interactionDate"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/interactionTime"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="20dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:ems="10"
+                android:text="@string/participant"
+                android:textSize="20dp" />
+
+            <ListView
+                android:id="@+id/participantList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:divider="@null"
+                android:dividerHeight="-20dp"
+                android:ems="10" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
