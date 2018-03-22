@@ -53,16 +53,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-
-        if (this.getClass().getSimpleName().equals("MainActivity")) {
-            DashboardFragment dashboardFragment = new DashboardFragment();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.content_frame, dashboardFragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
-        }
     }
 
     @Override
@@ -174,6 +164,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
         if (user != null) {
             // User is already signed in
+            if (this.getClass().getSimpleName().equals("MainActivity")) {
+                DashboardFragment dashboardFragment = new DashboardFragment();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.add(R.id.content_frame, dashboardFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
         } else {
             startActivityForResult(AuthUI.getInstance()
                     .createSignInIntentBuilder()
